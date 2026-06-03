@@ -168,18 +168,6 @@
     "ingredients": ["seasonal ingredients"]
   },
   {
-    "id": "shibi-kara-pork-bowl",
-    "name": "Numbing Spicy Pork Rice Bowl",
-    "dietary": ["pork", "spicy"],
-    "category": "Ippin",
-    "imageUrl": "/images/menu/shibi-kara-pork-bowl.jpg",
-    "priceYen": 580,
-    "allergies": ["soy", "wheat"],
-    "availableAt": ["Lunch"],
-    "description": "A lunchtime rice bowl topped with tender ground pork in a lip-tingling Sichuan-style numbing spice sauce. The interplay of heat and fragrant sansho pepper makes it an addictive midday treat.",
-    "ingredients": ["rice", "pork", "sansho pepper", "chili", "soy sauce"]
-  },
-  {
     "id": "niku-miso-gohan",
     "name": "Meat Miso Rice",
     "dietary": ["pork"],
