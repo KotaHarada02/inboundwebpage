@@ -1,0 +1,56 @@
+[
+  {
+    "id": "isshobin-wine",
+    "name": "Isshobin Wine (1.8L Bottle)",
+    "dietary": ["vegan", "vegetarian"],
+    "category": "Wine",
+    "imageUrl": "/images/menu/isshobin-wine.jpg",
+    "priceYen": {
+      "red (glass)": 750,
+      "white (glass)": 750
+    },
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Served from a traditional 1.8L Japanese sake bottle (isshobin), this wine represents the fusion of Japanese sake culture with winemaking. An approachable, conversation-starting way to enjoy wine at the table. Available in red or white.",
+    "ingredients": ["grapes"]
+  },
+  {
+    "id": "kamoshi-koshu",
+    "name": "Kamoshi Koshu (Bottled Wine)",
+    "dietary": ["vegan", "vegetarian"],
+    "category": "Wine",
+    "imageUrl": "/images/menu/kamoshi-koshu.jpg",
+    "priceYen": 4980,
+    "allergies": [],
+    "availableAt": ["Dinner"],
+    "description": "A premium Koshu white wine with bright acidity and delicate stone fruit notes. Koshu is a uniquely Japanese grape variety with over a thousand years of history — this bottling expresses its elegance with a clean, lingering finish.",
+    "ingredients": ["Koshu grapes"]
+  },
+  {
+    "id": "wakao-vineyard",
+    "name": "Wakao Orchard Wine (Bottled)",
+    "dietary": ["vegan", "vegetarian"],
+    "category": "Wine",
+    "imageUrl": "/images/menu/wakao-vineyard.jpg",
+    "priceYen": 4800,
+    "allergies": [],
+    "availableAt": ["Dinner"],
+    "description": "An artisanal wine from Wakao Orchard — a family-run estate known for its meticulous cultivation and natural winemaking approach. Each vintage reflects the orchard's dedication to quality and seasonal expression.",
+    "ingredients": ["grapes"]
+  },
+  {
+    "id": "koshu-hyaku",
+    "name": "Koshu Hyaku (Bottled Wine)",
+    "dietary": ["vegan", "vegetarian"],
+    "category": "Wine",
+    "imageUrl": "/images/menu/koshu-hyaku.jpg",
+    "priceYen": {
+      "red": 3700,
+      "white": 3700
+    },
+    "allergies": [],
+    "availableAt": ["Dinner"],
+    "description": "An expressive Koshu varietal wine, available in both red and white. Hyaku means 'one hundred' — a nod to the commitment to perfection in every bottle. Rich in fruit character with a refined, balanced finish.",
+    "ingredients": ["Koshu grapes"]
+  }
+]

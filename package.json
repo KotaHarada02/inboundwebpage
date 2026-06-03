@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sync-menu-db": "node scripts/import_menu_to_neon.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

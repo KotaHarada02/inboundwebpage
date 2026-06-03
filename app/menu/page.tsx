@@ -1,6 +1,6 @@
  'use client';
 
-import type { MenuItem } from '@/domain/types';
+import type { MenuItem, MenuCategory, TimeSlot } from '@/domain/types';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Info, X } from 'lucide-react';
@@ -13,7 +13,7 @@ import {
 } from '@radix-ui/react-tooltip';
 import { DecorativeBackground } from '@/components/ui/DecorativeBackground';
 
-const CATEGORY_LABELS: Record<string, { en: string; ja: string; description: string }> = {
+const CATEGORY_LABELS: Record<MenuCategory, { en: string; ja: string; description: string }> = {
   Ramen: {
     en: 'Ramen',
     ja: 'ラーメン',
@@ -32,7 +32,22 @@ const CATEGORY_LABELS: Record<string, { en: string; ja: string; description: str
   JapaneseSake: {
     en: 'Japanese Sake',
     ja: '日本酒',
-    description: "Akishika Shuzō's Junmai Series, brewed in Nose Town, Osaka. Robust, expressive sake with rich umami and vibrant acidity. Perfect pairing with ramen and Japanese side dishes.",
+    description: "Akishika Shuzō's sake brewed in Nose Town, Osaka. Robust, expressive sake with rich umami and vibrant acidity. Perfect pairing with ramen and Japanese side dishes.",
+  },
+  Wine: {
+    en: 'Wine',
+    ja: 'ワイン',
+    description: 'Curated selection of Japanese wines, including rare Koshu varietal bottles and house pour by the glass.',
+  },
+  SoftDrink: {
+    en: 'Soft Drinks',
+    ja: 'ソフトドリンク',
+    description: 'Non-alcoholic beverages including local Toyono cider, seasonal soda, house-roasted coffee, and more.',
+  },
+  Dessert: {
+    en: 'Dessert',
+    ja: 'デザート',
+    description: 'Sweet endings — from nostalgic icecrine to rich cheesecake paired with house-roasted coffee.',
   },
   Ippin: {
     en: 'Side Dishes',
@@ -42,30 +57,38 @@ const CATEGORY_LABELS: Record<string, { en: string; ja: string; description: str
   LunchSpecial: {
     en: 'Lunch Special',
     ja: 'ランチスペシャル',
-    description: "Limited-time lunch specials, including fermentation gozen set, kids set, and more. Perfect for a quick meal.",
+    description: 'Limited-time lunch specials, including the fermentation gozen set, kids set, and more.',
+  },
+  SunsetSpecial: {
+    en: 'Sunset Special',
+    ja: 'サンセットスペシャル',
+    description: 'Relaxed afternoon bites and sets, available during the golden hours of 14:30–17:30.',
   },
   DinnerSpecial: {
     en: 'Dinner Special',
     ja: 'ディナースペシャル',
-    description: "Tasting experience featuring five appetizers paired with Osaka-brewed beer or sake.",
+    description: 'Evening side sets to complement your ramen — choose from small plates, karaage, or rice options.',
   },
 };
 
-const TIME_LABELS: Record<string, string> = {
+const TIME_LABELS: Record<TimeSlot, string> = {
   Lunch: '11:30〜14:30 Lunch',
-  Sunset: '14:30〜18:00 Sunset',
-  Dinner: '18:00〜22:00 Dinner',
-  Midnight: '22:00〜23:30 Midnight',
+  Sunset: '14:30〜17:30 Sunset',
+  Dinner: '17:30〜22:00 Dinner',
+  Midnight: '22:00〜23:30 Midnight (Wed–Sat)',
 };
 
-function getDefaultTimeSlot() {
+function isMidnightDay(): boolean {
+  return [3, 4, 5, 6].includes(new Date().getDay()); // Wed–Sat
+}
+
+function getDefaultTimeSlot(): TimeSlot {
   const now = new Date();
-  const hour = now.getHours();
-  const min = now.getMinutes();
-  const time = hour * 60 + min;
-  if (time >= 1320 && time < 1410) return 'Midnight'; // 22:00-23:30
-  if (time >= 1080 && time < 1320) return 'Dinner'; // 18:00-22:00
-  if (time >= 870 && time < 1080) return 'Sunset'; // 14:30-18:00
+  const day = now.getDay();
+  const time = now.getHours() * 60 + now.getMinutes();
+  if ([3, 4, 5, 6].includes(day) && time >= 1320 && time < 1410) return 'Midnight'; // 22:00-23:30 Wed-Sat
+  if (time >= 1050 && time < 1320) return 'Dinner'; // 17:30-22:00
+  if (time >= 870 && time < 1050) return 'Sunset'; // 14:30-17:30
   if (time >= 690 && time < 870) return 'Lunch'; // 11:30-14:30
   return 'Dinner';
 }
@@ -75,8 +98,9 @@ export default function MenuPage() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({});
   const [activeCategory, setActiveCategory] = useState<string | null>('Ramen');
-  const [activeTime, setActiveTime] = useState<string>(getDefaultTimeSlot());
+  const [activeTime, setActiveTime] = useState<TimeSlot>(getDefaultTimeSlot());
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const midnightAvailable = isMidnightDay();
 
   useEffect(() => {
     setActiveTime(getDefaultTimeSlot());
@@ -187,7 +211,9 @@ export default function MenuPage() {
           <div className="max-w-4xl mx-auto">
             <div className="overflow-x-auto no-scrollbar">
               <div className="flex justify-center min-w-max py-2">
-                {Object.keys(TIME_LABELS).map(time => (
+                {(Object.keys(TIME_LABELS) as TimeSlot[])
+                  .filter(time => time !== 'Midnight' || midnightAvailable)
+                  .map(time => (
                   <button
                     key={time}
                     onClick={() => setActiveTime(time)}
@@ -207,7 +233,7 @@ export default function MenuPage() {
           <div className="max-w-4xl mx-auto px-4">
             <div className="relative overflow-hidden">
               <div className="flex justify-start overflow-x-auto py-1 no-scrollbar mx-auto max-w-full">
-                {Object.keys(CATEGORY_LABELS).map((cat) =>
+                {(Object.keys(CATEGORY_LABELS) as MenuCategory[]).map((cat) =>
                   grouped[cat]?.length ? (
                     <button
                       key={cat}
@@ -235,7 +261,7 @@ export default function MenuPage() {
         </nav>
 
         <main className="pt-[144px] relative z-10 max-w-4xl mx-auto px-4 py-12">
-          {Object.keys(CATEGORY_LABELS).map((cat) =>
+          {(Object.keys(CATEGORY_LABELS) as MenuCategory[]).map((cat) =>
             grouped[cat]?.length ? (
               <section id={`category-${cat}`} key={cat} className="mb-24 scroll-mt-24">
                 <div className="mb-12 text-center">

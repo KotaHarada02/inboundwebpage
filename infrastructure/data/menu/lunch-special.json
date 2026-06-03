@@ -1,24 +1,59 @@
 [
   {
     "id": "fermentation-gozen",
-    "name": "Fermentation Gozen Set Meal ",
+    "name": "Fermentation Gozen Set Meal",
     "dietary": [],
     "category": "LunchSpecial",
     "imageUrl": "/images/menu/fermentation-gozen.jpg",
     "priceYen": {
-      "3kinds": 1870,
-      "5kinds": 2170
+      "3 plates": 1920,
+      "5 plates": 2220,
+      "3 plates + drink": 2420,
+      "5 plates + drink": 2720
     },
     "allergies": [],
-    "availableAt": [
-      "Lunch"
-    ],
-    "description": "Limited to 20 servings per day. Customize your set in 4 steps: 1. Choose a Fermented Main Dish — Meat, Fish, or Fermented Karaage (fried chicken) 2. Pick Your Fermented Vegetable Side Dishes — 5 kinds or 3 kinds of small seasonal veggie plates 3. Select Your Miso Ball — Choose your flavor of handmade miso soup base 4. Choose Your Drink — House-roasted Coffee, Oolong Tea, or Syrup Soda (Upgrade to an alcoholic drink for an additional ¥500: Minoh Beer, Akishika Sake, or Wine)",
-    "ingredients": [
-      "fermented main dish",
-      "vegetable sides",
-      "miso ball",
-      "drink"
-    ]
+    "availableAt": ["Lunch"],
+    "description": "Customize your set in 4 steps: 1. Choose a Fermented Main Dish — Meat, Fish, or Fermented Karaage (fried chicken) 2. Pick Your Fermented Vegetable Side Dishes — 5 kinds or 3 kinds of small seasonal veggie plates 3. Select Your Miso Ball — Choose your flavor of handmade miso soup base 4. Choose Your Drink — House-roasted Coffee, Oolong Tea, or Syrup Soda (Upgrade to an alcoholic drink for an additional charge: Minoh Beer, Akishika Sake, or Wine)",
+    "ingredients": ["fermented main dish", "vegetable sides", "miso ball", "drink"]
+  },
+  {
+    "id": "lunch-kids",
+    "name": "Kids Lunch Set",
+    "dietary": [],
+    "category": "LunchSpecial",
+    "imageUrl": "/images/menu/kids-ramen.jpg",
+    "priceYen": {
+      "kids' plate": 800,
+      "white miso ramen (kids)": 500,
+      "rice (kids)": 330
+    },
+    "allergies": [],
+    "availableAt": ["Lunch"],
+    "description": "A specially sized set for children (elementary school age and under). Choose from a balanced kids' plate, a gentle white miso ramen for small appetites, or a simple rice side.",
+    "ingredients": ["seasonal ingredients"]
+  },
+  {
+    "id": "karaage-teishoku",
+    "name": "Karaage Set Meal",
+    "dietary": [],
+    "category": "LunchSpecial",
+    "imageUrl": "/images/menu/karaage-shin.jpg",
+    "priceYen": 1380,
+    "allergies": ["chicken", "wheat", "soy"],
+    "availableAt": ["Lunch", "Sunset"],
+    "description": "A hearty lunch set featuring our signature Shin fermented fried chicken, served with rice and seasonal accompaniments. A satisfying, well-rounded meal.",
+    "ingredients": ["shin fermented fried chicken", "rice", "seasonal sides"]
+  },
+  {
+    "id": "hiru-nomi-set",
+    "name": "Afternoon Drinking Set",
+    "dietary": [],
+    "category": "LunchSpecial",
+    "imageUrl": "/images/menu/hiru-nomi-set.jpg",
+    "priceYen": 1100,
+    "allergies": [],
+    "availableAt": ["Lunch"],
+    "description": "A relaxed daytime set pairing three seasonal fermented small plates (kobachi) with one drink of your choice — beer, sake, highball, or wine. Perfect for a leisurely lunch with a glass in hand.",
+    "ingredients": ["3 seasonal fermented small plates", "choice of drink"]
   }
 ]
