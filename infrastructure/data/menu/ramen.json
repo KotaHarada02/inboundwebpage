@@ -143,21 +143,9 @@
       "+egg": 1440
     },
     "allergies": ["wheat", "soy", "egg", "dairy"],
-    "availableAt": ["Lunch", "Dinner"],
+    "availableAt": ["Lunch"],
     "description": "A rich, smoky evolution of our classic white miso ramen. The broth is carefully charred to develop deep caramelized notes, adding a layer of complexity and aroma to the smooth white miso base. A sophisticated bowl for those who love bold, layered flavors.",
     "ingredients": ["charred white miso broth", "wheat noodles", "pork chashu", "green onions", "chicken meatballs"]
-  },
-  {
-    "id": "tamari-shoyu-aburasoba",
-    "name": "Tamari Soy Sauce Mazesoba",
-    "dietary": [],
-    "category": "Ramen",
-    "imageUrl": "/images/menu/tamari-shoyu-aburasoba.jpg",
-    "priceYen": 950,
-    "allergies": ["wheat", "soy"],
-    "availableAt": ["Dinner"],
-    "description": "A deeply savory brothless ramen tossed in rich tamari soy sauce—crafted from the finest aged soy mash. The thick, glossy coating clings to every strand of noodle, delivering intense umami in every bite. A simple yet bold bowl with the depth of traditional Japanese craftsmanship.",
-    "ingredients": ["wheat noodles", "tamari soy sauce", "tare", "scallions"]
   },
   {
     "id": "sakekasu-ramen",
@@ -167,7 +155,7 @@
     "imageUrl": "/images/menu/sakekasu-ramen.jpg",
     "priceYen": 1360,
     "allergies": ["wheat", "soy", "egg", "dairy"],
-    "availableAt": ["Dinner"],
+    "availableAt": ["Lunch"],
     "description": "A uniquely aromatic ramen featuring sake lees (sakekasu) from Akishika Sake Brewery. The fermented rice paste adds a gentle sweetness and complexity to the miso broth, creating a bowl that is both warming and deeply satisfying. A true celebration of fermentation culture.",
     "ingredients": ["miso sake lees broth", "wheat noodles", "pork chashu", "scallions"]
   },

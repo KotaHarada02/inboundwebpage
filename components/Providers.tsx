@@ -9,15 +9,9 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <ParallaxProvider>
       <SidebarProvider>
-        <div className="flex flex-col min-h-screen">
-          <div className="flex flex-1">
-            <Sidebar />
-            <main className="flex-1 w-full transition-all duration-300">
-              {children}
-            </main>
-          </div>
-        </div>
+        {children}
+        <Sidebar />
       </SidebarProvider>
     </ParallaxProvider>
   );
-} 
+}

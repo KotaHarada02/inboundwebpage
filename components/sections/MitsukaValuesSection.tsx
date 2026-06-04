@@ -112,7 +112,7 @@ export default function MitsukaValuesSection() {
     <section ref={containerRef} className="py-24 relative overflow-hidden" id="values">
       {/* Japanese-inspired background */}
       <motion.div className="absolute inset-0 z-0" style={{ y: backgroundY }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-50 via-amber-100/50 to-white" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background-soft/40 to-background" />
         <div className="absolute inset-0 opacity-5">
           <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <pattern id="seigaiha" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -126,46 +126,24 @@ export default function MitsukaValuesSection() {
         </div>
       </motion.div>
 
-      {/* Floating decoration elements */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {[...Array(15)].map((_, i) => {
-          // 固定の初期値を設定
-          const initialX = ((i * 7) % 100);  // 0から100の間で均等に分布
-          const initialY = ((i * 13) % 100); // 0から100の間で均等に分布
-          const initialScale = 0.5 + ((i * 11) % 100) / 100; // 0.5から1.5の間
-          const initialRotate = (i * 24) % 360; // 0から360の間
-
-          return (
-            <motion.div
-              key={i}
-              className="absolute text-amber-600/10"
-              initial={{
-                x: `${initialX}%`,
-                y: `${initialY}%`,
-                scale: initialScale,
-                rotate: initialRotate,
-              }}
-              animate={{
-                y: [`${initialY}%`, `${(initialY + 50) % 100}%`],
-                rotate: [initialRotate, (initialRotate + 180) % 360],
-              }}
-              transition={{
-                duration: 15 + (i * 5),
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
-                repeatType: "reverse",
-              }}
-            >
-              {i % 3 === 0 ? (
-                <GrapeIcon size={30 + ((i * 17) % 40)} />
-              ) : i % 3 === 1 ? (
-                <Droplets size={30 + ((i * 19) % 40)} />
-              ) : (
-                <Wheat size={30 + ((i * 23) % 40)} />
-              )}
-            </motion.div>
-          );
-        })}
+      {/* Subtle decorative icons — 3 large, very low-opacity anchors */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {[
+          { Icon: GrapeIcon, x: '8%',  y: '15%', size: 160, rot: -15 },
+          { Icon: Wheat,     x: '82%', y: '55%', size: 200, rot: 20 },
+          { Icon: Droplets,  x: '50%', y: '80%', size: 140, rot: 0 },
+        ].map(({ Icon, x, y, size, rot }, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-kasshoku/[0.04]"
+            style={{ left: x, top: y, rotate: rot }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2, delay: i * 0.4 }}
+          >
+            <Icon size={size} />
+          </motion.div>
+        ))}
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -179,11 +157,11 @@ export default function MitsukaValuesSection() {
       </div>
 
       {/* Japanese-inspired decorative elements */}
-      <div className="absolute bottom-0 left-0 w-full h-16 bg-amber-800/5 z-0">
+      <div className="absolute bottom-0 left-0 w-full h-16 bg-kasshoku/5 z-0">
         <div className="absolute bottom-0 left-0 w-full">
           <svg viewBox="0 0 1200 30" preserveAspectRatio="none" className="w-full h-8">
-            <path d="M0,0 Q300,30 600,0 T1200,0 V30 H0 Z" fill="#FEF3C7" fillOpacity="0.3" />
-            <path d="M0,5 Q300,35 600,5 T1200,5 V30 H0 Z" fill="#FEF3C7" fillOpacity="0.3" />
+            <path d="M0,0 Q300,30 600,0 T1200,0 V30 H0 Z" fill="#E0A85B" fillOpacity="0.25" />
+            <path d="M0,5 Q300,35 600,5 T1200,5 V30 H0 Z" fill="#E0A85B" fillOpacity="0.18" />
           </svg>
         </div>
       </div>
@@ -209,12 +187,12 @@ function ValuesSectionHeader() {
         transition={{ duration: 0.7, delay: 0.2 }}
         className="inline-block relative"
       >
-        <div className="absolute -inset-1 bg-amber-200/30 rounded-full blur-xl"></div>
-        <h2 className="text-4xl sm:text-6xl font-bold mb-6 text-amber-800 relative">
+        <div className="absolute -inset-1 bg-kohaku-soft/20 rounded-full blur-2xl"></div>
+        <h2 className="font-serif text-4xl sm:text-6xl font-light mb-6 text-kasshoku-deep relative tracking-wide">
           <span className="relative inline-block">
             What Is{" "}
             <motion.span
-              className="text-amber-600 relative inline-block"
+              className="text-shibu-aka relative inline-block italic"
               animate={{
                 y: [0, -5, 0],
               }}
@@ -226,7 +204,7 @@ function ValuesSectionHeader() {
             >
               Mitsukabose
               <motion.div
-                className="absolute -bottom-1 left-0 w-full h-1 bg-amber-500 rounded-full"
+                className="absolute -bottom-1 left-0 w-full h-px bg-shibu-aka rounded-full"
                 animate={{
                   scaleX: [0.7, 1, 0.7],
                   x: ["-15%", "0%", "-15%"],
@@ -249,14 +227,14 @@ function ValuesSectionHeader() {
         transition={{ duration: 0.7, delay: 0.4 }}
         className="max-w-2xl mx-auto"
       >
-        <p className="text-lg text-amber-800/80 mb-8">
+        <p className="text-lg text-foreground-soft mb-8 font-light">
         Welcome to the world of fermentation through our values and story
         </p>
 
-        <div className="flex items-center justify-center space-x-2">
-          <div className="w-16 h-0.5 bg-amber-500/50 rounded-full"></div>
-          <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
-          <div className="w-16 h-0.5 bg-amber-500/50 rounded-full"></div>
+        <div className="flex items-center justify-center space-x-3">
+          <div className="w-16 h-px bg-kasshoku/40 rounded-full"></div>
+          <div className="w-2 h-2 bg-shibu-aka rounded-full"></div>
+          <div className="w-16 h-px bg-kasshoku/40 rounded-full"></div>
         </div>
       </motion.div>
     </motion.div>
@@ -282,7 +260,7 @@ function ValueCard({ value, index }: { value: Value; index: number }) {
       {/* Connecting line between cards */}
       {index < values.length - 1 && (
         <motion.div
-          className="absolute left-1/2 bottom-0 w-0.5 h-20 bg-gradient-to-b from-amber-400 to-transparent"
+          className="absolute left-1/2 bottom-0 w-px h-20 bg-gradient-to-b from-kasshoku/40 to-transparent"
           initial={{ scaleY: 0, opacity: 0 }}
           animate={isInView ? { scaleY: 1, opacity: 1 } : { scaleY: 0, opacity: 0 }}
           transition={{ duration: 1, delay: 0.8 }}
@@ -291,28 +269,22 @@ function ValueCard({ value, index }: { value: Value; index: number }) {
       )}
 
       <div className="relative">
-        {/* Number badge with Japanese-inspired design */}
+        {/* Number badge — editorial typographic style */}
         <motion.div
-          className="absolute -top-6 -left-6 z-10 md:-left-10 md:-top-10"
-          initial={{ rotate: -10, scale: 0.8 }}
-          animate={isInView ? { rotate: 0, scale: 1 } : { rotate: -10, scale: 0.8 }}
-          transition={{ duration: 0.5, delay: index * 0.2 + 0.3 }}
+          className="absolute -top-5 -left-4 z-10 md:-top-7 md:-left-7"
+          initial={{ opacity: 0, x: -10 }}
+          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+          transition={{ duration: 0.6, delay: index * 0.15 + 0.2 }}
         >
-          <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center bg-amber-600 text-white rounded-full shadow-lg relative overflow-hidden">
-            <div className="absolute inset-0 bg-black/10 z-0">
-              <svg className="w-full h-full opacity-20" viewBox="0 0 100 100">
-                <pattern id={`japanese-pattern-${index}`} patternUnits="userSpaceOnUse" width="20" height="20">
-                  <path d="M0,10 a10,10 0 0,0 20,0 a10,10 0 0,0 -20,0 z" fill="none" stroke="#FFF" strokeWidth="0.5" />
-                </pattern>
-                <rect x="0" y="0" width="100%" height="100%" fill={`url(#japanese-pattern-${index})`} />
-              </svg>
-            </div>
-            <span className="text-3xl md:text-4xl font-bold relative z-10">{value.number}</span>
+          <div className="flex flex-col items-center leading-none">
+            <span className="font-serif text-[2.8rem] md:text-[3.5rem] font-light text-shibu-aka/20 leading-none select-none tabular-nums">
+              {String(index + 1).padStart(2, '0')}
+            </span>
           </div>
         </motion.div>
 
         <motion.div
-          className="bg-white rounded-2xl shadow-xl overflow-hidden relative z-0"
+          className="bg-background border border-kasshoku/10 rounded-md shadow-cinematic overflow-hidden relative z-0"
           whileHover={{
             scale: 1.02,
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
@@ -320,13 +292,13 @@ function ValueCard({ value, index }: { value: Value; index: number }) {
           transition={{ duration: 0.3 }}
         >
           {/* Top decorative pattern */}
-          <div className="h-3 bg-gradient-to-r from-amber-400 via-amber-600 to-amber-500"></div>
+          <div className="h-1 bg-gradient-to-r from-kohaku via-shibu-aka to-kasshoku"></div>
 
           <div className="p-8 md:p-10 pt-8 md:pt-10">
             <div className="ml-14 md:ml-16">
               <div className="flex items-center mb-6">
                 <motion.div
-                  className="mr-4 text-amber-600"
+                  className="mr-4 text-shibu-aka"
                   animate={{
                     rotate: [0, 10, 0, -10, 0],
                   }}
@@ -339,11 +311,11 @@ function ValueCard({ value, index }: { value: Value; index: number }) {
                 >
                   {value.icon}
                 </motion.div>
-                <h3 className="text-2xl md:text-3xl font-bold text-amber-800">{value.title}</h3>
+                <h3 className="font-serif text-2xl md:text-3xl font-light text-kasshoku-deep">{value.title}</h3>
               </div>
 
               <motion.div
-                className="prose prose-amber prose-lg max-w-none text-gray-700"
+                className="prose prose-lg max-w-none text-foreground-soft leading-relaxed"
                 initial={{ opacity: 0.8 }}
                 whileHover={{ opacity: 1 }}
               >
@@ -353,10 +325,10 @@ function ValueCard({ value, index }: { value: Value; index: number }) {
           </div>
 
           {/* Side decorative element */}
-          <div className="absolute top-0 right-0 h-full w-2 bg-amber-100"></div>
+          <div className="absolute top-0 right-0 h-full w-1 bg-background-soft"></div>
 
           {/* Bottom decorative pattern */}
-          <div className="h-1 bg-amber-200"></div>
+          <div className="h-px bg-kasshoku/10"></div>
         </motion.div>
       </div>
     </motion.div>

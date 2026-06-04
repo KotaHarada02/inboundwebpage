@@ -45,15 +45,22 @@
     "ingredients": ["shin fermented fried chicken", "rice", "seasonal sides"]
   },
   {
-    "id": "hiru-nomi-set",
-    "name": "Afternoon Drinking Set",
+    "id": "hiru-set",
+    "name": "Lunch Set",
     "dietary": [],
     "category": "LunchSpecial",
     "imageUrl": "/images/menu/hiru-nomi-set.jpg",
-    "priceYen": 1100,
+    "priceYen": {
+      "A: ramen": 1100,
+      "B: ramen + salad": 1300,
+      "C: ramen + karaage": 1480,
+      "D: ramen + beer": 1480,
+      "E: ramen + sake": 1480,
+      "F: ramen + soft drink": 1200
+    },
     "allergies": [],
     "availableAt": ["Lunch"],
-    "description": "A relaxed daytime set pairing three seasonal fermented small plates (kobachi) with one drink of your choice — beer, sake, highball, or wine. Perfect for a leisurely lunch with a glass in hand.",
-    "ingredients": ["3 seasonal fermented small plates", "choice of drink"]
+    "description": "A flexible daytime set built around your choice of ramen. Pick the combination that suits your appetite and mood — keep it simple with just ramen (Set A), add our signature fermented fried chicken (Set C), or treat yourself to a glass of Minoh Beer or Akishika Sake alongside your bowl (Sets D & E). Each set is designed for a complete, satisfying lunch experience at Mitsukabōzu.",
+    "ingredients": ["choice of ramen", "choice of side or drink"]
   }
 ]

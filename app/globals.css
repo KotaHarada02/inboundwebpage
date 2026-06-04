@@ -1,19 +1,241 @@
 @import "tailwindcss";
 
+/* ============================================================
+ * Mitsukabose Design System — Japanese Modern Craft
+ * Warm earth tones × traditional Japanese accent colors.
+ * ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces */
+  --background: #FBF7F1;          /* warm off-white (washi paper) */
+  --background-soft: #F2EBDF;     /* aged paper */
+  --foreground: #1F1A14;          /* sumi ink */
+  --foreground-soft: #4A4035;     /* tea brown */
+  --muted: #8A7A66;               /* soft tea */
+
+  /* Brand earth tones */
+  --kasshoku: #5B3A29;            /* deep brown — kasshoku */
+  --kasshoku-deep: #3D2418;       /* darker miso */
+  --kuri: #8B5A3C;                /* chestnut */
+  --warm-gray: #A89886;
+  --washi: #FBF7F1;
+
+  /* Traditional accent palette */
+  --shibu-aka: #B23A2B;           /* shibui red — fired iron */
+  --shibu-aka-deep: #8E2A1F;
+  --ai: #2F4858;                  /* indigo (藍) */
+  --kohaku: #C77B30;              /* amber (琥珀) */
+  --kohaku-soft: #E0A85B;
+  --matcha: #6B8E4E;              /* matcha green */
+
+  /* Semantic */
+  --color-accent: var(--shibu-aka);
+  --color-amber: var(--kohaku);
+  --color-primary: var(--kasshoku);
+
+  /* Effects */
+  --glass-bg: rgba(251, 247, 241, 0.72);
+  --glass-border: rgba(91, 58, 41, 0.12);
+  --shadow-soft: 0 10px 40px -12px rgba(31, 26, 20, 0.18);
+  --shadow-cinematic: 0 30px 60px -20px rgba(31, 26, 20, 0.35);
+  --shadow-elevated: 0 20px 50px -15px rgba(31, 26, 20, 0.25), 0 8px 16px -8px rgba(91, 58, 41, 0.12);
+
+  /* Typography */
+  --font-display: var(--font-noto-serif-jp), "Noto Serif JP", "Hiragino Mincho ProN", serif;
+  --font-body: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-soft: var(--background-soft);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground-soft: var(--foreground-soft);
+  --color-muted: var(--muted);
+
+  --color-kasshoku: var(--kasshoku);
+  --color-kasshoku-deep: var(--kasshoku-deep);
+  --color-kuri: var(--kuri);
+  --color-warm-gray: var(--warm-gray);
+  --color-washi: var(--washi);
+
+  --color-shibu-aka: var(--shibu-aka);
+  --color-shibu-aka-deep: var(--shibu-aka-deep);
+  --color-ai: var(--ai);
+  --color-kohaku: var(--kohaku);
+  --color-kohaku-soft: var(--kohaku-soft);
+  --color-matcha: var(--matcha);
+
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+}
+
+/* ============================================================
+ * Base
+ * ============================================================ */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  font-feature-settings: "palt", "kern";
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background: var(--shibu-aka);
+  color: var(--washi);
+}
+
+/* ============================================================
+ * Utility classes
+ * ============================================================ */
+.font-display,
+.font-serif {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-dark {
+  background: rgba(31, 26, 20, 0.55);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border: 1px solid rgba(251, 247, 241, 0.08);
+  color: var(--washi);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Gradient text */
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Premium glow effect for CTAs */
+.glow-shibu-aka {
+  box-shadow: 0 0 20px -4px rgba(178, 58, 43, 0.4),
+              0 0 60px -12px rgba(178, 58, 43, 0.2);
+}
+.glow-shibu-aka:hover {
+  box-shadow: 0 0 30px -4px rgba(178, 58, 43, 0.55),
+              0 0 80px -12px rgba(178, 58, 43, 0.3);
+}
+
+/* Section divider — washi torn-edge feel */
+.divider-washi {
+  position: relative;
+  height: 32px;
+  background: linear-gradient(180deg, transparent, var(--background-soft));
+}
+.divider-washi::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--kasshoku) 40%, var(--kasshoku) 60%, transparent);
+  opacity: 0.25;
+}
+
+/* Elegant horizontal rule */
+.divider-elegant {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.divider-elegant::before,
+.divider-elegant::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--kasshoku), transparent);
+  opacity: 0.2;
+}
+
+/* Stagger reveal animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Subtle pulse for decorative elements */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.animate-subtle-pulse {
+  animation: subtlePulse 3s ease-in-out infinite;
+}
+
+/* Cinematic underline reveal */
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Reveal on scroll helper (used with framer-motion variants) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--kohaku);
+  outline-offset: 2px;
+  border-radius: 2px;
 }

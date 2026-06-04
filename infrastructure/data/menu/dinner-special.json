@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "yoru-set",
+    "name": "Dinner Set",
+    "dietary": [],
+    "category": "DinnerSpecial",
+    "imageUrl": "/images/menu/dinner-set.jpg",
+    "priceYen": {
+      "A: ramen + drink": 1480,
+      "B: ramen + 2 drinks": 1880,
+      "C: ramen + beer + ippin": 2100,
+      "D: ramen + sake + 2 ippin": 2580,
+      "E: ramen + bottle + 3 ippin": 3200
+    },
+    "allergies": [],
+    "availableAt": ["Dinner"],
+    "description": "A curated evening set for a complete Mitsukabōzu experience. Choose from five configurations — from a simple ramen-and-drink pairing (Set A) to a generous feast of ramen, a full bottle of sake or wine, and three house-selected small plates (Set E). Every set is designed to let you linger, enjoy, and discover the depth of fermentation culture at your own pace.",
+    "ingredients": ["choice of ramen", "choice of drink", "seasonal small plates"]
+  }
+]

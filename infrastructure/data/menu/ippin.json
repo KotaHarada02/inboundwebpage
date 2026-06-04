@@ -75,8 +75,8 @@
     "ingredients": ["potato", "salt"]
   },
   {
-    "id": "wagyu-stew",
-    "name": "Wagyu Beef Tendon Stew",
+    "id": "wagyu-sujini",
+    "name": "Braised Wagyu Tendon",
     "dietary": [],
     "category": "Ippin",
     "imageUrl": "/images/menu/wagyu-stew.jpg",
@@ -168,35 +168,22 @@
     "ingredients": ["seasonal ingredients"]
   },
   {
-    "id": "niku-miso-gohan",
-    "name": "Meat Miso Rice",
-    "dietary": ["pork"],
+    "id": "todays-dish",
+    "name": "Today's Special Dish",
+    "dietary": [],
     "category": "Ippin",
-    "imageUrl": "/images/menu/niku-miso-gohan.jpg",
+    "imageUrl": "/images/menu/ippin-5.jpg",
     "priceYen": {
-      "small": 330,
-      "medium": 510,
-      "large": 720
-    },
-    "allergies": ["soy", "wheat"],
-    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
-    "description": "Steamed Japanese rice topped with our house-made meat miso—savory minced pork simmered with fermented miso and aromatics. A satisfying side that pairs perfectly with any ramen or as a light meal on its own.",
-    "ingredients": ["rice", "minced pork", "miso", "scallions"]
-  },
-  {
-    "id": "shiro-gohan",
-    "name": "Steamed White Rice",
-    "dietary": ["vegan", "vegetarian", "gluten-free"],
-    "category": "Ippin",
-    "imageUrl": "/images/menu/shiro-gohan.jpg",
-    "priceYen": {
-      "small": 140,
-      "medium": 250,
-      "large": 380
+      "fermented spring roll": 400,
+      "salted koji roast pork": 780,
+      "seasonal pickle": 380,
+      "grilled miso skewer": 450,
+      "fermented hummus": 520,
+      "cheese miso dip": 480
     },
     "allergies": [],
-    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
-    "description": "Freshly cooked Japanese short-grain rice. Simple, comforting, and the perfect accompaniment to any dish.",
-    "ingredients": ["Japanese short-grain rice"]
+    "availableAt": ["Lunch", "Sunset", "Dinner"],
+    "description": "A rotating selection of daily specials, each crafted by our chefs using seasonal ingredients and our house fermentation techniques. From delicate fermented spring rolls to boldly seasoned koji-cured meats, every visit brings something new to discover. Ask our staff for today's lineup.",
+    "ingredients": ["seasonal ingredients", "fermented seasonings"]
   }
 ]
