@@ -1,0 +1,89 @@
+[
+  {
+    "id": "ginger-ale",
+    "name": "Ginger Ale",
+    "dietary": ["vegan"],
+    "category": "SoftDrink",
+    "imageUrl": "/images/menu/ginger-ale.jpg",
+    "priceYen": 580,
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Crisp, naturally spiced ginger ale — a refreshing non-alcoholic option with a clean ginger kick.",
+    "ingredients": ["ginger", "soda water", "natural flavors"]
+  },
+  {
+    "id": "toyono-cider",
+    "name": "Toyono Cider",
+    "dietary": ["vegan"],
+    "category": "SoftDrink",
+    "imageUrl": "/images/menu/toyono-cider.jpg",
+    "priceYen": 610,
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "A sparkling cider crafted with local Toyono Town apples. Light, refreshing, and naturally sweet — a beloved local specialty.",
+    "ingredients": ["apple juice", "carbonated water"]
+  },
+  {
+    "id": "mineral-soda",
+    "name": "Mineral Soda",
+    "dietary": ["vegan"],
+    "category": "SoftDrink",
+    "imageUrl": "/images/menu/mineral-soda.jpg",
+    "priceYen": 480,
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Premium sparkling mineral water with a clean, crisp finish. A simple, elegant refreshment.",
+    "ingredients": ["mineral water", "carbon dioxide"]
+  },
+  {
+    "id": "apple-juice",
+    "name": "Apple Juice",
+    "dietary": ["vegan"],
+    "category": "SoftDrink",
+    "imageUrl": "/images/menu/apple-juice.jpg",
+    "priceYen": 680,
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Pure, freshly pressed apple juice sourced from local Toyono orchards. Naturally sweet and full of flavor.",
+    "ingredients": ["apples"]
+  },
+  {
+    "id": "house-syrup-soda",
+    "name": "House-Made Syrup Soda",
+    "dietary": ["vegan"],
+    "category": "SoftDrink",
+    "imageUrl": "/images/menu/house-syrup-soda.jpg",
+    "priceYen": 580,
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner"],
+    "description": "Sparkling soda infused with our seasonal house-made syrup. Ask our staff for today's flavor — it changes with the season.",
+    "ingredients": ["soda water", "seasonal house syrup"]
+  },
+  {
+    "id": "oolong-tea",
+    "name": "Oolong Tea",
+    "dietary": ["vegan"],
+    "category": "SoftDrink",
+    "imageUrl": "/images/menu/oolong-tea.jpg",
+    "priceYen": 480,
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "A smooth, lightly roasted oolong tea — fragrant and refreshing without being heavy. A classic pairing with Japanese cuisine.",
+    "ingredients": ["oolong tea"]
+  },
+  {
+    "id": "house-coffee",
+    "name": "House-Roasted Coffee",
+    "dietary": ["vegan"],
+    "category": "SoftDrink",
+    "imageUrl": "/images/menu/house-coffee.jpg",
+    "priceYen": {
+      "single": 580,
+      "with meal": 500
+    },
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner"],
+    "description": "Our house-roasted coffee, carefully selected and roasted in-house to bring out deep, rich flavor. Available as a single cup or at a discounted price when paired with a meal.",
+    "ingredients": ["coffee"]
+  }
+]

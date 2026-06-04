@@ -2,234 +2,109 @@
   {
     "id": "draft-regular",
     "name": "Draft Beer (Regular)",
-    "dietary": [
-      "vegan",
-      "vegetarian"
-    ],
+    "dietary": ["vegan", "vegetarian"],
     "category": "Beer",
     "imageUrl": "/images/menu/draft-regular.jpg",
     "priceYen": {
       "265ml": 780,
-      "480ml": 1130
+      "480ml": 1180
     },
-    "allergies": [
-      "gluten"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "Our signature draft beer, perfectly poured and served at the ideal temperature. Available in two sizes:\n• Half Pint (265ml): ¥780\n• Pint (480ml): ¥1,130\n\nCrisp, refreshing, and always consistent - the perfect accompaniment to any meal.",
-    "ingredients": [
-      "water",
-      "barley malt",
-      "hops",
-      "yeast"
-    ]
+    "allergies": ["gluten"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Our signature draft beer, perfectly poured and served at the ideal temperature. Available in two sizes:\n• Half Pint (265ml): ¥780\n• Pint (480ml): ¥1,180\n\nCrisp, refreshing, and always consistent - the perfect accompaniment to any meal.",
+    "ingredients": ["water", "barley malt", "hops", "yeast"]
   },
   {
     "id": "draft-seasonal",
-    "name": "Draft Beer(Seasonal)",
-    "dietary": [
-      "vegan",
-      "vegetarian"
-    ],
+    "name": "Draft Beer (Seasonal)",
+    "dietary": ["vegan", "vegetarian"],
     "category": "Beer",
     "imageUrl": "/images/menu/draft-seasonal.jpg",
     "priceYen": {
       "265ml": 880,
       "480ml": 1330
     },
-    "allergies": [
-      "gluten"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
+    "allergies": ["gluten"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
     "description": "Our rotating seasonal draft beer, featuring unique and limited-time brews. Available in two sizes:\n• Half Pint (265ml): ¥880\n• Pint (480ml): ¥1,330\n\nAsk our staff about the current seasonal selection and its special characteristics.",
-    "ingredients": [
-      "water",
-      "barley malt",
-      "hops",
-      "yeast"
-    ]
+    "ingredients": ["water", "barley malt", "hops", "yeast"]
   },
   {
     "id": "weizen",
-    "name": "Minoh Weizen(Bottle)",
-    "dietary": [
-      "vegan",
-      "vegetarian"
-    ],
+    "name": "Minoh Weizen (Bottle)",
+    "dietary": ["vegan", "vegetarian"],
     "category": "Beer",
     "imageUrl": "/images/menu/weizen.jpg",
     "priceYen": 850,
-    "allergies": [
-      "gluten"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
+    "allergies": ["gluten"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
     "description": "A classic German-style wheat beer brewed by Minoh Brewery. Cloudy and golden, with bright banana and clove aromas, a soft creamy mouthfeel, and a refreshing, slightly tart finish.",
-    "ingredients": [
-      "water",
-      "wheat malt",
-      "barley malt",
-      "hops",
-      "yeast"
-    ]
+    "ingredients": ["water", "wheat malt", "barley malt", "hops", "yeast"]
   },
   {
     "id": "pilsner",
-    "name": "Minoh Pilsner(Bottle)",
-    "dietary": [
-      "vegan",
-      "vegetarian"
-    ],
+    "name": "Minoh Pilsner (Bottle)",
+    "dietary": ["vegan", "vegetarian"],
     "category": "Beer",
     "imageUrl": "/images/menu/pilsner.jpg",
     "priceYen": 850,
-    "allergies": [
-      "gluten"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
+    "allergies": ["gluten"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
     "description": "A crisp, clean Czech-style pilsner with delicate noble hop bitterness. Light straw color, fine carbonation, and a dry, snappy finish make it extremely drinkable.",
-    "ingredients": [
-      "water",
-      "barley malt",
-      "Saaz hops",
-      "yeast"
-    ]
+    "ingredients": ["water", "barley malt", "Saaz hops", "yeast"]
   },
   {
     "id": "stout",
-    "name": "Minoh Stout(Bottle)",
-    "dietary": [
-      "vegan",
-      "vegetarian"
-    ],
+    "name": "Minoh Stout (Bottle)",
+    "dietary": ["vegan", "vegetarian"],
     "category": "Beer",
     "imageUrl": "/images/menu/stout.jpg",
     "priceYen": 850,
-    "allergies": [
-      "gluten"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
+    "allergies": ["gluten"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
     "description": "A full-bodied, dark stout with notes of coffee, cocoa, and roasted malt. Silky smooth, with a lingering roast character and a creamy head that highlights its rich flavor.",
-    "ingredients": [
-      "water",
-      "roasted barley",
-      "barley malt",
-      "hops",
-      "yeast"
-    ]
+    "ingredients": ["water", "roasted barley", "barley malt", "hops", "yeast"]
   },
   {
     "id": "pale-ale",
-    "name": "Minoh Pale Ale(Bottle)  ",
-    "dietary": [
-      "vegan",
-      "vegetarian"
-    ],
+    "name": "Minoh Pale Ale (Bottle)",
+    "dietary": ["vegan", "vegetarian"],
     "category": "Beer",
     "imageUrl": "/images/menu/pale-ale.jpg",
     "priceYen": 850,
-    "allergies": [
-      "gluten"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
+    "allergies": ["gluten"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
     "description": "A balanced American-style pale ale featuring citrusy hop aroma and a gentle malt backbone. Golden amber color, medium body, with a crisp, refreshing finish.",
-    "ingredients": [
-      "water",
-      "barley malt",
-      "American hops",
-      "yeast"
-    ]
+    "ingredients": ["water", "barley malt", "American hops", "yeast"]
   },
   {
     "id": "osaru-ipa",
-    "name": "Osaru IPA(Bottle)",
-    "dietary": [
-      "vegan",
-      "vegetarian"
-    ],
+    "name": "Osaru IPA (Bottle)",
+    "dietary": ["vegan", "vegetarian"],
     "category": "Beer",
     "imageUrl": "/images/menu/osaru-ipa.jpg",
     "priceYen": 950,
-    "allergies": [
-      "gluten"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
+    "allergies": ["gluten"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
     "description": "Minoh Brewery's signature IPA, nicknamed \"Osaru.\" Bursting with tropical fruit and pine aromas, this bold, hoppy beer delivers a smooth bitterness and a bright, lingering finish.",
-    "ingredients": [
-      "water",
-      "barley malt",
-      "Citra hops",
-      "Mosaic hops",
-      "yeast"
-    ]
+    "ingredients": ["water", "barley malt", "Citra hops", "Mosaic hops", "yeast"]
   },
   {
     "id": "w-ipa",
-    "name": "Minoh W-IPA(Bottle)",
-    "dietary": [
-      "vegan",
-      "vegetarian"
-    ],
+    "name": "Minoh W-IPA (Bottle)",
+    "dietary": ["vegan", "vegetarian"],
     "category": "Beer",
     "imageUrl": "/images/menu/w-ipa.jpg",
     "priceYen": 1100,
-    "allergies": [
-      "gluten"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
+    "allergies": ["gluten"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
     "description": "A powerful double IPA with extra hop charge for intense citrus, resin, and mango flavors. Higher ABV balanced by a smooth malt body, delivering a satisfying, long-lasting hop finish.",
-    "ingredients": [
-      "water",
-      "barley malt",
-      "double blend of premium hops",
-      "yeast"
-    ]
+    "ingredients": ["water", "barley malt", "double blend of premium hops", "yeast"]
   },
   {
     "id": "orize-malt-pale-ale",
     "name": "Orizé Malt Pale Ale",
-    "dietary": [
-      "gluten-free"
-    ],
+    "dietary": ["gluten-free"],
     "category": "Beer",
     "imageUrl": "/images/menu/orize-malt-pale-ale.jpg",
     "priceYen": {
@@ -238,26 +113,14 @@
       "bottle": 1180
     },
     "allergies": [],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "Bronze Medal Winner – Gluten-Free Category, International Beer Cup 2024. Crafted using a world-first innovation: koji-fermented rice malt. This beer is brewed with Orizé Malt, a unique ingredient made by cultivating koji on germinated rice husks, then kiln-drying them to bring out a deep, roasted character. The result is a gluten-free craft beer with exceptional complexity and depth. The flavor carries layered malt richness, enhanced by fruity aromas reminiscent of apricot, banana, melon, apple, and kumquat, with a sweet, cotton candy-like finish. • Made entirely from rice-based ingredients – no wheat or barley • The only gluten-free craft beer made in Japan using domestic ingredients • Bottled-conditioned using raw cane sugar for natural carbonation. An innovative and expressive brew that blends traditional Japanese fermentation techniques with the bold character of a pale ale.",
-    "ingredients": [
-      "koji-fermented rice malt (Orizé Malt)",
-      "rice",
-      "raw cane sugar",
-      "hops"
-    ]
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Bronze Medal Winner – Gluten-Free Category, International Beer Cup 2024. Crafted using a world-first innovation: koji-fermented rice malt. This beer is brewed with Orizé Malt, a unique ingredient made by cultivating koji on germinated rice husks, then kiln-drying them to bring out a deep, roasted character. The result is a gluten-free craft beer with exceptional complexity and depth.",
+    "ingredients": ["koji-fermented rice malt (Orizé Malt)", "rice", "raw cane sugar", "hops"]
   },
   {
     "id": "japanese-white-no9-barrel",
     "name": "JAPANESE WHITE No.9",
-    "dietary": [
-      "gluten-free"
-    ],
+    "dietary": ["gluten-free"],
     "category": "Beer",
     "imageUrl": "/images/menu/japanese-white-no9-barrel.jpg",
     "priceYen": {
@@ -266,26 +129,14 @@
       "bottle": 1180
     },
     "allergies": [],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "Orizé Brewing's Signature Gluten-Free White Ale, Reimagined. Ingredients: Rice Koji, Rice, Raw Cane Sugar, Hops. IBU: 19 | Alcohol: 5%. This world-first beer is brewed entirely without malt, using rice koji as its core ingredient. A bold evolution of Orizé Brewing's flagship Japanese White, this No.9 edition undergoes primary fermentation in oak barrels, imparting a depth and complexity that is not achieved through standard barrel aging. The result is a beautifully textured beer with rich, expansive aromas and flavors, reminiscent of white wine or premium sake. Its elegant structure pairs perfectly with delicate dishes, especially seafood. A refined and innovative take on Japanese brewing tradition, crafted for those seeking subtlety, sophistication, and a true fermentation-first experience.",
-    "ingredients": [
-      "rice koji",
-      "rice",
-      "raw cane sugar",
-      "hops"
-    ]
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Orizé Brewing's Signature Gluten-Free White Ale, Reimagined. This world-first beer is brewed entirely without malt, using rice koji as its core ingredient. A bold evolution of Orizé Brewing's flagship Japanese White, this No.9 edition undergoes primary fermentation in oak barrels, imparting a depth and complexity not achieved through standard barrel aging.",
+    "ingredients": ["rice koji", "rice", "raw cane sugar", "hops"]
   },
   {
     "id": "black-head-ipa",
     "name": "BLACK HEAD IPA",
-    "dietary": [
-      "gluten-free"
-    ],
+    "dietary": ["gluten-free"],
     "category": "Beer",
     "imageUrl": "/images/menu/black-head-ipa.jpg",
     "priceYen": {
@@ -294,26 +145,14 @@
       "bottle": 1180
     },
     "allergies": [],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "A Bold, Gluten-Free Luchuensis Sour IPA Brewed with Rice Koji. Ingredients: Black Koji Orizé Malt, Yellow Koji Rice, Raw Cane Sugar, Hops. Alcohol: 5% (Note: Classified as 'Happoshu' under Japanese liquor tax law). A truly unique sour IPA, brewed with a combination of black koji and kiln-dried rice koji. This innovative beer style—Luchuensis Sour IPA—delivers a vivid tropical tartness, as if fresh island fruits were squeezed right into the glass. Its refreshing acidity makes it a perfect match for rich, bold dishes, cleansing the palate with each sip. Despite its dark name, the flavor is light, bright, and invigorating. As with all Orizé Brewing creations, this beer is 100% gluten-free, made exclusively from rice—no barley or wheat used.",
-    "ingredients": [
-      "black koji orizé malt",
-      "yellow koji rice",
-      "raw cane sugar",
-      "hops"
-    ]
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "A Bold, Gluten-Free Luchuensis Sour IPA Brewed with Rice Koji. A truly unique sour IPA, brewed with a combination of black koji and kiln-dried rice koji. This innovative beer delivers a vivid tropical tartness, as if fresh island fruits were squeezed right into the glass.",
+    "ingredients": ["black koji orizé malt", "yellow koji rice", "raw cane sugar", "hops"]
   },
   {
     "id": "parallel-ipa",
     "name": "PARALLEL IPA",
-    "dietary": [
-      "gluten-free"
-    ],
+    "dietary": ["gluten-free"],
     "category": "Beer",
     "imageUrl": "/images/menu/parallel-ipa.jpg",
     "priceYen": {
@@ -322,27 +161,14 @@
       "bottle": 1180
     },
     "allergies": [],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "Gluten-Free Rice-Based IPA from Another World. Ingredients: Germinated Rice Koji, Rice Koji, Rice, Sugars, Hops. Alcohol: 5% Gluten-Free. Crafted using a world-first fermentation technique, this IPA is brewed with Orizé Malt—rice malt made by cultivating koji on germinated rice husks and then kiln-roasting it. The result is an IPA brewed entirely from rice-based ingredients, without any barley or wheat. PARALLEL IPA offers fruity aromas reminiscent of yellow peach and pear, paired with a clean bitterness that surprises with its depth—despite being made entirely from rice. It feels like a beer from another universe, as if it were brewed on a parallel timeline. A true IPA from a parallel world. • Made exclusively with rice-derived grains • Naturally gluten-free • One of the only gluten-free craft beers produced in Japan • Secondary fermentation in the bottle uses raw cane sugar.",
-    "ingredients": [
-      "germinated rice koji",
-      "rice koji",
-      "rice",
-      "sugars",
-      "hops"
-    ]
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Gluten-Free Rice-Based IPA from Another World. Crafted using a world-first fermentation technique with Orizé Malt—rice malt made by cultivating koji on germinated rice husks. PARALLEL IPA offers fruity aromas reminiscent of yellow peach and pear, paired with a clean bitterness that surprises with its depth.",
+    "ingredients": ["germinated rice koji", "rice koji", "rice", "sugars", "hops"]
   },
   {
     "id": "oryzae-golden-ale",
     "name": "ORYZAE GOLDEN ALE",
-    "dietary": [
-      "gluten-free"
-    ],
+    "dietary": ["gluten-free"],
     "category": "Beer",
     "imageUrl": "/images/menu/oryzae-golden-ale.jpg",
     "priceYen": {
@@ -351,15 +177,25 @@
       "bottle": 1180
     },
     "allergies": [],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "High-ABV Belgian-Style Golden Ale – Brewed Without Malt, Using Rice Koji. Alc: 7.5% Gluten-Free. A bold, golden ale brewed without any malt—only rice koji is used as the fermentation base. This beer undergoes primary fermentation in oak barrels, followed by bottle conditioning for a naturally carbonated finish. Styled as a Belgian Strong Ale, it delivers a rich, layered aroma of pear, apricot, and white grapes, complemented by delicate oak-derived notes and subtle acidity. Despite its high alcohol content, it maintains a crisp, dry finish with a long-lasting, complex aftertaste. • Made entirely from rice-based ingredients • Naturally gluten-free (no barley or wheat used) • Tax-classified as 'happoshu' (low-malt beer) in Japan due to the absence of barley malt.",
-    "ingredients": [
-      "rice koji"
-    ]
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "High-ABV Belgian-Style Golden Ale – Brewed Without Malt, Using Rice Koji. A bold, golden ale brewed without any malt—only rice koji is used as the fermentation base. This beer undergoes primary fermentation in oak barrels, followed by bottle conditioning for a naturally carbonated finish.",
+    "ingredients": ["rice koji"]
+  },
+  {
+    "id": "happy-hour",
+    "name": "Happy Hour Drink",
+    "dietary": [],
+    "category": "Beer",
+    "imageUrl": "/images/menu/draft-regular.jpg",
+    "priceYen": {
+      "draft beer": 660,
+      "akishika sake": 660,
+      "akishika highball": 660,
+      "wine": 660
+    },
+    "allergies": [],
+    "availableAt": ["Sunset"],
+    "description": "Enjoy our Happy Hour pricing on a selection of drinks — draft beer, Akishika sake, Akishika highball, or wine. All at the same relaxed price. Ask our staff for the current Happy Hour window.",
+    "ingredients": ["beer", "sake", "wine"]
   }
 ]

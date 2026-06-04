@@ -1,36 +1,20 @@
 [
   {
-    "id": "yoidore-set",
-    "name": "Yoidore Set",
+    "id": "yoru-set",
+    "name": "Dinner Set",
     "dietary": [],
     "category": "DinnerSpecial",
-    "imageUrl": "/images/menu/yoidore-set.jpg",
-    "priceYen": 2580,
+    "imageUrl": "/images/menu/dinner-set.jpg",
+    "priceYen": {
+      "A: ramen + drink": 1480,
+      "B: ramen + 2 drinks": 1880,
+      "C: ramen + beer + ippin": 2100,
+      "D: ramen + sake + 2 ippin": 2580,
+      "E: ramen + bottle + 3 ippin": 3200
+    },
     "allergies": [],
-    "availableAt": [
-      "Dinner"
-    ],
-    "description": "Indulge in our curated tasting experience featuring five delicious appetizers perfectly paired with premium Osaka-brewed beer and sake. This celebratory set showcases the finest local flavors:\n• Artisanal ham crafted from Osaka Agricultural High School’s specialty “Nogei Pork”\n• Pickled seasonal vegetables from local farms\n• Thinly-sliced chashu (braised pork) carpaccio\n• Our famous creamy egg potato salad with runny yolks and house-made miso mayo\n• “Shin” fermented fried chicken with onion koji and fresh garlic\n\nThis exquisite selection comes paired with your choice of award-winning Minoh Beer or premium Akishika sake. The perfect way to elevate your Mitsukabōzu dining experience while supporting local producers.",
-    "ingredients": [
-      "assorted appetizers",
-      "beer or sake"
-    ]
-  },
-  {
-    "id": "choinomi-set",
-    "name": "Choi-Nomi Set",
-    "dietary": [],
-    "category": "DinnerSpecial",
-    "imageUrl": "/images/menu/choinomi-set.jpg",
-    "priceYen": 1200,
-    "allergies": [],
-    "availableAt": [
-      "Dinner"
-    ],
-    "description": "Enjoy a casual drinking experience with our staff-selected appetizer paired with your choice of one premium beverage. This perfect light refreshment option allows you to sample our quality drinks without committing to a full set.\n\nChoose one drink from our carefully curated selection:\n• Award-winning Minoh Beer\n• Premium Akishika sake\n• Refreshing Akishika highball\n• Marusan Wine (red or white)\n\nOur knowledgeable staff will recommend the perfect small plate to complement your chosen beverage, creating a harmonious tasting experience. An ideal way to begin your meal or enjoy a quick visit to Mitsukabōzu.",
-    "ingredients": [
-      "appetizer",
-      "choice of drink"
-    ]
+    "availableAt": ["Dinner"],
+    "description": "A curated evening set for a complete Mitsukabōzu experience. Choose from five configurations — from a simple ramen-and-drink pairing (Set A) to a generous feast of ramen, a full bottle of sake or wine, and three house-selected small plates (Set E). Every set is designed to let you linger, enjoy, and discover the depth of fermentation culture at your own pace.",
+    "ingredients": ["choice of ramen", "choice of drink", "seasonal small plates"]
   }
 ]

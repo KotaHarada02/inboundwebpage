@@ -1,19 +1,15 @@
 [
   {
     "id": "ippin-5",
-    "name": "Chef's Selection – 5 Seasonal Small Bites",
+    "name": "Chef's Selection – Seasonal Small Bites Platter",
     "dietary": [],
     "category": "Ippin",
     "imageUrl": "/images/menu/ippin-5.jpg",
-    "priceYen": 1300,
+    "priceYen": 1600,
     "allergies": [],
-    "availableAt": [
-      "Dinner"
-    ],
-    "description": "A tasting plate of five small dishes, handpicked by our staff. Each set is different—what you get is a surprise! A perfect way to sample a variety of flavors.",
-    "ingredients": [
-      "seasonal ingredients"
-    ]
+    "availableAt": ["Dinner"],
+    "description": "A tasting plate of small dishes, handpicked by our staff. Each set is different—what you get is a surprise! A perfect way to sample a variety of flavors.",
+    "ingredients": ["seasonal ingredients"]
   },
   {
     "id": "potato-salad",
@@ -22,20 +18,10 @@
     "category": "Ippin",
     "imageUrl": "/images/menu/potato-salad.jpg",
     "priceYen": 590,
-    "allergies": [
-      "egg",
-      "soy"
-    ],
-    "availableAt": [
-      "Dinner",
-      "Midnight"
-    ],
+    "allergies": ["egg", "soy"],
+    "availableAt": ["Dinner", "Midnight"],
     "description": "Homestyle potato salad with soft-boiled eggs and special miso mayo sauce.",
-    "ingredients": [
-      "potato",
-      "egg",
-      "miso mayo"
-    ]
+    "ingredients": ["potato", "egg", "miso mayo"]
   },
   {
     "id": "karaage-shin",
@@ -44,168 +30,160 @@
     "category": "Ippin",
     "imageUrl": "/images/menu/karaage-shin.jpg",
     "priceYen": 680,
-    "allergies": [
-      "chicken"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner"
-    ],
+    "allergies": ["chicken"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
     "description": "Minimalist, umami-rich fried chicken marinated with onion koji and garlic, then fermented and fried.",
-    "ingredients": [
-      "chicken",
-      "onion koji",
-      "garlic"
-    ]
+    "ingredients": ["chicken", "onion koji", "garlic"]
   },
   {
     "id": "miso-chashu-carpaccio",
-    "name": "Miso-Marinated Chashu Carpaccio",
+    "name": "Carpaccio",
     "dietary": [],
     "category": "Ippin",
     "imageUrl": "/images/menu/miso-chashu-carpaccio.jpg",
-    "priceYen": 1100,
-    "allergies": [
-      "pork",
-      "soy"
-    ],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "Tender slices of slow-cooked pork, lightly marinated in our rich miso blend, served carpaccio style.",
-    "ingredients": [
-      "pork",
-      "miso"
-    ]
+    "priceYen": {
+      "1 serving": 580,
+      "2–3 servings": 1100
+    },
+    "allergies": ["pork", "soy"],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Delicate carpaccio-style slices served with a house dressing. Ask our staff for today's preparation.",
+    "ingredients": ["seasonal protein", "house dressing"]
   },
   {
     "id": "vege-board",
-    "name": "Seasonal Vegetable Platter with Miso & Torched Cheese",
-    "dietary": [
-      "cheese"
-    ],
+    "name": "Seasonal Vegetable Platter",
+    "dietary": ["cheese"],
     "category": "Ippin",
     "imageUrl": "/images/menu/vege-board.jpg",
     "priceYen": 880,
-    "allergies": [
-      "dairy",
-      "soy"
-    ],
-    "availableAt": [
-      "Dinner"
-    ],
+    "allergies": ["dairy", "soy"],
+    "availableAt": ["Dinner"],
     "description": "Seasonal vegetables, artfully presented, coated with Kāchan miso and torched cheese. Rustic and elegant.",
-    "ingredients": [
-      "seasonal vegetables",
-      "miso",
-      "cheese"
-    ]
-  },
-  {
-    "id": "oden-7",
-    "name": "Odens",
-    "dietary": [],
-    "category": "Ippin",
-    "imageUrl": "/images/menu/oden-7.jpg",
-    "priceYen": {
-      "3 Item": 540,
-      "7 Item": 1050
-    },
-    "allergies": [],
-    "availableAt": [
-      "Lunch",
-      "Sunset",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "Slow-simmered in a light, flavorful dashi broth, our Oden features a variety of seasonal ingredients, gently cooked to soak up umami. Generous serving of 7 assorted oden pieces.",
-    "ingredients": [
-      "assorted oden"
-    ]
-  },
-  {
-    "id": "local-pickles",
-    "name": "Pickled Local Vegetables with Homemade Koji",
-    "dietary": [
-      "vegan"
-    ],
-    "category": "Ippin",
-    "imageUrl": "/images/menu/local-pickles.jpg",
-    "priceYen": 480,
-    "allergies": [],
-    "availableAt": [
-      "Lunch",
-      "Dinner",
-      "Midnight"
-    ],
-    "description": "A colorful assortment of locally grown vegetables, pickled with a variety of our house-made koji. Crisp, refreshing, and rich in natural umami.",
-    "ingredients": [
-      "local vegetables",
-      "koji"
-    ]
+    "ingredients": ["seasonal vegetables", "miso", "cheese"]
   },
   {
     "id": "fermented-fries",
     "name": "Fermented Potato Fries",
-    "dietary": [
-      "vegan"
-    ],
+    "dietary": ["vegan"],
     "category": "Ippin",
     "imageUrl": "/images/menu/fermented-fries.jpg",
     "priceYen": 540,
     "allergies": [],
-    "availableAt": [
-      "Dinner"
-    ],
+    "availableAt": ["Dinner"],
     "description": "Fries made from Japanese potatoes, salt-water fermented before frying. Unique tangy umami flavor.",
-    "ingredients": [
-      "potato",
-      "salt"
-    ]
+    "ingredients": ["potato", "salt"]
   },
   {
-    "id": "niku-miso-tofu",
-    "name": "Warm Tofu with Spicy Miso Meat Sauce",
+    "id": "wagyu-sujini",
+    "name": "Braised Wagyu Tendon",
     "dietary": [],
     "category": "Ippin",
-    "imageUrl": "/images/menu/niku-miso-tofu.jpg",
-    "priceYen": 600,
-    "allergies": [
-      "soy"
-    ],
-    "availableAt": [
-      "Dinner"
-    ],
-    "description": "Silken tofu topped with savory-spicy miso meat sauce. Deeply flavorful, perfect with rice or sake.",
-    "ingredients": [
-      "tofu",
-      "miso",
-      "meat sauce"
-    ]
+    "imageUrl": "/images/menu/wagyu-stew.jpg",
+    "priceYen": 680,
+    "allergies": ["soy"],
+    "availableAt": ["Dinner", "Midnight"],
+    "description": "Slow-braised Japanese wagyu beef tendon, simmered until meltingly tender. Deeply savory and rich with collagen, this hearty dish pairs beautifully with sake or a cold beer.",
+    "ingredients": ["wagyu beef tendon", "dashi", "miso"]
   },
   {
-    "id": "atsuage",
-    "name": "Fresh-Fried Atsuage with Shoyu Koji",
-    "dietary": [
-      "vegan"
-    ],
+    "id": "local-pickles",
+    "name": "Pickled Local Vegetables with Homemade Koji",
+    "dietary": ["vegan"],
     "category": "Ippin",
-    "imageUrl": "/images/menu/atsuage.jpg",
-    "priceYen": 630,
-    "allergies": [
-      "soy"
-    ],
-    "availableAt": [
-      "Dinner"
-    ],
-    "description": "Thick-fried tofu made fresh daily, complemented by house-made shoyu koji.",
-    "ingredients": [
-      "tofu",
-      "shoyu koji"
-    ]
+    "imageUrl": "/images/menu/local-pickles.jpg",
+    "priceYen": 480,
+    "allergies": [],
+    "availableAt": ["Lunch", "Dinner", "Midnight"],
+    "description": "A colorful assortment of locally grown vegetables, pickled with a variety of our house-made koji. Crisp, refreshing, and rich in natural umami.",
+    "ingredients": ["local vegetables", "koji"]
+  },
+  {
+    "id": "pate-de-courgette",
+    "name": "Pâté du Jour",
+    "dietary": [],
+    "category": "Ippin",
+    "imageUrl": "/images/menu/pate-de-courgette.jpg",
+    "priceYen": 1200,
+    "allergies": ["pork"],
+    "availableAt": ["Dinner"],
+    "description": "A rustic, handcrafted pâté made from seasonal ingredients. Rich, deeply flavored, and perfect with a glass of wine or sake. Ask our staff for today's creation.",
+    "ingredients": ["seasonal ingredients", "herbs", "spices"]
+  },
+  {
+    "id": "oden-7",
+    "name": "Oden",
+    "dietary": [],
+    "category": "Ippin",
+    "imageUrl": "/images/menu/oden-7.jpg",
+    "priceYen": {
+      "3 items": 540,
+      "7 items": 1050
+    },
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "Slow-simmered in a light, flavorful dashi broth, our Oden features a variety of seasonal ingredients, gently cooked to soak up umami.",
+    "ingredients": ["assorted oden"]
+  },
+  {
+    "id": "choinomi-yoidore",
+    "name": "Choi-Nomi / Yoidore Set",
+    "dietary": [],
+    "category": "Ippin",
+    "imageUrl": "/images/menu/choinomi-set.jpg",
+    "priceYen": {
+      "choi-nomi": 1360,
+      "yoidore": 2880
+    },
+    "allergies": [],
+    "availableAt": ["Sunset", "Dinner"],
+    "description": "\"Choi-Nomi\" is a light drinking set — one staff-selected appetizer paired with your choice of premium drink (beer, sake, highball, or wine). \"Yoidore\" is the full experience: a curated spread of five dishes with a drink. Perfect for a casual evening or a celebratory toast.",
+    "ingredients": ["appetizer", "choice of drink"]
+  },
+  {
+    "id": "hiruno-mi-set",
+    "name": "Afternoon Sipping Set",
+    "dietary": [],
+    "category": "Ippin",
+    "imageUrl": "/images/menu/hiruno-mi-set.jpg",
+    "priceYen": 1360,
+    "allergies": [],
+    "availableAt": ["Sunset"],
+    "description": "A midday drinking set—a relaxed pairing of a house-selected appetizer with your choice of beer, sake, or wine. Perfect for a leisurely afternoon at Mitsukabōzu.",
+    "ingredients": ["appetizer", "choice of drink"]
+  },
+  {
+    "id": "kobachi",
+    "name": "Seasonal Small Plates",
+    "dietary": [],
+    "category": "Ippin",
+    "imageUrl": "/images/menu/kobachi.jpg",
+    "priceYen": {
+      "1 plate": 220,
+      "2 plates": 440
+    },
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner", "Midnight"],
+    "description": "A rotating selection of seasonal small plates, handcrafted with fermented seasonings and local ingredients. Ask our staff for today's selection.",
+    "ingredients": ["seasonal ingredients"]
+  },
+  {
+    "id": "todays-dish",
+    "name": "Today's Special Dish",
+    "dietary": [],
+    "category": "Ippin",
+    "imageUrl": "/images/menu/ippin-5.jpg",
+    "priceYen": {
+      "fermented spring roll": 400,
+      "salted koji roast pork": 780,
+      "seasonal pickle": 380,
+      "grilled miso skewer": 450,
+      "fermented hummus": 520,
+      "cheese miso dip": 480
+    },
+    "allergies": [],
+    "availableAt": ["Lunch", "Sunset", "Dinner"],
+    "description": "A rotating selection of daily specials, each crafted by our chefs using seasonal ingredients and our house fermentation techniques. From delicate fermented spring rolls to boldly seasoned koji-cured meats, every visit brings something new to discover. Ask our staff for today's lineup.",
+    "ingredients": ["seasonal ingredients", "fermented seasonings"]
   }
 ]

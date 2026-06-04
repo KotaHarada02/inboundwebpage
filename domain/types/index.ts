@@ -12,6 +12,33 @@ export interface RestaurantInfo {
   twitter: string;
 }
 
+export type MenuCategory =
+  | 'Ramen'
+  | 'Kaedama'
+  | 'Beer'
+  | 'JapaneseSake'
+  | 'Wine'
+  | 'SoftDrink'
+  | 'Dessert'
+  | 'Ippin'
+  | 'LunchSpecial'
+  | 'SunsetSpecial'
+  | 'DinnerSpecial';
+
+export type TimeSlot = 'Lunch' | 'Sunset' | 'Dinner' | 'Midnight';
+
+export interface MenuItem {
+  id: string;
+  category: MenuCategory;
+  name: string;
+  priceYen: number | Record<string, number>;
+  ingredients: string[];
+  dietary: string[];
+  allergies: string[];
+  imageUrl: string;
+  description: string;
+  availableAt?: TimeSlot[];
+}
 
 export interface FoodDrinkItem {
   id: string;
@@ -20,19 +47,6 @@ export interface FoodDrinkItem {
   highlight: string;
   imageUrl: string;
   description: string;
-}
-
-export interface MenuItem {
-  id: string;
-  category: string;
-  name: string;
-  priceYen: number | Record<string, number | undefined>;
-  ingredients: string[];
-  dietary: string[];
-  allergies: string[];
-  imageUrl: string;
-  description: string;
-  availableAt?: string[];
 }
 
 export interface RetailItem {
@@ -49,4 +63,4 @@ export interface AccessInfo {
   mapUrl: string;
   imageUrl: string;
   description: string;
-} 
+}

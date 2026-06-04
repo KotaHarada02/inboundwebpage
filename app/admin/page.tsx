@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { MenuItem } from '@/domain/types';
+import { MenuItem, TimeSlot } from '@/domain/types';
 
 export default function AdminDashboard() {
   const [items, setItems] = useState<MenuItem[]>([]);
@@ -291,7 +291,7 @@ function MenuItemForm({
     });
   };
 
-  const handleAvailableAtChange = (time: string, checked: boolean) => {
+  const handleAvailableAtChange = (time: TimeSlot, checked: boolean) => {
     setFormData(prev => {
       const current = prev.availableAt || [];
       if (checked) {
@@ -522,12 +522,12 @@ function MenuItemForm({
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">提供時間帯</label>
         <div className="flex flex-wrap gap-4">
-          {[
-            { id: 'Lunch', label: 'ランチ' },
-            { id: 'Sunset', label: 'サンセット' },
-            { id: 'Dinner', label: 'ディナー' },
-            { id: 'Midnight', label: '深夜' }
-          ].map(({ id, label }) => (
+          {([
+            { id: 'Lunch' as TimeSlot, label: 'ランチ' },
+            { id: 'Sunset' as TimeSlot, label: 'サンセット' },
+            { id: 'Dinner' as TimeSlot, label: 'ディナー' },
+            { id: 'Midnight' as TimeSlot, label: '深夜' }
+          ]).map(({ id, label }) => (
             <label key={id} className="inline-flex items-center">
               <input
                 type="checkbox"

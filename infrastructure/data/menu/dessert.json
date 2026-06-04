@@ -1,0 +1,53 @@
+[
+  {
+    "id": "ice-creme",
+    "name": "Icecrine",
+    "dietary": ["vegetarian"],
+    "category": "Dessert",
+    "imageUrl": "/images/menu/ice-creme.jpg",
+    "priceYen": 330,
+    "allergies": ["dairy"],
+    "availableAt": ["Lunch", "Sunset", "Dinner"],
+    "description": "A nostalgic Japanese-style soft ice cream known as 'icecrine' — lighter and less sweet than western ice cream, with a clean milky flavor. A beloved treat across all ages.",
+    "ingredients": ["milk", "sugar", "natural flavors"]
+  },
+  {
+    "id": "todays-ice",
+    "name": "Today's Ice Cream",
+    "dietary": ["vegetarian"],
+    "category": "Dessert",
+    "imageUrl": "/images/menu/todays-ice.jpg",
+    "priceYen": 440,
+    "allergies": ["dairy"],
+    "availableAt": ["Lunch", "Sunset", "Dinner"],
+    "description": "A seasonal ice cream selection that changes daily. Ask our staff for today's flavor — it reflects the best of what's in season.",
+    "ingredients": ["seasonal ingredients", "cream", "sugar"]
+  },
+  {
+    "id": "cheesecake",
+    "name": "Cheesecake",
+    "dietary": ["vegetarian"],
+    "category": "Dessert",
+    "imageUrl": "/images/menu/cheesecake.jpg",
+    "priceYen": 580,
+    "allergies": ["dairy", "egg", "wheat"],
+    "availableAt": ["Lunch", "Sunset", "Dinner"],
+    "description": "A rich, creamy cheesecake made with premium ingredients. Dense yet light, with a satisfying tartness. Pairs beautifully with our house-roasted coffee.",
+    "ingredients": ["cream cheese", "egg", "butter", "sugar", "flour"]
+  },
+  {
+    "id": "cheesecake-coffee-set",
+    "name": "Cheesecake & Coffee Set",
+    "dietary": ["vegetarian"],
+    "category": "Dessert",
+    "imageUrl": "/images/menu/cheesecake.jpg",
+    "priceYen": {
+      "standalone": 1100,
+      "with meal": 990
+    },
+    "allergies": ["dairy", "egg", "wheat"],
+    "availableAt": ["Lunch", "Sunset", "Dinner"],
+    "description": "Our house cheesecake paired with a cup of our house-roasted coffee. A relaxing way to end your meal — available at a discounted price when added to a meal order.",
+    "ingredients": ["cream cheese", "egg", "butter", "sugar", "flour", "coffee"]
+  }
+]
