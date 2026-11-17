@@ -1,374 +1,203 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import type { TimeSlot } from '@/domain/types';
-import { getDefaultTimeSlot, formatYen } from '@/lib/menuUtils';
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Parallax } from 'react-scroll-parallax'
+import Link from 'next/link'
 
 interface HeroSectionProps {
-  images?: string[];
+  images: string[]
 }
 
-interface SlotDish {
-  id: string;
-  name: string;
-  ja: string;
-  price: number;
-  image: string;
-  tag?: string;
-}
-
-const SLOT_DISHES: Record<TimeSlot, { hours: string; dishes: SlotDish[] }> = {
-  Lunch: {
-    hours: '11:30–14:30',
-    dishes: [
-      {
-        id: 'white-miso',
-        name: 'White Miso Ramen',
-        ja: '白味噌ラーメン',
-        price: 1080,
-        image: '/images/menu/white-miso.jpg',
-        tag: 'Signature',
-      },
-      {
-        id: 'fermentation-gozen',
-        name: 'Fermentation Gozen',
-        ja: '発酵御膳',
-        price: 1760,
-        image: '/images/menu/fermentation-gozen.jpg',
-        tag: 'Lunch Set',
-      },
-      {
-        id: 'vegi-miso',
-        name: 'Vege Miso Ramen',
-        ja: 'ベジ味噌ラーメン',
-        price: 1180,
-        image: '/images/menu/vegi-miso.jpg',
-        tag: 'Vegetarian',
-      },
-      {
-        id: 'tsukemen-ver8',
-        name: 'Miso Tsukemen No.8',
-        ja: '味噌つけ麺',
-        price: 1250,
-        image: '/images/menu/tsukemen-ver8.jpg',
-      },
-      {
-        id: 'draft-regular',
-        name: 'Minoh Beer Draft',
-        ja: '箕面ビール樽生',
-        price: 850,
-        image: '/images/menu/draft-regular.jpg',
-      },
-    ],
-  },
-  Sunset: {
-    hours: '14:30–17:30',
-    dishes: [
-      {
-        id: 'white-miso',
-        name: 'White Miso Ramen',
-        ja: '白味噌ラーメン',
-        price: 1080,
-        image: '/images/menu/white-miso.jpg',
-        tag: 'All-Day',
-      },
-      {
-        id: 'tsukemen-ver8',
-        name: 'Miso Tsukemen No.8',
-        ja: '味噌つけ麺',
-        price: 1250,
-        image: '/images/menu/tsukemen-ver8.jpg',
-      },
-      {
-        id: 'akishika-tasting',
-        name: 'Akishika Sake Flight',
-        ja: '秋鹿 飲み比べ',
-        price: 1320,
-        image: '/images/menu/akishika-tasting.jpg',
-      },
-      {
-        id: 'ippin-5',
-        name: '5 Fermented Plates',
-        ja: '発酵あて五種盛り',
-        price: 1320,
-        image: '/images/menu/ippin-5.jpg',
-      },
-      {
-        id: 'osaru-ipa',
-        name: 'Minoh Osaru IPA',
-        ja: 'おさるIPA',
-        price: 900,
-        image: '/images/menu/osaru-ipa.jpg',
-      },
-    ],
-  },
-  Dinner: {
-    hours: '17:30–22:00',
-    dishes: [
-      {
-        id: 'white-miso',
-        name: 'White Miso Ramen',
-        ja: '白味噌ラーメン',
-        price: 1080,
-        image: '/images/menu/white-miso.jpg',
-        tag: 'Signature',
-      },
-      {
-        id: 'vegan-tantanmen',
-        name: 'Vegan Tantanmen',
-        ja: 'ヴィーガン担々麺',
-        price: 1350,
-        image: '/images/menu/vegan-tantanmen.jpg',
-        tag: 'Vegan',
-      },
-      {
-        id: 'red-miso',
-        name: 'Red Miso Ramen',
-        ja: '赤味噌ラーメン',
-        price: 1080,
-        image: '/images/menu/red-miso.jpg',
-      },
-      {
-        id: 'spicy-miso',
-        name: 'Spicy Miso Ramen',
-        ja: '辛味噌ラーメン',
-        price: 1180,
-        image: '/images/menu/spicy-miso.jpg',
-        tag: 'Spicy',
-      },
-      {
-        id: 'toyono-ramen',
-        name: 'TOYONO Clam Miso',
-        ja: 'とよのラーメン',
-        price: 1340,
-        image: '/images/menu/toyono-ramen.jpg',
-      },
-      {
-        id: 'oden-7',
-        name: 'Miso Oden (7 pcs)',
-        ja: '味噌おでん七種',
-        price: 1320,
-        image: '/images/menu/oden-7.jpg',
-      },
-    ],
-  },
-  Midnight: {
-    hours: '22:00–23:30 (Wed–Sat)',
-    dishes: [
-      {
-        id: 'midnight-white-miso',
-        name: 'Midnight White Miso',
-        ja: '深夜の白味噌',
-        price: 1200,
-        image: '/images/menu/midnight-white-miso.jpg',
-        tag: 'Wed–Sat',
-      },
-      {
-        id: 'midnight-red-miso',
-        name: 'Midnight Red Miso',
-        ja: '深夜の赤味噌',
-        price: 1200,
-        image: '/images/menu/midnight-red-miso.jpg',
-      },
-      {
-        id: 'toyono-ramen',
-        name: 'TOYONO Ramen',
-        ja: 'とよのラーメン',
-        price: 1100,
-        image: '/images/menu/toyono-ramen.jpg',
-      },
-      {
-        id: 'orize-malt-pale-ale',
-        name: 'Orizé Rice-Koji Ale',
-        ja: 'オリゼー米麹エール',
-        price: 990,
-        image: '/images/menu/orize-malt-pale-ale.jpg',
-        tag: 'Gluten-Free',
-      },
-    ],
-  },
-};
-
-const HERO_SLIDES = [
-  {
-    src: '/images/hero/0303_1N0A1489.jpg',
-    alt: 'Guests enjoying miso ramen at Mitsukabose in front of the 2nd-floor arched window overlooking the Osaka Monorail',
-    caption: '2F Hotarugaike Dining Hall',
-  },
-  {
-    src: '/images/menu/white-miso.jpg',
-    alt: 'Mitsukabose signature White Miso Ramen with chashu, chicken meatballs, and green onions',
-    caption: 'Signature White Miso Ramen',
-  },
-  {
-    src: '/images/hero/0138_1N0A1102.jpg',
-    alt: 'Pouring Minoh craft beer from the draft tap into a monkey pint glass',
-    caption: 'Minoh Craft Beer on Tap',
-  },
-  {
-    src: '/images/hero/0054_1N0A0937.jpg',
-    alt: 'Mitsukabose chef holding five fermented small plates in front of the open kitchen',
-    caption: 'Seasonal Fermented Small Plates',
-  },
-] as const;
-
-export default function HeroSection({ images }: HeroSectionProps = {}) {
-  void images;
-  const [selectedSlot, setSelectedSlot] = useState<TimeSlot>('Dinner');
-  const [activeSlide, setActiveSlide] = useState(0);
+export default function HeroSection({ images }: HeroSectionProps) {
+  const [index, setIndex] = useState(0)
 
   useEffect(() => {
-    setSelectedSlot(getDefaultTimeSlot(new Date()));
-  }, []);
-
-  const currentData = SLOT_DISHES[selectedSlot];
+    const timer = setInterval(() => {
+      setIndex((i) => (i + 1) % images.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [images.length])
 
   return (
-    <section aria-label="Mitsukabose introduction" className="bg-surface">
-      {/* 1. Full-bleed Visual Hero */}
-      <div className="relative w-full h-[64vh] min-h-[420px] max-h-[620px] bg-kasshoku-deep overflow-hidden">
-        <Image
-          src={HERO_SLIDES[activeSlide].src}
-          alt={HERO_SLIDES[activeSlide].alt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover transition-opacity duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-        {/* Minimal Photo Switcher Pills at Top-Right */}
-        <div
-          className="absolute top-4 right-4 z-10 flex gap-1.5"
-          role="group"
-          aria-label="Switch hero photograph"
-        >
-          {HERO_SLIDES.map((slide, idx) => (
-            <button
-              key={slide.src}
-              type="button"
-              onClick={() => setActiveSlide(idx)}
-              aria-label={`View photo: ${slide.caption}`}
-              aria-pressed={activeSlide === idx}
-              className={`min-w-[32px] min-h-[32px] px-2 text-[11px] font-tabular rounded-full transition-colors ${
-                activeSlide === idx
-                  ? 'bg-washi text-kasshoku-deep font-semibold'
-                  : 'bg-black/45 text-washi/80 hover:bg-black/65'
-              }`}
-            >
-              0{idx + 1}
-            </button>
-          ))}
-        </div>
-
-        {/* Bottom-Aligned Editorial Typography */}
-        <div className="absolute inset-x-0 bottom-0 z-10 max-w-6xl mx-auto px-4 sm:px-6 pb-6 sm:pb-8 text-washi">
-          <p className="font-serif text-sm sm:text-base text-washi/85 mb-1" translate="no">
-            人生に味噌とビールを。
-          </p>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight leading-[1.12] max-w-2xl">
-            Fermented Miso Ramen, Craft Beer &amp; Sake.
-          </h1>
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-washi/80">
-            <span>Hotarugaike Stn East Exit 1 min</span>
-            <span>·</span>
-            <span>Itami Airport (ITM) 1 stop / 3 min</span>
-            <span>·</span>
-            <span>Walk-ins welcome</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Horizontal Swipeable Menu Preview by Time Slot */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 border-b border-[color:var(--color-border)]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
-          <div className="flex items-baseline gap-3">
-            <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground">
-              Bowls &amp; Pours
-            </h2>
-            <span className="font-tabular text-xs text-muted">{currentData.hours}</span>
-          </div>
-
-          {/* Compact Time-Slot Pills */}
-          <div
-            role="tablist"
-            aria-label="Select service time slot"
-            className="flex overflow-x-auto no-scrollbar gap-1.5 -mx-4 px-4 sm:mx-0 sm:px-0"
-          >
-            {(['Lunch', 'Sunset', 'Dinner', 'Midnight'] as TimeSlot[]).map((slot) => {
-              const active = selectedSlot === slot;
-              return (
-                <button
-                  key={slot}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setSelectedSlot(slot)}
-                  className={`flex-none min-h-[36px] px-3.5 py-1 rounded-full text-xs transition-colors ${
-                    active
-                      ? 'bg-foreground text-surface font-medium'
-                      : 'bg-surface-muted text-foreground-soft hover:text-foreground'
-                  }`}
-                >
-                  {slot}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Horizontal Snap Rail of Dishes */}
-        <div className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 no-scrollbar">
-          {currentData.dishes.map((dish) => (
-            <Link
-              key={dish.id}
-              href={`/menu?slot=${selectedSlot}`}
-              className="flex-none w-[160px] sm:w-[200px] snap-start group"
-            >
-              <div className="relative aspect-square w-full bg-surface-muted overflow-hidden">
+    <section
+      aria-label="Mitsukabose hero"
+      className="relative w-full h-[94vh] overflow-hidden"
+    >
+      {/* Background slideshow with parallax + crossfade */}
+      <Parallax speed={-20} className="absolute inset-0 z-0">
+        <AnimatePresence initial={false}>
+          {images.map((src, i) =>
+            i === index ? (
+              <motion.div
+                key={src}
+                className="absolute inset-0"
+                initial={{ opacity: 0, scale: 1.08 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <Image
-                  src={dish.image}
-                  alt={dish.name}
+                  src={src}
+                  alt={`Hero background ${i + 1}`}
                   fill
-                  sizes="(max-width: 640px) 45vw, 200px"
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  className="object-cover"
+                  priority={i === 0}
                 />
-                {dish.tag && (
-                  <span className="absolute top-2 left-2 bg-kasshoku-deep/85 text-washi text-[10px] px-2 py-0.5">
-                    {dish.tag}
-                  </span>
-                )}
-              </div>
-              <div className="pt-2">
-                <h3 className="font-serif text-sm sm:text-base font-medium text-foreground leading-snug line-clamp-1 group-hover:text-urushi transition-colors">
-                  {dish.name}
-                </h3>
-                <div className="flex items-baseline justify-between gap-2 mt-0.5">
-                  <span className="text-[11px] text-muted truncate" translate="no">
-                    {dish.ja}
-                  </span>
-                  <span className="font-tabular text-xs text-foreground-soft">
-                    {formatYen(dish.price)}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
+                {/* Multi-layer gradient for depth */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[rgba(31,26,20,0.6)] via-[rgba(31,26,20,0.2)] to-[rgba(31,26,20,0.75)]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[rgba(31,26,20,0.3)] via-transparent to-[rgba(31,26,20,0.3)]" />
+              </motion.div>
+            ) : null
+          )}
+        </AnimatePresence>
+      </Parallax>
 
-          {/* Final Card in Rail: Open Full Menu */}
-          <Link
-            href={`/menu?slot=${selectedSlot}`}
-            className="flex-none w-[140px] sm:w-[170px] snap-start flex flex-col justify-between p-4 bg-surface-muted hover:bg-foreground hover:text-surface transition-colors aspect-square"
-          >
-            <span className="font-serif text-base font-medium leading-snug">
-              See All {selectedSlot} Menu
-            </span>
-            <span className="text-xs font-tabular opacity-75">73 items</span>
-          </Link>
-        </div>
+      {/* Floating kanji decoration */}
+      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden" aria-hidden="true">
+        <motion.span
+          className="absolute top-[12%] right-[8%] font-serif text-[12rem] md:text-[18rem] text-washi/[0.04] leading-none select-none"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2, delay: 0.8 }}
+        >
+          醸
+        </motion.span>
+        <motion.span
+          className="absolute bottom-[15%] left-[5%] font-serif text-[8rem] md:text-[12rem] text-washi/[0.03] leading-none select-none"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2, delay: 1.2 }}
+        >
+          味
+        </motion.span>
       </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 md:px-8 pb-24 md:pb-20">
+        {/* Location badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mb-8"
+        >
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-washi/20 bg-washi/[0.06] backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-kohaku-soft animate-subtle-pulse" />
+            <span className="text-[10px] md:text-xs tracking-[0.4em] text-kohaku-soft uppercase font-light">
+              Hotarugaike · Toyonaka · Osaka
+            </span>
+          </span>
+        </motion.div>
+
+        {/* Title block */}
+        <motion.div
+          initial={{ scale: 0.92, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-6"
+        >
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-[5.5rem] font-light text-washi mb-4 tracking-wide text-balance leading-[1.1]">
+            <span className="block">Mitsuka Bose</span>
+            <motion.span
+              className="block text-2xl md:text-3xl text-kohaku-soft mt-3 tracking-[0.35em] font-light"
+              initial={{ opacity: 0, letterSpacing: '0.6em' }}
+              animate={{ opacity: 1, letterSpacing: '0.35em' }}
+              transition={{ duration: 1.2, delay: 0.5 }}
+            >
+              みつか坊主
+            </motion.span>
+          </h1>
+        </motion.div>
+
+        {/* Tagline with elegant dividers */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="flex items-center gap-4 mb-10"
+        >
+          <div className="w-12 h-px bg-gradient-to-r from-transparent to-kohaku-soft/60" />
+          <p className="font-serif text-lg md:text-xl text-washi/80 font-light italic tracking-wide">
+            Fermented Miso Ramen &amp; Craft Beer
+          </p>
+          <div className="w-12 h-px bg-gradient-to-l from-transparent to-kohaku-soft/60" />
+        </motion.div>
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ y: 16, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.7 }}
+          className="text-base md:text-lg text-washi/70 mb-10 max-w-xl font-light leading-relaxed"
+        >
+          Savor the authentic depth of miso in Hotarugaike, Osaka.
+          <span className="block mt-1 text-washi/50">
+            Where tradition and innovation intertwine in every bowl.
+          </span>
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
+          <Link href="/menu" aria-label="View full menu">
+            <button className="group relative bg-shibu-aka hover:bg-shibu-aka-deep text-washi px-10 py-4 text-sm tracking-[0.2em] uppercase rounded-sm font-light transition-all duration-400 min-w-[200px] glow-shibu-aka hover:-translate-y-0.5 overflow-hidden">
+              <span className="relative z-10">View Menu</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-shibu-aka-deep/0 via-washi/10 to-shibu-aka-deep/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+            </button>
+          </Link>
+          <Link href="/access" aria-label="Restaurant access">
+            <button className="bg-transparent hover:bg-washi/8 text-washi border border-washi/30 hover:border-washi/60 px-10 py-4 text-sm tracking-[0.2em] uppercase rounded-sm font-light transition-all duration-300 min-w-[200px] hover:-translate-y-0.5 backdrop-blur-sm">
+              Access
+            </button>
+          </Link>
+          <Link href="/events" aria-label="Special events">
+            <button className="bg-transparent hover:bg-washi/8 text-washi border border-washi/30 hover:border-washi/60 px-10 py-4 text-sm tracking-[0.2em] uppercase rounded-sm font-light transition-all duration-300 min-w-[200px] hover:-translate-y-0.5 backdrop-blur-sm">
+              Events
+            </button>
+          </Link>
+        </motion.div>
+      </div>
+
+      {/* Slideshow indicators */}
+      <div className="absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-10 flex gap-2" aria-hidden="true">
+        {images.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIndex(i)}
+            className={`transition-all duration-500 rounded-full ${
+              i === index
+                ? 'w-8 h-1 bg-kohaku-soft'
+                : 'w-1 h-1 bg-washi/30 hover:bg-washi/50'
+            }`}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Scroll-down indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex-col items-center text-washi/50 pointer-events-none"
+        aria-hidden="true"
+      >
+        <p className="text-[9px] tracking-[0.5em] uppercase mb-3 font-light">Scroll</p>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+          className="w-px h-8 bg-gradient-to-b from-washi/40 to-transparent"
+        />
+      </motion.div>
+
+      {/* Bottom fade into page */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-[5] pointer-events-none" />
     </section>
-  );
+  )
 }

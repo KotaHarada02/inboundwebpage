@@ -2,87 +2,126 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 import { useSidebar } from '@/contexts/use-sidebar';
 
 const NAV_ITEMS = [
+  { href: '/', label: 'Home' },
   { href: '/menu', label: 'Menu' },
-  { href: '/food-and-drinks', label: 'Brewers & Food' },
-  { href: '/events', label: 'Gifts' },
+  { href: '/food-and-drinks', label: 'Food & Drinks' },
+  { href: '/events', label: 'Events' },
   { href: '/access', label: 'Access' },
 ] as const;
 
 export default function Header() {
   const pathname = usePathname();
   const { isOpen, toggle } = useSidebar();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname?.startsWith(href);
 
   return (
-    <header
-      className="sticky top-0 z-40 w-full bg-surface/90 backdrop-blur-md border-b border-[color:var(--color-border)]"
+    <motion.header
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+        scrolled
+          ? 'glass shadow-[0_4px_30px_-12px_rgba(31,26,20,0.18)] border-b border-[color:var(--glass-border)]'
+          : 'bg-transparent border-b border-transparent'
+      }`}
       aria-label="Primary navigation"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex justify-between items-center h-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 md:h-20">
+          {/* Mobile menu toggle */}
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            className="lg:hidden p-2 rounded-md text-foreground hover:text-shibu-aka hover:bg-background-soft transition-colors"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              {isOpen ? (
+                <motion.span
+                  key="close"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="block"
+                >
+                  <X className="h-6 w-6" />
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="open"
+                  initial={{ rotate: 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="block"
+                >
+                  <Menu className="h-6 w-6" />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+
           {/* Brand */}
           <Link
             href="/"
-            className="flex items-baseline gap-2.5 py-2 select-none"
-            aria-label="Mitsukabose Home"
+            className="flex flex-col items-center font-serif leading-none select-none"
+            aria-label="Mitsukabose home"
           >
-            <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-foreground" translate="no">
-              みつか坊主
+            <span className="text-[10px] tracking-[0.4em] text-muted uppercase">
+              Fermented Miso Ramen
             </span>
-            <span className="text-xs tracking-[0.14em] text-foreground-soft uppercase" translate="no">
-              Mitsukabose
+            <span className="text-xl md:text-2xl font-light tracking-[0.25em] text-foreground mt-1">
+              <span className="text-shibu-aka">MI</span>TSUKA{' '}
+              <span className="text-shibu-aka">B</span>OSE
             </span>
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-6" aria-label="Main">
-            {NAV_ITEMS.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={active ? 'page' : undefined}
-                  className={`py-2 text-sm transition-colors ${
-                    active
-                      ? 'text-foreground font-semibold underline decoration-urushi decoration-2 underline-offset-8'
-                      : 'text-foreground-soft hover:text-foreground'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+          <nav className="hidden lg:flex items-center gap-1" aria-label="Main">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`relative px-4 py-2 text-sm tracking-wide transition-colors ${
+                  isActive(item.href)
+                    ? 'text-shibu-aka'
+                    : 'text-foreground-soft hover:text-shibu-aka'
+                }`}
+              >
+                {item.label}
+                {isActive(item.href) && (
+                  <motion.span
+                    layoutId="headerActive"
+                    className="absolute left-3 right-3 -bottom-0.5 h-px bg-shibu-aka"
+                    transition={{ type: 'spring', bounce: 0.18, duration: 0.6 }}
+                  />
+                )}
+              </Link>
+            ))}
           </nav>
 
-          {/* Mobile right controls: quick Menu link + minimal text/line trigger */}
-          <div className="flex md:hidden items-center gap-2">
-            {pathname !== '/menu' && (
-              <Link
-                href="/menu"
-                className="inline-flex items-center justify-center min-h-[36px] px-3 py-1.5 bg-foreground text-surface text-xs font-medium rounded-full"
-              >
-                Menu
-              </Link>
-            )}
-            <button
-              type="button"
-              onClick={toggle}
-              aria-label={isOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={isOpen}
-              aria-controls="mobile-navigation-drawer"
-              className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-2 text-xs font-medium tracking-wider uppercase text-foreground"
-            >
-              {isOpen ? 'Close' : 'Index'}
-            </button>
-          </div>
+          {/* Mobile spacer */}
+          <div className="w-10 lg:hidden" aria-hidden="true" />
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }
