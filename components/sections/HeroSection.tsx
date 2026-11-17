@@ -1,24 +1,25 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Parallax } from 'react-scroll-parallax'
-import Link from 'next/link'
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Parallax } from 'react-scroll-parallax';
+import { ButtonLink } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 
 interface HeroSectionProps {
-  images: string[]
+  images: string[];
 }
 
 export default function HeroSection({ images }: HeroSectionProps) {
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % images.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [images.length])
+      setIndex((i) => (i + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [images.length]);
 
   return (
     <section
@@ -55,7 +56,10 @@ export default function HeroSection({ images }: HeroSectionProps) {
       </Parallax>
 
       {/* Floating kanji decoration */}
-      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden" aria-hidden="true">
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none overflow-hidden"
+        aria-hidden="true"
+      >
         <motion.span
           className="absolute top-[12%] right-[8%] font-serif text-[12rem] md:text-[18rem] text-washi/[0.04] leading-none select-none"
           initial={{ opacity: 0, y: 40 }}
@@ -83,12 +87,9 @@ export default function HeroSection({ images }: HeroSectionProps) {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-8"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-washi/20 bg-washi/[0.06] backdrop-blur-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-kohaku-soft animate-subtle-pulse" />
-            <span className="text-[10px] md:text-xs tracking-[0.4em] text-kohaku-soft uppercase font-light">
-              Hotarugaike · Toyonaka · Osaka
-            </span>
-          </span>
+          <Badge variant="location" pulseDot>
+            Hotarugaike · Toyonaka · Osaka
+          </Badge>
         </motion.div>
 
         {/* Title block */}
@@ -138,37 +139,31 @@ export default function HeroSection({ images }: HeroSectionProps) {
           </span>
         </motion.p>
 
-        {/* CTAs */}
+        {/* CTAs using ButtonLink component (proper <a> semantics without nested <button>) */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.6 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Link href="/menu" aria-label="View full menu">
-            <button className="group relative bg-shibu-aka hover:bg-shibu-aka-deep text-washi px-10 py-4 text-sm tracking-[0.2em] uppercase rounded-sm font-light transition-all duration-400 min-w-[200px] glow-shibu-aka hover:-translate-y-0.5 overflow-hidden">
-              <span className="relative z-10">View Menu</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-shibu-aka-deep/0 via-washi/10 to-shibu-aka-deep/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
-            </button>
-          </Link>
-          <Link href="/access" aria-label="Restaurant access">
-            <button className="bg-transparent hover:bg-washi/8 text-washi border border-washi/30 hover:border-washi/60 px-10 py-4 text-sm tracking-[0.2em] uppercase rounded-sm font-light transition-all duration-300 min-w-[200px] hover:-translate-y-0.5 backdrop-blur-sm">
-              Access
-            </button>
-          </Link>
-          <Link href="/events" aria-label="Special events">
-            <button className="bg-transparent hover:bg-washi/8 text-washi border border-washi/30 hover:border-washi/60 px-10 py-4 text-sm tracking-[0.2em] uppercase rounded-sm font-light transition-all duration-300 min-w-[200px] hover:-translate-y-0.5 backdrop-blur-sm">
-              Events
-            </button>
-          </Link>
+          <ButtonLink href="/menu" variant="primary" size="lg" aria-label="View full menu">
+            View Menu
+          </ButtonLink>
+          <ButtonLink href="/access" variant="outline-light" size="lg" aria-label="Restaurant access">
+            Access
+          </ButtonLink>
+          <ButtonLink href="/events" variant="outline-light" size="lg" aria-label="Special events">
+            Events
+          </ButtonLink>
         </motion.div>
       </div>
 
       {/* Slideshow indicators */}
-      <div className="absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-10 flex gap-2" aria-hidden="true">
+      <div className="absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-10 flex gap-2">
         {images.map((_, i) => (
           <button
             key={i}
+            type="button"
             onClick={() => setIndex(i)}
             className={`transition-all duration-500 rounded-full ${
               i === index
@@ -199,5 +194,5 @@ export default function HeroSection({ images }: HeroSectionProps) {
       {/* Bottom fade into page */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-[5] pointer-events-none" />
     </section>
-  )
+  );
 }

@@ -35,7 +35,7 @@ export default function MenuPage() {
           { name: 'Menu', path: '/menu' },
         ]}
       />
-      <MenuClient />
+      <MenuClient initialItems={items} />
     </>
   );
 }

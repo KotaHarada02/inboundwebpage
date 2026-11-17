@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 import { getFoodDrinks } from '@/domain/services/dataService';
 import type { FoodDrinkItem } from '@/domain/types';
@@ -10,9 +10,11 @@ import {
   JapaneseYenIcon as Sake,
   UtensilsCrossed,
   ChevronDown,
-  X,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ImageLightbox } from '@/components/ui/ImageLightbox';
+import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 24 },
@@ -95,43 +97,10 @@ export default function FoodAndDrinksClient() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Image Modal */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-kasshoku-deep/90 p-4 backdrop-blur-sm"
-            onClick={() => setSelectedImage(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="relative max-w-4xl w-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setSelectedImage(null)}
-                className="absolute -top-12 right-0 text-washi hover:text-kohaku transition-colors"
-                aria-label="Close image"
-              >
-                <X size={32} />
-              </button>
-              <div className="relative aspect-[4/3] w-full">
-                <Image
-                  src={selectedImage || '/placeholder.svg'}
-                  alt="Enlarged view"
-                  fill
-                  className="object-contain rounded-md"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ImageLightbox
+        src={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
 
       {/* Hero Section */}
       <section
@@ -486,8 +455,8 @@ function FeatureSection({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {items.map((item) => (
           <motion.article key={item.id} variants={fadeIn} className="group">
-            <div className="bg-background-soft/60 rounded-md overflow-hidden h-full flex flex-col border border-kasshoku/10 shadow-cinematic transition-transform duration-500 group-hover:-translate-y-1">
-              <div className="relative h-56 overflow-hidden bg-background-soft">
+            <Card.Root variant="soft" className="h-full flex flex-col transition-transform duration-500 group-hover:-translate-y-1">
+              <Card.Media className="h-56">
                 <Image
                   src={item.imageUrl}
                   alt={item.name}
@@ -496,17 +465,17 @@ function FeatureSection({
                   sizes="(max-width: 768px) 100vw, 50vw"
                   onClick={() => onImageClick(item.imageUrl)}
                 />
-              </div>
-              <div className="p-6 flex flex-col gap-3">
-                <span className="inline-block self-start px-2.5 py-1 bg-background text-shibu-aka rounded-sm text-[10px] tracking-[0.3em] uppercase border border-shibu-aka/30">
+              </Card.Media>
+              <Card.Body className="gap-3">
+                <Badge variant="category" className="self-start">
                   {item.category === 'sake' ? 'Sake' : item.category === 'beer' ? 'Beer' : 'Ramen'}
-                </span>
-                <h3 className="font-serif text-xl font-light text-foreground">{item.name}</h3>
+                </Badge>
+                <Card.Title className="text-xl">{item.name}</Card.Title>
                 <p className="text-foreground-soft text-sm leading-relaxed line-clamp-4">
                   {item.description}
                 </p>
-              </div>
-            </div>
+              </Card.Body>
+            </Card.Root>
           </motion.article>
         ))}
       </div>
