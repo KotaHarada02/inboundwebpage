@@ -1,88 +1,43 @@
 @import "tailwindcss";
 
-/* ============================================================
- * Mitsukabose Design System
- * "2F Hotarugaike Fermentation Hall & Brew Ledger"
- * Three-tier token architecture:
- *   1. Primitive palette (OKLCH + HEX fallback)
- *   2. Semantic surface, text, border & action tokens
- *   3. Component & browser-surface rules
- * ============================================================ */
-
 :root {
-  /* ----------------------------------------------------------
-   * 1. Primitive Tokens (derived from the Hotarugaike 2F store)
-   * ---------------------------------------------------------- */
-  --primitive-shikkui: #F6F2EA;         /* oklch(0.96 0.012 82) — troweled white plaster wall */
-  --primitive-shikkui-pure: #FAF8F3;    /* oklch(0.98 0.008 82) — bright paper highlight */
-  --primitive-mortar: #EBE4D6;          /* oklch(0.92 0.018 80) — aged mortar & warm stone */
-  --primitive-mortar-deep: #DDD3C0;     /* oklch(0.87 0.024 78) — structural rule tint */
+  /* Clean, un-templated gallery & shop palette */
+  --color-surface: #FDFCFB;
+  --color-surface-elevated: #FFFFFF;
+  --color-surface-muted: #F4F1EC;
+  --color-surface-chalkboard: #141312;
 
-  --primitive-kurotetsu: #1A1714;       /* oklch(0.20 0.012 60) — steel arched window frame & sumi */
-  --primitive-susudake: #4E4237;        /* oklch(0.38 0.024 62) — antique communal wood table */
-  --primitive-hai-cha: #6E5F51;         /* oklch(0.49 0.025 62) — muted ash-tea note (AA contrast 5.1:1 on shikkui) */
+  --color-text: #141312;
+  --color-text-secondary: #4A4640;
+  --color-text-muted: #78716A;
 
-  --primitive-urushi: #A32C1E;          /* oklch(0.49 0.165 28) — vermilion lacquer ramen bowl */
-  --primitive-urushi-deep: #7F2015;     /* oklch(0.41 0.145 28) — pressed lacquer */
-  --primitive-kohaku: #B86B19;          /* oklch(0.61 0.135 65) — Minoh amber draft beer */
-  --primitive-kohaku-bright: #DF9B42;   /* oklch(0.74 0.130 72) — amber on dark chalkboard */
-  --primitive-koji: #285938;            /* oklch(0.42 0.085 152) — Nose rice & plant-based badge */
-  --primitive-ai: #234254;              /* oklch(0.37 0.055 235) — indigo ceramic glaze */
+  --color-action: #C83E2B;
+  --color-action-hover: #A62E1E;
+  --color-action-text: #FFFFFF;
 
-  /* ----------------------------------------------------------
-   * 2. Semantic Tokens
-   * ---------------------------------------------------------- */
-  --color-surface: var(--primitive-shikkui);
-  --color-surface-elevated: var(--primitive-shikkui-pure);
-  --color-surface-muted: var(--primitive-mortar);
-  --color-surface-chalkboard: var(--primitive-kurotetsu);
+  --color-highlight: #D9822B;
+  --color-dietary: #2A623D;
 
-  --color-text: var(--primitive-kurotetsu);
-  --color-text-secondary: var(--primitive-susudake);
-  --color-text-muted: var(--primitive-hai-cha);
-  --color-text-on-dark: var(--primitive-shikkui);
-  --color-text-on-dark-muted: #CFC6B8;
+  --color-border: rgba(20, 19, 18, 0.10);
+  --color-border-strong: rgba(20, 19, 18, 0.20);
 
-  --color-action: var(--primitive-urushi);
-  --color-action-hover: var(--primitive-urushi-deep);
-  --color-action-text: var(--primitive-shikkui-pure);
-
-  --color-highlight: var(--primitive-kohaku);
-  --color-highlight-on-dark: var(--primitive-kohaku-bright);
-  --color-dietary: var(--primitive-koji);
-
-  --color-border: rgba(26, 23, 20, 0.14);
-  --color-border-strong: rgba(26, 23, 20, 0.28);
-  --color-border-on-dark: rgba(246, 242, 234, 0.16);
-
-  /* Legacy alias mappings so existing utilities remain coherent */
+  /* Aliases */
   --background: var(--color-surface);
   --background-soft: var(--color-surface-muted);
   --foreground: var(--color-text);
   --foreground-soft: var(--color-text-secondary);
   --muted: var(--color-text-muted);
-  --kasshoku: var(--primitive-susudake);
-  --kasshoku-deep: var(--primitive-kurotetsu);
-  --kuri: var(--primitive-hai-cha);
-  --warm-gray: var(--primitive-mortar-deep);
-  --washi: var(--primitive-shikkui);
-  --shibu-aka: var(--primitive-urushi);
-  --shibu-aka-deep: var(--primitive-urushi-deep);
-  --ai: var(--primitive-ai);
-  --kohaku: var(--primitive-kohaku);
-  --kohaku-soft: var(--primitive-kohaku-bright);
-  --matcha: var(--primitive-koji);
-
-  /* ----------------------------------------------------------
-   * 3. Layout, Radius, Depth & Typography Tokens
-   * ---------------------------------------------------------- */
-  --header-height: 4.25rem;
-  --radius-ledger: 2px;
-  --radius-control: 2px;
-  --radius-pill: 9999px;
-
-  --shadow-ledger: 0 2px 6px -1px rgba(26, 23, 20, 0.06);
-  --shadow-floating: 0 18px 42px -12px rgba(26, 23, 20, 0.26), 0 4px 12px -4px rgba(26, 23, 20, 0.12);
+  --kasshoku: #3D352E;
+  --kasshoku-deep: #141312;
+  --kuri: #6E655F;
+  --warm-gray: #D6D1C7;
+  --washi: #FDFCFB;
+  --shibu-aka: var(--color-action);
+  --shibu-aka-deep: var(--color-action-hover);
+  --ai: #1E3A4C;
+  --kohaku: #D9822B;
+  --kohaku-soft: #E8A558;
+  --matcha: var(--color-dietary);
 
   --font-display: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
   --font-body: "Plus Jakarta Sans", "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
@@ -109,29 +64,25 @@
 
   --color-shibu-aka: var(--shibu-aka);
   --color-shibu-aka-deep: var(--shibu-aka-deep);
-  --color-urushi: var(--primitive-urushi);
-  --color-urushi-deep: var(--primitive-urushi-deep);
+  --color-urushi: var(--color-action);
+  --color-urushi-deep: var(--color-action-hover);
   --color-ai: var(--ai);
   --color-kohaku: var(--kohaku);
   --color-kohaku-soft: var(--kohaku-soft);
   --color-matcha: var(--matcha);
-  --color-koji: var(--primitive-koji);
+  --color-koji: var(--color-dietary);
 
   --font-sans: var(--font-body);
   --font-serif: var(--font-display);
   --font-mono: var(--font-mono);
 }
 
-/* ============================================================
- * Base & Browser Surfaces
- * ============================================================ */
 html {
   scroll-behavior: smooth;
   color-scheme: light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  -webkit-tap-highlight-color: rgba(163, 44, 30, 0.14);
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -139,33 +90,14 @@ body {
   color: var(--color-text);
   font-family: var(--font-body);
   font-feature-settings: "palt" 1, "kern" 1;
-  line-height: 1.7;
-  caret-color: var(--color-action);
+  line-height: 1.65;
 }
 
 ::selection {
-  background-color: var(--color-action);
-  color: var(--color-action-text);
+  background-color: var(--color-text);
+  color: var(--color-surface);
 }
 
-/* Custom scrollbar themed to shikkui & susudake */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-surface-muted);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--primitive-hai-cha);
-  border: 2px solid var(--color-surface-muted);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primitive-susudake);
-}
-
-/* Interactive controls default to manipulation touch-action */
 button,
 a,
 input,
@@ -175,20 +107,15 @@ textarea,
   touch-action: manipulation;
 }
 
-/* Focus ring: unmistakable 2px solid outline with offset */
 :focus-visible {
-  outline: 2px solid var(--color-action);
+  outline: 2px solid var(--color-text);
   outline-offset: 2px;
 }
 
-/* ============================================================
- * Typography & Structural Ledger Utilities
- * ============================================================ */
 .font-display,
 .font-serif {
   font-family: var(--font-display);
   font-feature-settings: "palt" 1;
-  text-wrap: balance;
 }
 
 .font-tabular {
@@ -197,25 +124,7 @@ textarea,
 }
 
 .measure-prose {
-  max-width: 68ch;
-}
-
-.ledger-frame {
-  background-color: var(--color-surface-elevated);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-ledger);
-}
-
-.ledger-double-frame {
-  background-color: var(--color-surface-elevated);
-  border: 1px solid var(--color-border-strong);
-  outline: 1px solid var(--color-border);
-  outline-offset: -5px;
-  border-radius: var(--radius-ledger);
-}
-
-.ledger-rule {
-  border-color: var(--color-border);
+  max-width: 64ch;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -228,16 +137,13 @@ textarea,
 
 .link-underline {
   text-decoration: underline;
-  text-decoration-color: rgba(163, 44, 30, 0.45);
   text-underline-offset: 4px;
-  transition: color 180ms ease, text-decoration-color 180ms ease;
+  transition: opacity 150ms ease;
 }
 .link-underline:hover {
-  color: var(--color-action);
-  text-decoration-color: var(--color-action);
+  opacity: 0.7;
 }
 
-/* Intentional reduced-motion handling: preserve instant opacity/color feedback without dizzying motion */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

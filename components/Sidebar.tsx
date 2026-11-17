@@ -4,16 +4,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X, MapPin, Clock, Phone } from 'lucide-react';
 import { useSidebar } from '@/contexts/use-sidebar';
 import { siteConfig } from '@/lib/siteConfig';
 
 const navigationItems = [
-  { name: 'Home', href: '/', ja: 'トップページ' },
-  { name: 'Menu', href: '/menu', ja: 'お品書き（時間帯・食習慣別）' },
-  { name: 'Craft & Sake', href: '/food-and-drinks', ja: '箕面ビール・オリゼー・秋鹿・味噌' },
-  { name: 'Visit Perks', href: '/events', ja: '来店ステッカー・レビュー特典' },
-  { name: 'Access', href: '/access', ja: '蛍池駅東口徒歩1分・2階入口案内' },
+  { name: 'Home', href: '/', ja: 'トップ' },
+  { name: 'Menu', href: '/menu', ja: 'お品書き' },
+  { name: 'Brewers & Food', href: '/food-and-drinks', ja: '醸造所と料理' },
+  { name: 'Visitor Gifts', href: '/events', ja: 'ステッカー・味噌特典' },
+  { name: 'Access', href: '/access', ja: '蛍池駅 徒歩1分・営業時間' },
 ] as const;
 
 export default function Sidebar() {
@@ -28,7 +27,7 @@ export default function Sidebar() {
   useEffect(() => {
     if (!isMounted) return;
     const handleResize = () => {
-      if (window.innerWidth >= 1024) close();
+      if (window.innerWidth >= 768) close();
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -67,7 +66,7 @@ export default function Sidebar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={close}
-            className="fixed inset-0 bg-kasshoku-deep/65 z-50 lg:hidden"
+            className="fixed inset-0 bg-kasshoku-deep/50 z-50 md:hidden"
             aria-hidden="true"
           />
           <motion.aside
@@ -76,36 +75,28 @@ export default function Sidebar() {
             role="dialog"
             aria-modal="true"
             aria-label="Site navigation"
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed top-0 left-0 h-full w-[310px] sm:w-[350px] bg-surface z-50 lg:hidden border-r border-[color:var(--color-border-strong)] overscroll-contain flex flex-col"
-            style={{ boxShadow: 'var(--shadow-floating)' }}
+            initial={{ y: '-100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '-100%' }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed top-0 left-0 right-0 bg-surface z-50 md:hidden border-b border-[color:var(--color-border-strong)] overscroll-contain flex flex-col"
           >
-            {/* Drawer Header */}
-            <div className="px-5 py-4 border-b border-[color:var(--color-border-strong)] flex items-center justify-between">
-              <div>
-                <p className="font-serif text-lg font-bold text-foreground" translate="no">
-                  MITSUKABOSE
-                </p>
-                <p className="font-serif text-xs text-foreground-soft" translate="no">
-                  発酵と味噌と麺 みつか坊主
-                </p>
-              </div>
+            <div className="px-4 h-14 border-b border-[color:var(--color-border)] flex items-center justify-between">
+              <span className="font-serif text-lg font-bold text-foreground" translate="no">
+                みつか坊主 <span className="text-xs font-sans font-normal text-muted ml-1">Mitsukabose</span>
+              </span>
               <button
                 type="button"
                 onClick={close}
-                aria-label="Close navigation menu"
-                className="inline-flex items-center justify-center w-11 h-11 rounded-xs text-foreground hover:text-urushi hover:bg-surface-muted transition-colors"
+                aria-label="Close menu"
+                className="min-w-[44px] min-h-[44px] px-2 text-xs font-medium uppercase tracking-wider text-foreground"
               >
-                <X className="w-5 h-5" aria-hidden="true" />
+                Close
               </button>
             </div>
 
-            {/* Links */}
-            <nav className="flex-1 overflow-y-auto px-4 py-5" aria-label="Mobile">
-              <ul className="space-y-1.5">
+            <nav className="px-4 py-4" aria-label="Mobile">
+              <ul className="divide-y divide-[color:var(--color-border)]">
                 {navigationItems.map((item) => {
                   const active = isActive(item.href);
                   return (
@@ -114,18 +105,12 @@ export default function Sidebar() {
                         href={item.href}
                         onClick={close}
                         aria-current={active ? 'page' : undefined}
-                        className={`flex flex-col justify-center min-h-[52px] py-2.5 px-3.5 rounded-xs border transition-colors ${
-                          active
-                            ? 'bg-surface-muted border-[color:var(--color-border-strong)] text-urushi'
-                            : 'border-transparent text-foreground hover:bg-surface-muted hover:text-urushi'
+                        className={`flex items-baseline justify-between py-3.5 transition-colors ${
+                          active ? 'text-urushi font-semibold' : 'text-foreground'
                         }`}
                       >
-                        <span className="font-serif text-base font-medium">
-                          {item.name}
-                        </span>
-                        <span className="text-xs text-foreground-soft mt-0.5">
-                          {item.ja}
-                        </span>
+                        <span className="font-serif text-xl">{item.name}</span>
+                        <span className="text-xs text-muted">{item.ja}</span>
                       </Link>
                     </li>
                   );
@@ -133,32 +118,15 @@ export default function Sidebar() {
               </ul>
             </nav>
 
-            {/* Quick station & hours summary in drawer */}
-            <div className="p-5 bg-surface-muted border-t border-[color:var(--color-border-strong)] space-y-2.5 text-xs text-foreground-soft">
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-urushi flex-none mt-0.5" aria-hidden="true" />
-                <div>
-                  <p className="font-medium text-foreground">Hotarugaike Stn East Exit · 1 min</p>
-                  <p>{siteConfig.contact.addressJa}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <Clock className="w-4 h-4 text-urushi flex-none mt-0.5" aria-hidden="true" />
-                <div className="font-tabular">
-                  <p>Wed–Sat: {siteConfig.hours.wedToSat}</p>
-                  <p>Sun: {siteConfig.hours.sunday}</p>
-                  <p className="text-muted">Closed {siteConfig.hours.closed}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 pt-1">
-                <Phone className="w-4 h-4 text-urushi flex-none" aria-hidden="true" />
-                <a
-                  href={`tel:${siteConfig.telephone.replace(/[^+\d]/g, '')}`}
-                  className="font-tabular link-underline text-foreground font-medium"
-                >
-                  {siteConfig.telephone}
-                </a>
-              </div>
+            <div className="px-4 py-4 bg-surface-muted text-xs text-foreground-soft flex flex-wrap items-center justify-between gap-2">
+              <span>Hotarugaike Stn East Exit 1 min (2F)</span>
+              <span className="font-tabular">Wed–Sat 11:30–24:00 · Sun –22:00</span>
+              <a
+                href={`tel:${siteConfig.telephone.replace(/[^+\d]/g, '')}`}
+                className="font-tabular text-foreground underline"
+              >
+                {siteConfig.telephone}
+              </a>
             </div>
           </motion.aside>
         </>
