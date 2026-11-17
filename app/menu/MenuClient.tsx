@@ -78,10 +78,6 @@ export const CATEGORY_LABELS: Record<
   },
 };
 
-function isMidnightDay(): boolean {
-  return [3, 4, 5, 6].includes(new Date().getDay()); // Wed–Sat
-}
-
 function getDefaultTimeSlot(): TimeSlot {
   const now = new Date();
   const day = now.getDay();
@@ -102,7 +98,6 @@ export default function MenuClient({
   const [activeCategory, setActiveCategory] = useState<string | null>('Ramen');
   const [activeTime, setActiveTime] = useState<TimeSlot>(getDefaultTimeSlot());
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const midnightAvailable = isMidnightDay();
 
   useEffect(() => {
     setActiveTime(getDefaultTimeSlot());
@@ -200,7 +195,6 @@ export default function MenuClient({
         <MenuFilterBar
           activeTime={activeTime}
           onSelectTime={setActiveTime}
-          midnightAvailable={midnightAvailable}
           categories={availableCategories}
           categoryLabels={CATEGORY_LABELS}
           activeCategory={activeCategory}

@@ -14,7 +14,6 @@ export const TIME_LABELS: Record<TimeSlot, string> = {
 export interface MenuFilterBarProps {
   activeTime: TimeSlot;
   onSelectTime: (slot: TimeSlot) => void;
-  midnightAvailable: boolean;
   categories: MenuCategory[];
   categoryLabels: Record<MenuCategory, { en: string; ja: string; description: string }>;
   activeCategory: string | null;
@@ -24,7 +23,6 @@ export interface MenuFilterBarProps {
 export function MenuFilterBar({
   activeTime,
   onSelectTime,
-  midnightAvailable,
   categories,
   categoryLabels,
   activeCategory,
@@ -40,19 +38,17 @@ export function MenuFilterBar({
         <div className="max-w-4xl mx-auto">
           <div className="overflow-x-auto no-scrollbar">
             <div className="flex justify-center min-w-max gap-2">
-              {(Object.keys(TIME_LABELS) as TimeSlot[])
-                .filter((time) => time !== 'Midnight' || midnightAvailable)
-                .map((time) => (
-                  <Button
-                    key={time}
-                    size="sm"
-                    variant={activeTime === time ? 'time-active' : 'time-inactive'}
-                    onClick={() => onSelectTime(time)}
-                    className="whitespace-nowrap"
-                  >
-                    {TIME_LABELS[time]}
-                  </Button>
-                ))}
+              {(Object.keys(TIME_LABELS) as TimeSlot[]).map((time) => (
+                <Button
+                  key={time}
+                  size="sm"
+                  variant={activeTime === time ? 'time-active' : 'time-inactive'}
+                  onClick={() => onSelectTime(time)}
+                  className="whitespace-nowrap"
+                >
+                  {TIME_LABELS[time]}
+                </Button>
+              ))}
             </div>
           </div>
         </div>
