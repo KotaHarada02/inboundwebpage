@@ -94,7 +94,7 @@ export default function AdminDashboard() {
   const getItemsByCategory = useCallback((category: string) => {
     return items
       .filter(item => item.category === category)
-      .sort((a, b) => ((a as any).sortOrder ?? 0) - ((b as any).sortOrder ?? 0));
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
   }, [items]);
 
   const moveItem = useCallback((itemId: string, direction: 'up' | 'down') => {
@@ -105,7 +105,7 @@ export default function AdminDashboard() {
       // Get items in same category, sorted
       const categoryItems = prevItems
         .filter(i => i.category === item.category)
-        .sort((a, b) => ((a as any).sortOrder ?? 0) - ((b as any).sortOrder ?? 0));
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
       const currentIndex = categoryItems.findIndex(i => i.id === itemId);
       const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
@@ -113,15 +113,15 @@ export default function AdminDashboard() {
       if (targetIndex < 0 || targetIndex >= categoryItems.length) return prevItems;
 
       // Swap sort orders
-      const currentSortOrder = (categoryItems[currentIndex] as any).sortOrder ?? currentIndex;
-      const targetSortOrder = (categoryItems[targetIndex] as any).sortOrder ?? targetIndex;
+      const currentSortOrder = categoryItems[currentIndex].sortOrder ?? currentIndex;
+      const targetSortOrder = categoryItems[targetIndex].sortOrder ?? targetIndex;
 
       return prevItems.map(i => {
         if (i.id === categoryItems[currentIndex].id) {
-          return { ...i, sortOrder: targetSortOrder } as any;
+          return { ...i, sortOrder: targetSortOrder };
         }
         if (i.id === categoryItems[targetIndex].id) {
-          return { ...i, sortOrder: currentSortOrder } as any;
+          return { ...i, sortOrder: currentSortOrder };
         }
         return i;
       });
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
     try {
       const orderData = items.map(item => ({
         id: item.id,
-        sortOrder: (item as any).sortOrder ?? 0,
+        sortOrder: item.sortOrder ?? 0,
       }));
 
       const res = await fetch('/api/admin/menu/reorder', {
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
 
   const filteredItems = items
     .filter(item => filterCategory === 'All' || item.category === filterCategory)
-    .sort((a, b) => ((a as any).sortOrder ?? 0) - ((b as any).sortOrder ?? 0));
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
   const categories = ['All', 'Ramen', 'Beer', 'JapaneseSake', 'Ippin', 'LunchSpecial', 'DinnerSpecial', 'SunsetSpecial', 'Kaedama', 'Event'];
   

@@ -38,6 +38,7 @@ export interface MenuItem {
   imageUrl: string;
   description: string;
   availableAt?: TimeSlot[];
+  sortOrder?: number;
 }
 
 export interface FoodDrinkItem {
