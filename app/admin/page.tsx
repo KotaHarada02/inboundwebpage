@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { MenuItem, TimeSlot } from '@/domain/types';
 
@@ -12,11 +12,7 @@ export default function AdminDashboard() {
   const [filterCategory, setFilterCategory] = useState('All');
   const router = useRouter();
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/menu');
       if (res.ok) {
@@ -30,7 +26,11 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
@@ -167,6 +167,7 @@ export default function AdminDashboard() {
             <div key={item.id} className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
               {item.imageUrl && (
                 <div className="h-48 w-full relative bg-gray-200">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={item.imageUrl}
                     alt={item.name}
@@ -391,6 +392,7 @@ function MenuItemForm({
         </div>
         {formData.imageUrl && (
           <div className="mt-2 relative h-40 w-40 bg-gray-100 rounded-md overflow-hidden border border-gray-200">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={formData.imageUrl}
               alt="Preview"

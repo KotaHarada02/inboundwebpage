@@ -3,15 +3,17 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { X, MapPin, Clock, Phone } from 'lucide-react';
 import { useSidebar } from '@/contexts/use-sidebar';
+import { siteConfig } from '@/lib/siteConfig';
 
 const navigationItems = [
-  { name: 'Home', href: '/', ja: 'ホーム' },
-  { name: 'Menu', href: '/menu', ja: 'メニュー' },
-  { name: 'Food & Drinks', href: '/food-and-drinks', ja: '料理と飲み物' },
-  { name: 'Events', href: '/events', ja: 'イベント' },
-  { name: 'Access', href: '/access', ja: 'アクセス' },
+  { name: 'Home', href: '/', ja: 'トップページ' },
+  { name: 'Menu', href: '/menu', ja: 'お品書き（時間帯・食習慣別）' },
+  { name: 'Craft & Sake', href: '/food-and-drinks', ja: '箕面ビール・オリゼー・秋鹿・味噌' },
+  { name: 'Visit Perks', href: '/events', ja: '来店ステッカー・レビュー特典' },
+  { name: 'Access', href: '/access', ja: '蛍池駅東口徒歩1分・2階入口案内' },
 ] as const;
 
 export default function Sidebar() {
@@ -32,7 +34,15 @@ export default function Sidebar() {
     return () => window.removeEventListener('resize', handleResize);
   }, [isMounted, close]);
 
-  // Lock body scroll while drawer is open
+  useEffect(() => {
+    if (!isMounted || !isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMounted, isOpen, close]);
+
   useEffect(() => {
     if (!isMounted) return;
     document.body.style.overflow = isOpen ? 'hidden' : '';
@@ -55,66 +65,99 @@ export default function Sidebar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
             onClick={close}
-            className="fixed inset-0 bg-kasshoku-deep/60 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-kasshoku-deep/65 z-50 lg:hidden"
             aria-hidden="true"
           />
           <motion.aside
             key="drawer"
+            id="mobile-navigation-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site navigation"
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed top-0 left-0 h-full w-[300px] sm:w-[340px] bg-background z-50 lg:hidden shadow-cinematic"
-            aria-label="Mobile navigation"
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed top-0 left-0 h-full w-[310px] sm:w-[350px] bg-surface z-50 lg:hidden border-r border-[color:var(--color-border-strong)] overscroll-contain flex flex-col"
+            style={{ boxShadow: 'var(--shadow-floating)' }}
           >
-            <div className="flex flex-col h-full">
-              <div className="px-6 pt-20 pb-6 border-b border-kasshoku/10">
-                <p className="text-[10px] tracking-[0.4em] text-muted uppercase mb-2">
-                  Fermented Miso Ramen
+            {/* Drawer Header */}
+            <div className="px-5 py-4 border-b border-[color:var(--color-border-strong)] flex items-center justify-between">
+              <div>
+                <p className="font-serif text-lg font-bold text-foreground" translate="no">
+                  MITSUKABOSE
                 </p>
-                <p className="font-serif text-xl tracking-[0.2em] text-foreground">
-                  MITSUKA BOSE
+                <p className="font-serif text-xs text-foreground-soft" translate="no">
+                  発酵と味噌と麺 みつか坊主
                 </p>
               </div>
+              <button
+                type="button"
+                onClick={close}
+                aria-label="Close navigation menu"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-xs text-foreground hover:text-urushi hover:bg-surface-muted transition-colors"
+              >
+                <X className="w-5 h-5" aria-hidden="true" />
+              </button>
+            </div>
 
-              <nav className="flex-1 overflow-y-auto px-6 py-8" aria-label="Mobile">
-                <ul className="space-y-2">
-                  {navigationItems.map((item, idx) => {
-                    const active = isActive(item.href);
-                    return (
-                      <motion.li
-                        key={item.href}
-                        initial={{ x: -16, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.1 + idx * 0.05, duration: 0.3 }}
+            {/* Links */}
+            <nav className="flex-1 overflow-y-auto px-4 py-5" aria-label="Mobile">
+              <ul className="space-y-1.5">
+                {navigationItems.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={close}
+                        aria-current={active ? 'page' : undefined}
+                        className={`flex flex-col justify-center min-h-[52px] py-2.5 px-3.5 rounded-xs border transition-colors ${
+                          active
+                            ? 'bg-surface-muted border-[color:var(--color-border-strong)] text-urushi'
+                            : 'border-transparent text-foreground hover:bg-surface-muted hover:text-urushi'
+                        }`}
                       >
-                        <Link
-                          href={item.href}
-                          onClick={close}
-                          className={`group flex items-baseline justify-between py-3 px-3 rounded-md transition-all ${
-                            active
-                              ? 'bg-background-soft text-shibu-aka'
-                              : 'text-foreground hover:bg-background-soft hover:text-shibu-aka'
-                          }`}
-                        >
-                          <span className="font-serif text-lg tracking-wide">
-                            {item.name}
-                          </span>
-                          <span className="text-xs text-muted group-hover:text-shibu-aka transition-colors">
-                            {item.ja}
-                          </span>
-                        </Link>
-                      </motion.li>
-                    );
-                  })}
-                </ul>
-              </nav>
+                        <span className="font-serif text-base font-medium">
+                          {item.name}
+                        </span>
+                        <span className="text-xs text-foreground-soft mt-0.5">
+                          {item.ja}
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
 
-              <div className="px-6 py-6 border-t border-kasshoku/10 text-xs text-muted">
-                <p>2F Airport Center Bldg., Hotarugaike</p>
-                <p>Toyonaka, Osaka</p>
+            {/* Quick station & hours summary in drawer */}
+            <div className="p-5 bg-surface-muted border-t border-[color:var(--color-border-strong)] space-y-2.5 text-xs text-foreground-soft">
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-urushi flex-none mt-0.5" aria-hidden="true" />
+                <div>
+                  <p className="font-medium text-foreground">Hotarugaike Stn East Exit · 1 min</p>
+                  <p>{siteConfig.contact.addressJa}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <Clock className="w-4 h-4 text-urushi flex-none mt-0.5" aria-hidden="true" />
+                <div className="font-tabular">
+                  <p>Wed–Sat: {siteConfig.hours.wedToSat}</p>
+                  <p>Sun: {siteConfig.hours.sunday}</p>
+                  <p className="text-muted">Closed {siteConfig.hours.closed}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <Phone className="w-4 h-4 text-urushi flex-none" aria-hidden="true" />
+                <a
+                  href={`tel:${siteConfig.telephone.replace(/[^+\d]/g, '')}`}
+                  className="font-tabular link-underline text-foreground font-medium"
+                >
+                  {siteConfig.telephone}
+                </a>
               </div>
             </div>
           </motion.aside>

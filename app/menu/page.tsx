@@ -5,9 +5,9 @@ import { MenuJsonLd } from '@/components/seo/MenuJsonLd';
 import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
 
 export const metadata: Metadata = {
-  title: 'Menu — Miso Ramen, Akishika Sake & Fermented Small Plates',
+  title: 'Menu (お品書き) — Miso Ramen, Vegan Tantanmen, Akishika Sake & Craft Beer',
   description:
-    'Explore the full Mitsukabose menu: signature white-miso ramen, vegan tantanmen, fermented side dishes, Akishika sake, craft beer, and seasonal sets. Updated for 2026.',
+    'Explore the full Mitsukabose menu by service time (Lunch, Sunset, Dinner, Midnight) and dietary preference (Vegan, Vegetarian, Pork-free). Slow-brewed white-miso ramen, Akishika sake, and Minoh craft beer in Hotarugaike, Osaka.',
   alternates: { canonical: '/menu' },
   openGraph: {
     title: 'Mitsukabose Menu — Fermented Miso Ramen & Craft Beer',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Mitsukabose Menu — Fermented Miso Ramen & Craft Beer',
-    description: 'Slow-brewed white-miso ramen, Akishika sake, craft beer and seasonal small plates.',
+    description: 'Slow-brewed white-miso ramen, vegan tantanmen, Akishika sake, craft beer and seasonal small plates.',
   },
 };
 
@@ -35,7 +35,7 @@ export default function MenuPage() {
           { name: 'Menu', path: '/menu' },
         ]}
       />
-      <MenuClient />
+      <MenuClient initialItems={items} />
     </>
   );
 }

@@ -1,336 +1,166 @@
-"use client"
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { useRef } from "react"
-import { motion, useScroll, useTransform, useInView } from "framer-motion"
-import { GrapeIcon, Droplets, Wheat, Utensils, MapPin } from "lucide-react"
-
-interface Value {
-  number: string;
-  title: string;
-  icon: React.ReactNode;
-  body: React.ReactNode;
-}
-
-const values = [
+const STORIES = [
   {
-    number: "①",
-    title: "What Mitsukabose Values Most",
-    icon: <Utensils className="w-8 h-8" />,
-    body: (
-      <>
-        <p className="mb-4">
-          We value &quot;cultivating people.&quot;
-          <br />
-          Mitsukabose is not just a restaurant that serves miso ramen, local sake, or craft beer.
-          <br />
-          As a &quot;theme park of fermentation, miso, and noodles,&quot; our mission is to be a place where everyone
-          involved—diners, staff, producers, and the local community—can experience the essence of fermentation:
-          transformation, deepening, and connection.
-        </p>
-        <ul className="list-disc pl-5 mb-4 space-y-1">
-          <li>A single bowl of ramen can reset someone&rsquo;s day,</li>
-          <li>Spark laughter between strangers,</li>
-          <li>Become a source of pride for the one who made it.</li>
-        </ul>
-        <p>We cherish these invisible values more than anything.</p>
-      </>
-    ),
+    id: 'fermentation-hall',
+    title: 'A Table Where Fermented Flavors and People Meet',
+    subtitleJa: '人を醸す「発酵と味噌と麺」の食堂',
+    image: '/images/hero/0054_1N0A0937.jpg',
+    imageAlt: 'Mitsukabose chef holding a wooden tray of five seasonal fermented small plates in front of the open kitchen',
+    imageCaption: 'Our open kitchen in Hotarugaike — serving seasonal fermented small plates alongside slow-brewed miso ramen.',
+    body: [
+      'Mitsukabose is more than a quick noodle counter. We built our kitchen around the living craft of fermentation: white and red misos aged in wooden barrels, sake lees from Nose mountains, and house-fermented vegetables.',
+      'Whether you come for a single steaming bowl of White Miso Ramen to reset after a flight, or linger over five small fermented plates with a glass of unfiltered sake, every dish is made to warm the body and spark conversation across the table.',
+    ],
+    highlights: [
+      'House-blended white, red, and Toyono Town Kaachan miso broths',
+      '100% plant-based Vegan Tantanmen enriched with Akishika sake lees and soy milk',
+      'Seasonal fermented side dishes (Ippin), oden, and daytime drinking sets',
+    ],
   },
   {
-    number: "②",
-    title: "A Turning Point for Mitsukabose",
-    icon: <Droplets className="w-8 h-8" />,
-    body: (
-      <>
-        <p className="mb-4">
-          In 2022, after over a decade of serving miso ramen in both Hotarugaike and Umeda, Mitsukabose made the
-          decision to consolidate its operations back to its origin—Hotarugaike.
-          <br />
-          This move wasn&rsquo;t just a &quot;downsizing,&quot; but rather the beginning of a re-fermentation. Our goal
-          was not only to be &quot;rooted in the community,&quot; but to become a presence that ferments with the
-          community.
-        </p>
-        <ul className="list-disc pl-5 mb-4 space-y-1">
-          <li>Use local ingredients,</li>
-          <li>Share the heart and soul of the producers,</li>
-          <li>
-            Create a space where local residents, workers, and travelers can come together, blending into a living
-            ecosystem where &quot;people and the community ferment together.&quot;
-          </li>
-        </ul>
-        <p>
-          Mitsukabose is not just a restaurant.
-          <br />
-          It&rsquo;s a micro-fermentation hub.
-          <br />
-          This marked a new chapter for Mitsukabose starting in 2022—and the true beginning of the vision we had when we
-          first opened.
-        </p>
-      </>
-    ),
+    id: 'returning-to-hotarugaike',
+    title: 'Why We Consolidated Back to Our Origin in Hotarugaike in 2022',
+    subtitleJa: '2022年、梅田から創業の地・蛍池への「再発酵」',
+    image: '/images/food-and-drinks/mitsukabose-food.jpg',
+    imageAlt: 'The 2nd-floor dining hall at Mitsukabose featuring communal wooden tables, paper lanterns, and a large arched steel window',
+    imageCaption: 'The 2nd-floor dining room at Hotarugaike Station — antique wooden tables, paper lanterns, and the arched window overlooking the monorail.',
+    body: [
+      'After more than a decade of running shops in both central Umeda and Hotarugaike, we made a deliberate choice in 2022 to bring everything back to where Mitsukabose began: Hotarugaike.',
+      'Rather than chasing high-turnover city crowds, we wanted a neighborhood fermentation hub where local families, brewers, airport staff, and travelers passing through Itami Airport sit under the same roof.',
+    ],
+    highlights: [
+      'Spacious 2nd-floor dining room with communal wooden tables and counter seating',
+      'Directly in front of Hotarugaike Station East Exit (1 stop from Osaka Itami Airport)',
+      'Wall relief by local artists celebrating the playful spirit of Mitsukabose',
+    ],
   },
   {
-    number: "③",
-    title: "The Charm of Osaka (Hokusetsu)",
-    icon: <MapPin className="w-8 h-8" />,
-    body: (
-      <>
-        <p className="mb-4">
-          &quot;A community where warmth and the culture of fermentation naturally take root.&quot;
-          <br />
-          In the northern part of Osaka, the Hokusetsu area strikes a perfect balance between city life and nature. From
-          town, you can see the satoyama (rural foothills) woven into the landscape. With Itami Airport nearby, it
-          offers easy domestic access, and it&rsquo;s home to national universities, Expo &#39;70 Park, and many locals
-          who nurture their community and small, meaningful cultures.
-        </p>
-        <ul className="list-disc pl-5 mb-4 space-y-1">
-          <li>Akishika Sake Brewery grows pesticide-free rice in the mountains of Nose.</li>
-          <li>Minoh Beer brews craft beer at the foot of the Minoh mountains.</li>
-          <li>In places like Suita and Minoh, people run local markets full of community love.</li>
-        </ul>
-        <p>
-          This region provides fertile ground for enjoying both what remains unchanged and what evolves over time.
-          <br />
-          Mitsukabose has taken root in this very &quot;fermentation-friendly&quot; place, and together with our team,
-          we continue to cultivate it every day.
-        </p>
-      </>
-    ),
+    id: 'hokusetsu-producers',
+    title: 'Rooted in Northern Osaka’s Hokusetsu Satoyama Breweries',
+    subtitleJa: '北摂・能勢・箕面・豊能の生産者とともに醸す',
+    image: '/images/food-and-drinks/akishika-sake.jpg',
+    imageAlt: 'Bottles of Akishika sake brewed in Nose Town, Osaka, served in a glass choko cup',
+    imageCaption: 'Akishika Shuzō (established 1886 in Nose Town, Osaka) — pesticide-free Yamada Nishiki rice grown and brewed by the brewery itself.',
+    body: [
+      'Northern Osaka (the Hokusetsu region) sits where city rail lines meet rural mountain foothills. Within thirty minutes of our kitchen, independent makers are practicing some of Japan’s most distinctive fermentation.',
+      'We pour their work directly at our table and fold their ingredients into our bowls—from Akishika’s high-acidity natural sake and Minoh’s award-winning craft beer to Toyono Town’s handmade Kaachan Miso.',
+    ],
+    highlights: [
+      'Akishika Sake Brewery (Nose Town, Osaka) — organic, self-grown rice sake & sake kasu',
+      'Minoh Beer (Minoh, Osaka) — family-run craft brewery famous for Stout, W-IPA & Osaru IPA',
+      'Orizé Brewing (Wakayama) — the world’s first gluten-free craft beer fermented with rice koji',
+    ],
   },
-]
+] as const;
 
 export default function MitsukaValuesSection() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  })
-
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
-
   return (
-    <section ref={containerRef} className="py-24 relative overflow-hidden" id="values">
-      {/* Japanese-inspired background */}
-      <motion.div className="absolute inset-0 z-0" style={{ y: backgroundY }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background-soft/40 to-background" />
-        <div className="absolute inset-0 opacity-5">
-          <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <pattern id="seigaiha" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M0,10 a10,10 0 0,0 20,0 a10,10 0 0,0 -20,0 z" fill="none" stroke="#000" strokeWidth="0.5" />
-              <path d="M0,10 a5,5 0 0,0 10,0 a5,5 0 0,0 -10,0 z" fill="none" stroke="#000" strokeWidth="0.5" />
-              <path d="M10,10 a10,10 0 0,0 20,0 a10,10 0 0,0 -20,0 z" fill="none" stroke="#000" strokeWidth="0.5" />
-              <path d="M10,10 a5,5 0 0,0 10,0 a5,5 0 0,0 -10,0 z" fill="none" stroke="#000" strokeWidth="0.5" />
-            </pattern>
-            <rect x="0" y="0" width="100%" height="100%" fill="url(#seigaiha)" />
-          </svg>
-        </div>
-      </motion.div>
-
-      {/* Subtle decorative icons — 3 large, very low-opacity anchors */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        {[
-          { Icon: GrapeIcon, x: '8%',  y: '15%', size: 160, rot: -15 },
-          { Icon: Wheat,     x: '82%', y: '55%', size: 200, rot: 20 },
-          { Icon: Droplets,  x: '50%', y: '80%', size: 140, rot: 0 },
-        ].map(({ Icon, x, y, size, rot }, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-kasshoku/[0.04]"
-            style={{ left: x, top: y, rotate: rot }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 2, delay: i * 0.4 }}
+    <section
+      id="values"
+      aria-labelledby="values-heading"
+      className="py-16 sm:py-24 border-b border-[color:var(--color-border-strong)] bg-surface"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header — no uppercase eyebrow, no bouncing red italic word */}
+        <div className="max-w-3xl mb-14 sm:mb-20">
+          <h2
+            id="values-heading"
+            className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight"
           >
-            <Icon size={size} />
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
-        <ValuesSectionHeader />
-
-        <div className="max-w-5xl mx-auto mt-20">
-          {values.map((value, index) => (
-            <ValueCard key={index} value={value} index={index} />
-          ))}
+            Three Stories Behind Our Table in Hotarugaike
+          </h2>
+          <p className="mt-4 text-base sm:text-lg text-foreground-soft leading-relaxed">
+            Why a fermentation-driven miso ramen house and taproom stands on the 2nd floor of a
+            station building in northern Osaka.
+          </p>
         </div>
-      </div>
 
-      {/* Japanese-inspired decorative elements */}
-      <div className="absolute bottom-0 left-0 w-full h-16 bg-kasshoku/5 z-0">
-        <div className="absolute bottom-0 left-0 w-full">
-          <svg viewBox="0 0 1200 30" preserveAspectRatio="none" className="w-full h-8">
-            <path d="M0,0 Q300,30 600,0 T1200,0 V30 H0 Z" fill="#E0A85B" fillOpacity="0.25" />
-            <path d="M0,5 Q300,35 600,5 T1200,5 V30 H0 Z" fill="#E0A85B" fillOpacity="0.18" />
-          </svg>
+        {/* Editorial Story Rows */}
+        <div className="space-y-16 sm:space-y-24">
+          {STORIES.map((story, idx) => {
+            const isReversed = idx % 2 === 1;
+            return (
+              <article
+                key={story.id}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start pt-10 border-t border-[color:var(--color-border)] first:border-t-0 first:pt-0"
+              >
+                {/* Image Column */}
+                <div
+                  className={`lg:col-span-6 ${
+                    isReversed ? 'lg:order-2' : 'lg:order-1'
+                  }`}
+                >
+                  <figure className="ledger-frame overflow-hidden">
+                    <div className="relative aspect-[4/3] w-full bg-surface-muted">
+                      <Image
+                        src={story.image}
+                        alt={story.imageAlt}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <figcaption className="p-3.5 text-xs text-foreground-soft bg-surface-elevated border-t border-[color:var(--color-border)]">
+                      {story.imageCaption}
+                    </figcaption>
+                  </figure>
+                </div>
+
+                {/* Editorial Copy Column */}
+                <div
+                  className={`lg:col-span-6 space-y-5 ${
+                    isReversed ? 'lg:order-1' : 'lg:order-2'
+                  }`}
+                >
+                  <div>
+                    <p className="font-serif text-sm text-urushi font-medium mb-1.5" translate="no">
+                      {story.subtitleJa}
+                    </p>
+                    <h3 className="font-serif text-2xl sm:text-3xl font-bold text-foreground leading-snug">
+                      {story.title}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-3.5 text-foreground-soft text-base leading-relaxed measure-prose">
+                    {story.body.map((paragraph, pIdx) => (
+                      <p key={pIdx}>{paragraph}</p>
+                    ))}
+                  </div>
+
+                  <div className="p-4 bg-surface-muted rounded-xs border border-[color:var(--color-border)]">
+                    <ul className="space-y-2 text-sm text-foreground">
+                      {story.highlights.map((item) => (
+                        <li key={item} className="flex items-start gap-2.5">
+                          <span
+                            className="w-1.5 h-1.5 rounded-full bg-urushi mt-2 flex-none"
+                            aria-hidden="true"
+                          />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        {/* Bottom link to Producers & Craft page */}
+        <div className="mt-14 pt-8 border-t border-[color:var(--color-border)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <p className="font-serif text-lg text-foreground">
+            Want to learn more about Minoh Beer, Orizé rice-koji ale, and Akishika Sake?
+          </p>
+          <Link
+            href="/food-and-drinks"
+            className="inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 bg-surface-elevated hover:bg-surface-muted text-foreground border border-[color:var(--color-border-strong)] text-sm font-medium rounded-xs transition-colors"
+          >
+            Read Producer Stories &amp; Pairings
+          </Link>
         </div>
       </div>
     </section>
-  )
-}
-
-function ValuesSectionHeader() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: false, amount: 0.3 })
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ duration: 0.7 }}
-      className="text-center relative"
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
-        transition={{ duration: 0.7, delay: 0.2 }}
-        className="inline-block relative"
-      >
-        <div className="absolute -inset-1 bg-kohaku-soft/20 rounded-full blur-2xl"></div>
-        <h2 className="font-serif text-4xl sm:text-6xl font-light mb-6 text-kasshoku-deep relative tracking-wide">
-          <span className="relative inline-block">
-            What Is{" "}
-            <motion.span
-              className="text-shibu-aka relative inline-block italic"
-              animate={{
-                y: [0, -5, 0],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
-              }}
-            >
-              Mitsukabose
-              <motion.div
-                className="absolute -bottom-1 left-0 w-full h-px bg-shibu-aka rounded-full"
-                animate={{
-                  scaleX: [0.7, 1, 0.7],
-                  x: ["-15%", "0%", "-15%"],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
-                }}
-              />
-            </motion.span>
-            ?
-          </span>
-        </h2>
-      </motion.div>
-
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-        transition={{ duration: 0.7, delay: 0.4 }}
-        className="max-w-2xl mx-auto"
-      >
-        <p className="text-lg text-foreground-soft mb-8 font-light">
-        Welcome to the world of fermentation through our values and story
-        </p>
-
-        <div className="flex items-center justify-center space-x-3">
-          <div className="w-16 h-px bg-kasshoku/40 rounded-full"></div>
-          <div className="w-2 h-2 bg-shibu-aka rounded-full"></div>
-          <div className="w-16 h-px bg-kasshoku/40 rounded-full"></div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}
-
-function ValueCard({ value, index }: { value: Value; index: number }) {
-  const cardRef = useRef(null)
-  const isInView = useInView(cardRef, { once: false, amount: 0.3 })
-
-  return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 100 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
-      transition={{
-        duration: 0.8,
-        delay: index * 0.2,
-        ease: "easeOut",
-      }}
-      className="mb-20 relative"
-    >
-      {/* Connecting line between cards */}
-      {index < values.length - 1 && (
-        <motion.div
-          className="absolute left-1/2 bottom-0 w-px h-20 bg-gradient-to-b from-kasshoku/40 to-transparent"
-          initial={{ scaleY: 0, opacity: 0 }}
-          animate={isInView ? { scaleY: 1, opacity: 1 } : { scaleY: 0, opacity: 0 }}
-          transition={{ duration: 1, delay: 0.8 }}
-          style={{ translateX: "-50%", translateY: "100%" }}
-        />
-      )}
-
-      <div className="relative">
-        {/* Number badge — editorial typographic style */}
-        <motion.div
-          className="absolute -top-5 -left-4 z-10 md:-top-7 md:-left-7"
-          initial={{ opacity: 0, x: -10 }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-          transition={{ duration: 0.6, delay: index * 0.15 + 0.2 }}
-        >
-          <div className="flex flex-col items-center leading-none">
-            <span className="font-serif text-[2.8rem] md:text-[3.5rem] font-light text-shibu-aka/20 leading-none select-none tabular-nums">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="bg-background border border-kasshoku/10 rounded-md shadow-cinematic overflow-hidden relative z-0"
-          whileHover={{
-            scale: 1.02,
-            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
-          }}
-          transition={{ duration: 0.3 }}
-        >
-          {/* Top decorative pattern */}
-          <div className="h-1 bg-gradient-to-r from-kohaku via-shibu-aka to-kasshoku"></div>
-
-          <div className="p-8 md:p-10 pt-8 md:pt-10">
-            <div className="ml-14 md:ml-16">
-              <div className="flex items-center mb-6">
-                <motion.div
-                  className="mr-4 text-shibu-aka"
-                  animate={{
-                    rotate: [0, 10, 0, -10, 0],
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                    delay: index * 1.5,
-                  }}
-                >
-                  {value.icon}
-                </motion.div>
-                <h3 className="font-serif text-2xl md:text-3xl font-light text-kasshoku-deep">{value.title}</h3>
-              </div>
-
-              <motion.div
-                className="prose prose-lg max-w-none text-foreground-soft leading-relaxed"
-                initial={{ opacity: 0.8 }}
-                whileHover={{ opacity: 1 }}
-              >
-                {value.body}
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Side decorative element */}
-          <div className="absolute top-0 right-0 h-full w-1 bg-background-soft"></div>
-
-          {/* Bottom decorative pattern */}
-          <div className="h-px bg-kasshoku/10"></div>
-        </motion.div>
-      </div>
-    </motion.div>
-  )
+  );
 }
