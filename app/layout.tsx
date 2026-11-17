@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Noto_Serif_JP } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
 import { Analytics } from '@vercel/analytics/next';
@@ -7,39 +6,25 @@ import Header from '@/components/Header';
 import { Footer } from '@/components/ui/Footer';
 import { RestaurantJsonLd } from '@/components/seo/RestaurantJsonLd';
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
-
-const notoSerifJp = Noto_Serif_JP({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
-  display: 'swap',
-  variable: '--font-noto-serif-jp',
-  preload: false,
-});
-
 const SITE_URL = 'https://mitsukabose.com';
-const SITE_NAME = 'Mitsukabose — Fermented Miso Ramen & Craft Beer';
+const SITE_NAME = 'Mitsukabose (みつか坊主) — Fermented Miso Ramen, Osaka Craft Beer & Natural Sake';
 const SITE_DESCRIPTION =
-  'Mitsukabose (みつか坊主) is a fermentation-driven miso ramen and craft beer destination in Hotarugaike, Toyonaka, Osaka. Discover slow-brewed white-miso ramen, Akishika sake, and seasonal small plates 1 minute from Hotarugaike Station.';
+  'Mitsukabose (発酵と味噌と麺 みつか坊主) is a fermentation dining hall in Hotarugaike, Toyonaka, Osaka — 1 minute from Hotarugaike Station East Exit and 3 minutes by monorail from Osaka Itami Airport (ITM). Serving slow-brewed white-miso ramen, vegan tantanmen, Akishika natural sake, and Minoh & Orizé craft beer.';
+
+const GOOGLE_FONTS_URL =
+  'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap';
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FBF7F1' },
-    { media: '(prefers-color-scheme: dark)', color: '#1F1A14' },
-  ],
+  themeColor: '#F6F2EA',
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_NAME,
-    template: '%s | Mitsukabose',
+    template: '%s | Mitsukabose (みつか坊主)',
   },
   description: SITE_DESCRIPTION,
   applicationName: 'Mitsukabose',
@@ -60,10 +45,10 @@ export const metadata: Metadata = {
     '秋鹿',
     'Hotarugaike',
     '蛍池',
+    'Itami Airport ramen',
     'Toyonaka',
     '豊中',
-    'Osaka ramen',
-    '大阪 ラーメン',
+    'Osaka vegan ramen',
   ],
   category: 'restaurant',
   referrer: 'origin-when-cross-origin',
@@ -85,10 +70,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: '/images/hero/hero-1.jpg',
+        url: '/images/hero/0303_1N0A1489.jpg',
         width: 1200,
-        height: 630,
-        alt: 'A bowl of Mitsukabose white-miso ramen with handmade noodles and chashu',
+        height: 800,
+        alt: 'Guests enjoying miso ramen at Mitsukabose in Hotarugaike, Osaka',
       },
     ],
   },
@@ -96,7 +81,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ['/images/hero/hero-1.jpg'],
+    images: ['/images/hero/0303_1N0A1489.jpg'],
     creator: '@mitsukabose',
     site: '@mitsukabose',
   },
@@ -115,12 +100,8 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  verification: {
-    // 必要に応じて Google Search Console の verification コードを設定
-    // google: 'xxxxxxxxxxxxxxxx',
-  },
   other: {
-    'msapplication-TileColor': '#5B3A29',
+    'msapplication-TileColor': '#A32C1E',
   },
 };
 
@@ -130,13 +111,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${notoSerifJp.variable}`}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link rel="stylesheet" href={GOOGLE_FONTS_URL} />
+      </head>
       <body className="bg-background text-foreground antialiased overflow-x-hidden">
         <RestaurantJsonLd />
         <Providers>
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-kasshoku focus:text-washi focus:px-4 focus:py-2 focus:rounded"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-urushi focus:text-washi focus:px-4 focus:py-2.5 focus:rounded-xs focus:shadow-lg"
           >
             Skip to main content
           </a>

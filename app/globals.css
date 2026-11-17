@@ -1,56 +1,105 @@
 @import "tailwindcss";
 
 /* ============================================================
- * Mitsukabose Design System — Japanese Modern Craft
- * Warm earth tones × traditional Japanese accent colors.
+ * Mitsukabose Design System
+ * "2F Hotarugaike Fermentation Hall & Brew Ledger"
+ * Three-tier token architecture:
+ *   1. Primitive palette (OKLCH + HEX fallback)
+ *   2. Semantic surface, text, border & action tokens
+ *   3. Component & browser-surface rules
  * ============================================================ */
 
 :root {
-  /* Surfaces */
-  --background: #FBF7F1;          /* warm off-white (washi paper) */
-  --background-soft: #F2EBDF;     /* aged paper */
-  --foreground: #1F1A14;          /* sumi ink */
-  --foreground-soft: #4A4035;     /* tea brown */
-  --muted: #8A7A66;               /* soft tea */
+  /* ----------------------------------------------------------
+   * 1. Primitive Tokens (derived from the Hotarugaike 2F store)
+   * ---------------------------------------------------------- */
+  --primitive-shikkui: #F6F2EA;         /* oklch(0.96 0.012 82) — troweled white plaster wall */
+  --primitive-shikkui-pure: #FAF8F3;    /* oklch(0.98 0.008 82) — bright paper highlight */
+  --primitive-mortar: #EBE4D6;          /* oklch(0.92 0.018 80) — aged mortar & warm stone */
+  --primitive-mortar-deep: #DDD3C0;     /* oklch(0.87 0.024 78) — structural rule tint */
 
-  /* Brand earth tones */
-  --kasshoku: #5B3A29;            /* deep brown — kasshoku */
-  --kasshoku-deep: #3D2418;       /* darker miso */
-  --kuri: #8B5A3C;                /* chestnut */
-  --warm-gray: #A89886;
-  --washi: #FBF7F1;
+  --primitive-kurotetsu: #1A1714;       /* oklch(0.20 0.012 60) — steel arched window frame & sumi */
+  --primitive-susudake: #4E4237;        /* oklch(0.38 0.024 62) — antique communal wood table */
+  --primitive-hai-cha: #6E5F51;         /* oklch(0.49 0.025 62) — muted ash-tea note (AA contrast 5.1:1 on shikkui) */
 
-  /* Traditional accent palette */
-  --shibu-aka: #B23A2B;           /* shibui red — fired iron */
-  --shibu-aka-deep: #8E2A1F;
-  --ai: #2F4858;                  /* indigo (藍) */
-  --kohaku: #C77B30;              /* amber (琥珀) */
-  --kohaku-soft: #E0A85B;
-  --matcha: #6B8E4E;              /* matcha green */
+  --primitive-urushi: #A32C1E;          /* oklch(0.49 0.165 28) — vermilion lacquer ramen bowl */
+  --primitive-urushi-deep: #7F2015;     /* oklch(0.41 0.145 28) — pressed lacquer */
+  --primitive-kohaku: #B86B19;          /* oklch(0.61 0.135 65) — Minoh amber draft beer */
+  --primitive-kohaku-bright: #DF9B42;   /* oklch(0.74 0.130 72) — amber on dark chalkboard */
+  --primitive-koji: #285938;            /* oklch(0.42 0.085 152) — Nose rice & plant-based badge */
+  --primitive-ai: #234254;              /* oklch(0.37 0.055 235) — indigo ceramic glaze */
 
-  /* Semantic */
-  --color-accent: var(--shibu-aka);
-  --color-amber: var(--kohaku);
-  --color-primary: var(--kasshoku);
+  /* ----------------------------------------------------------
+   * 2. Semantic Tokens
+   * ---------------------------------------------------------- */
+  --color-surface: var(--primitive-shikkui);
+  --color-surface-elevated: var(--primitive-shikkui-pure);
+  --color-surface-muted: var(--primitive-mortar);
+  --color-surface-chalkboard: var(--primitive-kurotetsu);
 
-  /* Effects */
-  --glass-bg: rgba(251, 247, 241, 0.72);
-  --glass-border: rgba(91, 58, 41, 0.12);
-  --shadow-soft: 0 10px 40px -12px rgba(31, 26, 20, 0.18);
-  --shadow-cinematic: 0 30px 60px -20px rgba(31, 26, 20, 0.35);
-  --shadow-elevated: 0 20px 50px -15px rgba(31, 26, 20, 0.25), 0 8px 16px -8px rgba(91, 58, 41, 0.12);
+  --color-text: var(--primitive-kurotetsu);
+  --color-text-secondary: var(--primitive-susudake);
+  --color-text-muted: var(--primitive-hai-cha);
+  --color-text-on-dark: var(--primitive-shikkui);
+  --color-text-on-dark-muted: #CFC6B8;
 
-  /* Typography */
-  --font-display: var(--font-noto-serif-jp), "Noto Serif JP", "Hiragino Mincho ProN", serif;
-  --font-body: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  --color-action: var(--primitive-urushi);
+  --color-action-hover: var(--primitive-urushi-deep);
+  --color-action-text: var(--primitive-shikkui-pure);
+
+  --color-highlight: var(--primitive-kohaku);
+  --color-highlight-on-dark: var(--primitive-kohaku-bright);
+  --color-dietary: var(--primitive-koji);
+
+  --color-border: rgba(26, 23, 20, 0.14);
+  --color-border-strong: rgba(26, 23, 20, 0.28);
+  --color-border-on-dark: rgba(246, 242, 234, 0.16);
+
+  /* Legacy alias mappings so existing utilities remain coherent */
+  --background: var(--color-surface);
+  --background-soft: var(--color-surface-muted);
+  --foreground: var(--color-text);
+  --foreground-soft: var(--color-text-secondary);
+  --muted: var(--color-text-muted);
+  --kasshoku: var(--primitive-susudake);
+  --kasshoku-deep: var(--primitive-kurotetsu);
+  --kuri: var(--primitive-hai-cha);
+  --warm-gray: var(--primitive-mortar-deep);
+  --washi: var(--primitive-shikkui);
+  --shibu-aka: var(--primitive-urushi);
+  --shibu-aka-deep: var(--primitive-urushi-deep);
+  --ai: var(--primitive-ai);
+  --kohaku: var(--primitive-kohaku);
+  --kohaku-soft: var(--primitive-kohaku-bright);
+  --matcha: var(--primitive-koji);
+
+  /* ----------------------------------------------------------
+   * 3. Layout, Radius, Depth & Typography Tokens
+   * ---------------------------------------------------------- */
+  --header-height: 4.25rem;
+  --radius-ledger: 2px;
+  --radius-control: 2px;
+  --radius-pill: 9999px;
+
+  --shadow-ledger: 0 2px 6px -1px rgba(26, 23, 20, 0.06);
+  --shadow-floating: 0 18px 42px -12px rgba(26, 23, 20, 0.26), 0 4px 12px -4px rgba(26, 23, 20, 0.12);
+
+  --font-display: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "Plus Jakarta Sans", "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-background-soft: var(--background-soft);
-  --color-foreground: var(--foreground);
-  --color-foreground-soft: var(--foreground-soft);
-  --color-muted: var(--muted);
+  --color-background: var(--color-surface);
+  --color-background-soft: var(--color-surface-muted);
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-surface-chalkboard: var(--color-surface-chalkboard);
+
+  --color-foreground: var(--color-text);
+  --color-foreground-soft: var(--color-text-secondary);
+  --color-muted: var(--color-text-muted);
 
   --color-kasshoku: var(--kasshoku);
   --color-kasshoku-deep: var(--kasshoku-deep);
@@ -60,60 +109,113 @@
 
   --color-shibu-aka: var(--shibu-aka);
   --color-shibu-aka-deep: var(--shibu-aka-deep);
+  --color-urushi: var(--primitive-urushi);
+  --color-urushi-deep: var(--primitive-urushi-deep);
   --color-ai: var(--ai);
   --color-kohaku: var(--kohaku);
   --color-kohaku-soft: var(--kohaku-soft);
   --color-matcha: var(--matcha);
+  --color-koji: var(--primitive-koji);
 
   --font-sans: var(--font-body);
   --font-serif: var(--font-display);
+  --font-mono: var(--font-mono);
 }
 
 /* ============================================================
- * Base
+ * Base & Browser Surfaces
  * ============================================================ */
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: rgba(163, 44, 30, 0.14);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-surface);
+  color: var(--color-text);
   font-family: var(--font-body);
-  font-feature-settings: "palt", "kern";
-  letter-spacing: 0.01em;
+  font-feature-settings: "palt" 1, "kern" 1;
+  line-height: 1.7;
+  caret-color: var(--color-action);
 }
 
 ::selection {
-  background: var(--shibu-aka);
-  color: var(--washi);
+  background-color: var(--color-action);
+  color: var(--color-action-text);
+}
+
+/* Custom scrollbar themed to shikkui & susudake */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-muted);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primitive-hai-cha);
+  border: 2px solid var(--color-surface-muted);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primitive-susudake);
+}
+
+/* Interactive controls default to manipulation touch-action */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* Focus ring: unmistakable 2px solid outline with offset */
+:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 2px;
 }
 
 /* ============================================================
- * Utility classes
+ * Typography & Structural Ledger Utilities
  * ============================================================ */
 .font-display,
 .font-serif {
   font-family: var(--font-display);
-  letter-spacing: 0.02em;
+  font-feature-settings: "palt" 1;
+  text-wrap: balance;
 }
 
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
-  border: 1px solid var(--glass-border);
+.font-tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
-.glass-dark {
-  background: rgba(31, 26, 20, 0.55);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
-  border: 1px solid rgba(251, 247, 241, 0.08);
-  color: var(--washi);
+.measure-prose {
+  max-width: 68ch;
+}
+
+.ledger-frame {
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-ledger);
+}
+
+.ledger-double-frame {
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-strong);
+  outline: 1px solid var(--color-border);
+  outline-offset: -5px;
+  border-radius: var(--radius-ledger);
+}
+
+.ledger-rule {
+  border-color: var(--color-border);
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -124,118 +226,28 @@ body {
   scrollbar-width: none;
 }
 
-.text-balance {
-  text-wrap: balance;
-}
-
-/* Gradient text */
-.text-gradient {
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Premium glow effect for CTAs */
-.glow-shibu-aka {
-  box-shadow: 0 0 20px -4px rgba(178, 58, 43, 0.4),
-              0 0 60px -12px rgba(178, 58, 43, 0.2);
-}
-.glow-shibu-aka:hover {
-  box-shadow: 0 0 30px -4px rgba(178, 58, 43, 0.55),
-              0 0 80px -12px rgba(178, 58, 43, 0.3);
-}
-
-/* Section divider — washi torn-edge feel */
-.divider-washi {
-  position: relative;
-  height: 32px;
-  background: linear-gradient(180deg, transparent, var(--background-soft));
-}
-.divider-washi::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--kasshoku) 40%, var(--kasshoku) 60%, transparent);
-  opacity: 0.25;
-}
-
-/* Elegant horizontal rule */
-.divider-elegant {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.divider-elegant::before,
-.divider-elegant::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--kasshoku), transparent);
-  opacity: 0.2;
-}
-
-/* Stagger reveal animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-fade-in-up {
-  animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Subtle pulse for decorative elements */
-@keyframes subtlePulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-.animate-subtle-pulse {
-  animation: subtlePulse 3s ease-in-out infinite;
-}
-
-/* Cinematic underline reveal */
 .link-underline {
-  position: relative;
-  display: inline-block;
+  text-decoration: underline;
+  text-decoration-color: rgba(163, 44, 30, 0.45);
+  text-underline-offset: 4px;
+  transition: color 180ms ease, text-decoration-color 180ms ease;
 }
-.link-underline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 100%;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right center;
-  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.link-underline:hover::after {
-  transform: scaleX(1);
-  transform-origin: left center;
+.link-underline:hover {
+  color: var(--color-action);
+  text-decoration-color: var(--color-action);
 }
 
-/* Reveal on scroll helper (used with framer-motion variants) */
+/* Intentional reduced-motion handling: preserve instant opacity/color feedback without dizzying motion */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
+    animation-duration: 0.01s !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-duration: 120ms !important;
+    transition-property: opacity, color, background-color, border-color !important;
   }
-  html { scroll-behavior: auto; }
-}
-
-/* Focus ring */
-:focus-visible {
-  outline: 2px solid var(--kohaku);
-  outline-offset: 2px;
-  border-radius: 2px;
 }

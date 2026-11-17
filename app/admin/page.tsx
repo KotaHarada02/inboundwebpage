@@ -15,11 +15,7 @@ export default function AdminDashboard() {
   const [orderChanged, setOrderChanged] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/menu');
       if (res.ok) {
@@ -33,7 +29,11 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
@@ -311,6 +311,7 @@ export default function AdminDashboard() {
                         {/* Thumbnail */}
                         {item.imageUrl ? (
                           <div className="w-12 h-12 rounded overflow-hidden bg-gray-200 shrink-0">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={item.imageUrl}
                               alt={item.name}
@@ -408,6 +409,7 @@ export default function AdminDashboard() {
               <div key={item.id} className="bg-white rounded-lg shadow overflow-hidden flex flex-col">
                 {item.imageUrl && (
                   <div className="h-48 w-full relative bg-gray-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={item.imageUrl}
                       alt={item.name}
@@ -426,43 +428,43 @@ export default function AdminDashboard() {
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {item.description}
                   </p>
-                <div className="flex justify-between items-center mt-auto">
-                  <div className="text-gray-900 font-medium text-sm">
-                    {typeof item.priceYen === 'number' ? (
-                      `¥${item.priceYen}`
-                    ) : item.priceYen && typeof item.priceYen === 'object' ? (
-                      // priceYen がオブジェクトの場合、各価格を改行（縦並び）で表示
-                      <div className="space-y-1">
-                        {Object.entries(item.priceYen as Record<string, number | undefined>)
-                          .filter(([, v]) => v !== undefined)
-                          .map(([k, v], idx) => (
-                            <div key={idx} className="flex gap-2 items-baseline">
-                              {k ? <span className="text-gray-600">{k}:</span> : null}
-                              <span>¥{v}</span>
-                            </div>
-                          ))}
-                      </div>
-                    ) : (
-                      '価格未設定'
-                    )}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => handleEdit(item)}
-                      className="px-4 py-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 font-medium transition-colors"
-                    >
-                      編集
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="px-4 py-2 bg-red-50 text-red-700 rounded-md hover:bg-red-100 font-medium transition-colors"
-                    >
-                      削除
-                    </button>
+                  <div className="flex justify-between items-center mt-auto">
+                    <div className="text-gray-900 font-medium text-sm">
+                      {typeof item.priceYen === 'number' ? (
+                        `¥${item.priceYen}`
+                      ) : item.priceYen && typeof item.priceYen === 'object' ? (
+                        // priceYen がオブジェクトの場合、各価格を改行（縦並び）で表示
+                        <div className="space-y-1">
+                          {Object.entries(item.priceYen as Record<string, number | undefined>)
+                            .filter(([, v]) => v !== undefined)
+                            .map(([k, v], idx) => (
+                              <div key={idx} className="flex gap-2 items-baseline">
+                                {k ? <span className="text-gray-600">{k}:</span> : null}
+                                <span>¥{v}</span>
+                              </div>
+                            ))}
+                        </div>
+                      ) : (
+                        '価格未設定'
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="px-4 py-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 font-medium transition-colors"
+                      >
+                        編集
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="px-4 py-2 bg-red-50 text-red-700 rounded-md hover:bg-red-100 font-medium transition-colors"
+                      >
+                        削除
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             ))}
           </div>
         )}
@@ -633,6 +635,7 @@ function MenuItemForm({
         </div>
         {formData.imageUrl && (
           <div className="mt-2 relative h-40 w-40 bg-gray-100 rounded-md overflow-hidden border border-gray-200">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={formData.imageUrl}
               alt="Preview"

@@ -1,38 +1,44 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import '../globals.css';
 import Providers from '@/components/Providers';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from '@vercel/analytics/next';
 import { Navbar } from '@/components/ui/Navbar';
 import { Footer } from '@/components/ui/Footer';
 
-const inter = Inter({ subsets: ['latin'] });
-
-export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  if (params.lang === 'en') {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  if (lang === 'en') {
     return {
       title: 'Mitsukabose Miso Ramen | Authentic Ramen in Osaka, Japan',
-      description: 'Specialty Miso Ramen restaurant near Osaka Itami Airport (ITM). We offer authentic Japanese ramen, including delicious vegan and vegetarian options. A must-visit ramen spot in Hotarugaike, Osaka.',
-      viewport: 'width=device-width, initial-scale=1',
+      description:
+        'Specialty Miso Ramen restaurant near Osaka Itami Airport (ITM). We offer authentic Japanese ramen, including delicious vegan and vegetarian options. A must-visit ramen spot in Hotarugaike, Osaka.',
     };
   }
   return {
-    title: '発酵と味噌ラーメン みつか坊主 | 大阪・蛍池のラーメン店',
-    description: '大阪空港近く、蛍池駅徒歩1分。自家製味噌と発酵の技術を活かしたこだわりの味噌ラーメンをご提供。ビーガン、ベジタリアン向けメニューもございます。',
-    viewport: 'width=device-width, initial-scale=1',
+    title: '発酵と味噌と麺 みつか坊主 | 大阪・蛍池のラーメン店',
+    description:
+      '大阪空港近く、蛍池駅徒歩1分。自家製味噌と発酵の技術を活かしたこだわりの味噌ラーメンをご提供。ビーガン、ベジタリアン向けメニューもございます。',
   };
 }
 
-export default function LangLayout({
+export default async function LangLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { lang: string };
+  params: Promise<{ lang: string }>;
 }) {
-  const lang = params.lang === 'en' ? 'en' : 'ja';
+  const { lang: rawLang } = await params;
+  const lang = rawLang === 'en' ? 'en' : 'ja';
 
-  const origin = typeof process !== 'undefined' ? (process.env.NEXT_PUBLIC_SITE_URL || 'https://mitsukabose.jp') : 'https://mitsukabose.jp';
+  const origin =
+    typeof process !== 'undefined'
+      ? process.env.NEXT_PUBLIC_SITE_URL || 'https://mitsukabose.com'
+      : 'https://mitsukabose.com';
   const altJa = `${origin}/ja`;
   const altEn = `${origin}/en`;
 
@@ -44,7 +50,7 @@ export default function LangLayout({
         <link rel="alternate" href={altEn} hrefLang="en" />
         <link rel="alternate" href={lang === 'ja' ? altJa : altEn} hrefLang="x-default" />
       </head>
-      <body className={`${inter.className} overflow-x-hidden`}>
+      <body className="bg-background text-foreground antialiased overflow-x-hidden">
         <Providers>
           <Navbar />
           <main>{children}</main>
@@ -55,5 +61,3 @@ export default function LangLayout({
     </html>
   );
 }
-
-

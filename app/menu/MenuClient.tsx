@@ -3,123 +3,144 @@
 import type { MenuItem, MenuCategory, TimeSlot } from '@/domain/types';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Info, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, ChevronUp, Info, X, Clock, RotateCcw } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Provider as TooltipProvider,
   Root as TooltipRoot,
   Trigger as TooltipTrigger,
   Content as TooltipContent,
 } from '@radix-ui/react-tooltip';
-import { DecorativeBackground } from '@/components/ui/DecorativeBackground';
+import { DishMediaFrame } from '@/components/ui/DishMediaFrame';
+import {
+  getDefaultTimeSlot,
+  getPriceEntries,
+  getPriceSummary,
+  filterMenuItems,
+  type DietaryFilter,
+} from '@/lib/menuUtils';
+
+const CATEGORY_ORDER: MenuCategory[] = [
+  'Ramen',
+  'Kaedama',
+  'LunchSpecial',
+  'SunsetSpecial',
+  'DinnerSpecial',
+  'Ippin',
+  'Beer',
+  'JapaneseSake',
+  'Wine',
+  'SoftDrink',
+  'Dessert',
+];
 
 const CATEGORY_LABELS: Record<MenuCategory, { en: string; ja: string; description: string }> = {
   Ramen: {
-    en: 'Ramen',
-    ja: 'ラーメン',
-    description: 'Traditional Japanese noodle soup with various broths and toppings',
+    en: 'Miso Ramen & Tsukemen',
+    ja: '味噌ラーメン・つけ麺',
+    description: 'Slow-brewed white, red, Toyono Kaachan, and plant-based miso broths paired with house noodles.',
   },
   Kaedama: {
-    en: 'Kaedama',
-    ja: '替え玉',
-    description: 'Refill noodles to enjoy more with your remaining soup. Seasoned options available.',
-  },
-  Beer: {
-    en: 'Beer',
-    ja: 'ビール',
-    description: 'Selection of Japanese and craft beers',
-  },
-  JapaneseSake: {
-    en: 'Japanese Sake',
-    ja: '日本酒',
-    description: "Akishika Shuzō's sake brewed in Nose Town, Osaka. Robust, expressive sake with rich umami and vibrant acidity. Perfect pairing with ramen and Japanese side dishes.",
-  },
-  Wine: {
-    en: 'Wine',
-    ja: 'ワイン',
-    description: 'Curated selection of Japanese wines, including rare Koshu varietal bottles and house pour by the glass.',
-  },
-  SoftDrink: {
-    en: 'Soft Drinks',
-    ja: 'ソフトドリンク',
-    description: 'Non-alcoholic beverages including local Toyono cider, seasonal soda, house-roasted coffee, and more.',
-  },
-  Dessert: {
-    en: 'Dessert',
-    ja: 'デザート',
-    description: 'Sweet endings — from nostalgic icecrine to rich cheesecake paired with house-roasted coffee.',
-  },
-  Ippin: {
-    en: 'Side Dishes',
-    ja: '一品料理',
-    description: "Seasonal and fermented side dishes, including chef's selection, oden, and more. Perfect with drinks or ramen.",
+    en: 'Kaedama (Noodle Refills)',
+    ja: '替え玉・和え玉',
+    description: 'Refill noodles to enjoy with your remaining soup, including seasoned garlic and egg variations.',
   },
   LunchSpecial: {
-    en: 'Lunch Special',
-    ja: 'ランチスペシャル',
-    description: 'Limited-time lunch specials, including the fermentation gozen set, kids set, and more.',
+    en: 'Lunch Sets (11:30–14:30)',
+    ja: '昼のお膳・セット',
+    description: 'Midday sets including the Fermentation Gozen, Karaage Gozen, and Kids Ramen.',
   },
   SunsetSpecial: {
-    en: 'Sunset Special',
-    ja: 'サンセットスペシャル',
-    description: 'Relaxed afternoon bites and sets, available during the golden hours of 14:30–17:30.',
+    en: 'Sunset Specials (14:30–17:30)',
+    ja: 'サンセット限定メニュー',
+    description: 'Relaxed afternoon fermented vegetable plates, karaage sets, and coffee pairings.',
   },
   DinnerSpecial: {
-    en: 'Dinner Special',
-    ja: 'ディナースペシャル',
-    description: 'Evening side sets to complement your ramen — choose from small plates, karaage, or rice options.',
+    en: 'Dinner Sets (17:30–22:00)',
+    ja: '夜のお得なセット',
+    description: 'Evening side sets to pair with your ramen — small fermented plates, karaage, or rice.',
+  },
+  Ippin: {
+    en: 'Fermented Small Plates & Oden',
+    ja: '発酵一品料理・味噌おでん',
+    description: 'Seasonal fermented side dishes, miso-simmered oden, local pickles, and house karaage.',
+  },
+  Beer: {
+    en: 'Osaka Craft Beer (Minoh & Orizé)',
+    ja: '箕面ビール・オリゼー米麹ビール',
+    description: 'Draft and bottled craft beers from Minoh Brewery (Osaka) and gluten-free rice-koji ales from Orizé.',
+  },
+  JapaneseSake: {
+    en: 'Akishika Natural Sake (Nose, Osaka)',
+    ja: '能勢・秋鹿酒造の純米酒',
+    description: 'Brewed in Nose Town from pesticide-free Yamada Nishiki rice. Expressive umami and crisp acidity that cut through rich miso.',
+  },
+  Wine: {
+    en: 'Japanese Wine',
+    ja: '日本ワイン',
+    description: 'Curated Japanese Koshu wines and 1.8L isshobin bottles.',
+  },
+  SoftDrink: {
+    en: 'Craft Sodas & Roasted Coffee',
+    ja: '自家製発酵ソーダ・豊能サイダー・珈琲',
+    description: 'Non-alcoholic Toyono cider, house fermented fruit syrup soda, and house-roasted coffee.',
+  },
+  Dessert: {
+    en: 'Sweets & After-Meal',
+    ja: '甘味・デザート',
+    description: 'Nostalgic icecrine and rich cheesecake paired with house-roasted coffee.',
   },
 };
 
-const TIME_LABELS: Record<TimeSlot, string> = {
-  Lunch: '11:30〜14:30 Lunch',
-  Sunset: '14:30〜17:30 Sunset',
-  Dinner: '17:30〜22:00 Dinner',
-  Midnight: '22:00〜23:30 Midnight (Wed–Sat)',
-};
+const TIME_SLOTS: { id: TimeSlot; label: string; hours: string; sub: string }[] = [
+  { id: 'Lunch', label: 'Lunch', hours: '11:30–14:30', sub: 'Wed–Sun' },
+  { id: 'Sunset', label: 'Sunset', hours: '14:30–17:30', sub: 'Wed–Sun' },
+  { id: 'Dinner', label: 'Dinner', hours: '17:30–22:00', sub: 'Wed–Sun' },
+  { id: 'Midnight', label: 'Midnight', hours: '22:00–23:30', sub: 'Wed–Sat only' },
+];
 
-function isMidnightDay(): boolean {
-  return [3, 4, 5, 6].includes(new Date().getDay()); // Wed–Sat
+const DIETARY_FILTERS: { id: DietaryFilter; label: string; countHint?: string }[] = [
+  { id: 'all', label: 'All Dishes' },
+  { id: 'plant-based', label: 'Vegan & Vegetarian' },
+  { id: 'no-pork', label: 'Pork-Free (No Pork)' },
+  { id: 'spicy', label: 'Spicy' },
+];
+
+interface MenuClientProps {
+  initialItems: MenuItem[];
 }
 
-function getDefaultTimeSlot(): TimeSlot {
-  const now = new Date();
-  const day = now.getDay();
-  const time = now.getHours() * 60 + now.getMinutes();
-  if ([3, 4, 5, 6].includes(day) && time >= 1320 && time < 1410) return 'Midnight'; // 22:00-23:30 Wed-Sat
-  if (time >= 1050 && time < 1320) return 'Dinner'; // 17:30-22:00
-  if (time >= 870 && time < 1050) return 'Sunset'; // 14:30-17:30
-  if (time >= 690 && time < 870) return 'Lunch'; // 11:30-14:30
-  return 'Dinner';
-}
-
-
-export default function MenuClient() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+export default function MenuClient({ initialItems }: MenuClientProps) {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(initialItems);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({});
-  const [activeCategory, setActiveCategory] = useState<string | null>('Ramen');
-  const [activeTime, setActiveTime] = useState<TimeSlot>(getDefaultTimeSlot());
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const midnightAvailable = isMidnightDay();
+  const [activeCategory, setActiveCategory] = useState<MenuCategory>('Ramen');
+  const [activeTime, setActiveTime] = useState<TimeSlot>('Dinner');
+  const [dietaryFilter, setDietaryFilter] = useState<DietaryFilter>('all');
+  const [enlargedPhoto, setEnlargedPhoto] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
-    setActiveTime(getDefaultTimeSlot());
+    const params = new URLSearchParams(window.location.search);
+    const slotParam = params.get('slot') as TimeSlot | null;
+    if (slotParam && ['Lunch', 'Sunset', 'Dinner', 'Midnight'].includes(slotParam)) {
+      setActiveTime(slotParam);
+    } else {
+      setActiveTime(getDefaultTimeSlot(new Date()));
+    }
   }, []);
 
-  // Fetch menu from API (which tries DB, falls back to JSON files)
+  // Optional live refresh from /api/menu (if Neon DB has newer edits than build-time JSON)
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         const res = await fetch('/api/menu');
-        if (!res.ok) throw new Error('Failed to fetch menu');
-        else console.log('Menu fetched successfully from API');
-
+        if (!res.ok) return;
         const data = await res.json();
-        if (mounted && Array.isArray(data)) setMenuItems(data as MenuItem[]);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error('Error fetching menu:', err);
+        if (mounted && Array.isArray(data) && data.length > 0) {
+          setMenuItems(data as MenuItem[]);
+        }
+      } catch {
+        // Keep initialItems fallback silently
       }
     })();
     return () => {
@@ -127,20 +148,31 @@ export default function MenuClient() {
     };
   }, []);
 
-  // 時間帯でフィルタ
-  const filteredMenuItems = menuItems.filter(item =>
-    item.availableAt ? item.availableAt.includes(activeTime) : activeTime === 'Dinner'
-  );
+  // Close image modal on Escape key
+  useEffect(() => {
+    if (!enlargedPhoto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setEnlargedPhoto(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [enlargedPhoto]);
 
-  // Group items by category
-  const grouped = filteredMenuItems.reduce(
-    (acc: Record<string, typeof menuItems>, item) => {
+  const filteredItems = filterMenuItems(menuItems, {
+    timeSlot: activeTime,
+    dietaryFilter,
+  });
+
+  const grouped = filteredItems.reduce(
+    (acc, item) => {
       if (!acc[item.category]) acc[item.category] = [];
       acc[item.category].push(item);
       return acc;
     },
-    {} as Record<string, typeof menuItems>,
+    {} as Record<MenuCategory, MenuItem[]>
   );
+
+  const availableCategories = CATEGORY_ORDER.filter((cat) => (grouped[cat]?.length ?? 0) > 0);
 
   const toggleDescription = (id: string) => {
     setExpandedDescriptions((prev) => ({
@@ -149,7 +181,7 @@ export default function MenuClient() {
     }));
   };
 
-  const scrollToCategory = (category: string) => {
+  const scrollToCategory = (category: MenuCategory) => {
     const element = document.getElementById(`category-${category}`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -158,283 +190,401 @@ export default function MenuClient() {
   };
 
   return (
-    <TooltipProvider delayDuration={200} skipDelayDuration={100}>
-      <div className="min-h-screen bg-background">
-        <DecorativeBackground />
-        {/* Image Modal */}
+    <TooltipProvider delayDuration={150} skipDelayDuration={100}>
+      <div className="min-h-screen bg-surface">
+        {/* Accessible Image Modal */}
         <AnimatePresence>
-          {selectedImage && (
+          {enlargedPhoto && (
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Enlarged photo of ${enlargedPhoto.alt}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
-              onClick={() => setSelectedImage(null)}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-kasshoku-deep/90 p-4"
+              onClick={() => setEnlargedPhoto(null)}
             >
               <motion.div
-                initial={{ scale: 0.9 }}
+                initial={{ scale: 0.96 }}
                 animate={{ scale: 1 }}
-                exit={{ scale: 0.9 }}
-                className="relative max-w-4xl w-full"
-                onClick={e => e.stopPropagation()}
+                exit={{ scale: 0.96 }}
+                className="relative max-w-4xl w-full bg-surface-elevated p-2 rounded-xs border border-[color:var(--color-border-strong)]"
+                onClick={(e) => e.stopPropagation()}
               >
-                <button
-                  onClick={() => setSelectedImage(null)}
-                  className="absolute -top-12 right-0 text-washi hover:text-kohaku transition-colors"
-                >
-                  <X size={32} />
-                </button>
-                <div className="relative aspect-[4/3] w-full">
+                <div className="flex items-center justify-between px-3 py-2 border-b border-[color:var(--color-border)]">
+                  <p className="font-serif text-sm font-medium text-foreground truncate pr-4">
+                    {enlargedPhoto.alt}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setEnlargedPhoto(null)}
+                    aria-label="Close enlarged photo"
+                    className="inline-flex items-center justify-center w-10 h-10 rounded-xs text-foreground hover:text-urushi hover:bg-surface-muted transition-colors"
+                  >
+                    <X className="w-5 h-5" aria-hidden="true" />
+                  </button>
+                </div>
+                <div className="relative aspect-[4/3] w-full bg-kasshoku-deep">
                   <Image
-                    src={selectedImage}
-                    alt="Enlarged view"
+                    src={enlargedPhoto.src}
+                    alt={enlargedPhoto.alt}
                     fill
                     className="object-contain"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
                   />
                 </div>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
-        <header className="relative z-10 pt-20 pb-6 px-4 text-center">
-          <div className="max-w-2xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <p className="text-[9px] tracking-[0.5em] text-kohaku uppercase mb-2 font-light">
-                Mitsukabose
+
+        {/* Page Header */}
+        <header className="border-b border-[color:var(--color-border-strong)] bg-surface pt-10 pb-8 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div>
+              <div className="flex items-baseline gap-3">
+                <h1 className="font-serif text-4xl sm:text-5xl font-bold text-foreground">
+                  Menu Ledger
+                </h1>
+                <span className="font-serif text-lg sm:text-xl text-foreground-soft" translate="no">
+                  お品書き
+                </span>
+              </div>
+              <p className="mt-2.5 text-base text-foreground-soft measure-prose">
+                Our menu shifts through four daily time slots—from midday fermentation sets and
+                relaxed afternoon pours to full evening ramen and late-night bowls on Wednesday–Saturday.
               </p>
-            </motion.div>
-            <motion.h1
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.05 }}
-              className="font-serif text-4xl md:text-5xl font-light text-foreground mb-2 tracking-wide"
-            >
-              Menu
-            </motion.h1>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex items-center justify-center gap-3"
-            >
-              <div className="w-8 h-px bg-kasshoku/20" />
-              <p className="text-sm text-foreground-soft font-light">
-                <span className="font-serif tracking-[0.3em]">お品書き</span>
-                <span className="mx-2 text-muted/40">·</span>
-                <span className="text-xs">Fermented Miso Ramen &amp; Craft Beer</span>
-              </p>
-              <div className="w-8 h-px bg-kasshoku/20" />
-            </motion.div>
+            </div>
+
+            <div className="text-xs text-foreground-soft bg-surface-muted px-4 py-3 rounded-xs border border-[color:var(--color-border)] space-y-1 font-tabular">
+              <p className="font-medium text-foreground">All prices include consumption tax (税込)</p>
+              <p>No table charge · Walk-ins only · English &amp; Japanese menu</p>
+            </div>
           </div>
         </header>
 
-        {/* 時間帯タブ */}
-        <nav className="sticky top-0 z-30 bg-kasshoku-deep/95 backdrop-blur-md shadow-[0_2px_20px_-4px_rgba(31,26,20,0.5)] py-3 px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="overflow-x-auto no-scrollbar">
-              <div className="flex justify-center min-w-max gap-2">
-                {(Object.keys(TIME_LABELS) as TimeSlot[])
-                  .filter(time => time !== 'Midnight' || midnightAvailable)
-                  .map(time => (
-                  <button
-                    key={time}
-                    onClick={() => setActiveTime(time)}
-                    className={`relative px-4 py-2 text-xs tracking-[0.15em] uppercase font-light whitespace-nowrap transition-all duration-300 rounded-sm ${
-                      activeTime === time
-                        ? 'bg-shibu-aka text-washi shadow-[0_4px_12px_-4px_rgba(178,58,43,0.6)]'
-                        : 'text-kohaku-soft/70 hover:text-kohaku-soft border border-washi/10 hover:border-washi/30'
-                    }`}
-                  >
-                    {TIME_LABELS[time]}
-                  </button>
-                ))}
+        {/* Control Deck: Time Slot + Dietary Filter + Category Jump */}
+        <section
+          aria-label="Menu filters and category navigation"
+          className="bg-surface-elevated border-b border-[color:var(--color-border-strong)] sticky top-16 z-30 shadow-[var(--shadow-ledger)]"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-3">
+            {/* Row 1: Time Slot + Dietary Filter */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              {/* Time slot buttons */}
+              <div
+                role="tablist"
+                aria-label="Filter menu by time of day"
+                className="flex overflow-x-auto no-scrollbar gap-1.5"
+              >
+                {TIME_SLOTS.map((slot) => {
+                  const active = activeTime === slot.id;
+                  return (
+                    <button
+                      key={slot.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => setActiveTime(slot.id)}
+                      className={`inline-flex items-center gap-2 min-h-[42px] px-3.5 py-1.5 rounded-xs text-xs sm:text-sm font-medium whitespace-nowrap border transition-colors ${
+                        active
+                          ? 'bg-kasshoku-deep text-washi border-kasshoku-deep'
+                          : 'bg-surface text-foreground-soft border-[color:var(--color-border-strong)] hover:text-foreground hover:bg-surface-muted'
+                      }`}
+                    >
+                      <Clock
+                        className={`w-3.5 h-3.5 ${active ? 'text-kohaku-soft' : 'text-urushi'}`}
+                        aria-hidden="true"
+                      />
+                      <span>{slot.label}</span>
+                      <span
+                        className={`font-tabular text-[11px] ${
+                          active ? 'text-kohaku-soft' : 'text-muted'
+                        }`}
+                      >
+                        {slot.hours}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Dietary preference filter pills */}
+              <div
+                role="group"
+                aria-label="Filter by dietary preference"
+                className="flex items-center overflow-x-auto no-scrollbar gap-1.5"
+              >
+                <span className="text-xs font-medium text-muted mr-1 whitespace-nowrap">
+                  Dietary:
+                </span>
+                {DIETARY_FILTERS.map((filter) => {
+                  const active = dietaryFilter === filter.id;
+                  return (
+                    <button
+                      key={filter.id}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => setDietaryFilter(filter.id)}
+                      className={`min-h-[38px] px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap border transition-colors ${
+                        active
+                          ? 'bg-urushi text-washi border-urushi'
+                          : 'bg-surface text-foreground-soft border-[color:var(--color-border-strong)] hover:text-foreground hover:bg-surface-muted'
+                      }`}
+                    >
+                      {filter.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-          </div>
-        </nav>
 
-        <nav className="sticky top-[56px] z-20 bg-background/95 backdrop-blur-md border-b border-kasshoku/10 shadow-[0_4px_16px_-8px_rgba(91,58,41,0.15)] py-2.5">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="flex justify-start overflow-x-auto no-scrollbar gap-1">
-              {(Object.keys(CATEGORY_LABELS) as MenuCategory[]).map((cat) =>
-                grouped[cat]?.length ? (
-                  <button
-                    key={cat}
-                    onClick={() => scrollToCategory(cat)}
-                    className={`relative px-3 py-1.5 text-sm font-light rounded-sm transition-all duration-200 whitespace-nowrap ${
-                      activeCategory === cat
-                        ? 'text-shibu-aka'
-                        : 'text-foreground-soft hover:text-shibu-aka'
-                    }`}
-                  >
-                    {CATEGORY_LABELS[cat].en}
-                    {activeCategory === cat && (
-                      <motion.div
-                        layoutId="activeCategory"
-                        className="absolute bottom-0 left-0 w-full h-0.5 bg-shibu-aka"
-                        transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
-                      />
-                    )}
-                  </button>
-                ) : null,
-              )}
-            </div>
-          </div>
-        </nav>
-
-        <main className="relative z-10 max-w-5xl mx-auto px-3 sm:px-4 py-6">
-          {(Object.keys(CATEGORY_LABELS) as MenuCategory[]).map((cat) =>
-            grouped[cat]?.length ? (
-              <section id={`category-${cat}`} key={cat} className="mb-14 scroll-mt-28">
-                {/* Category header — compact */}
-                <div className="mb-5 flex items-center gap-4">
-                  <div className="flex-1 h-px bg-kasshoku/12" />
-                  <div className="text-center flex-none">
-                    <p className="text-[9px] tracking-[0.35em] text-kohaku uppercase mb-0.5 font-light">
-                      {CATEGORY_LABELS[cat].ja}
-                    </p>
-                    <h2 className="font-serif text-xl md:text-2xl font-light text-foreground tracking-wide">
-                      {CATEGORY_LABELS[cat].en}
-                    </h2>
-                  </div>
-                  <div className="flex-1 h-px bg-kasshoku/12" />
-                  {/* Item count badge */}
-                  <span className="flex-none text-[10px] text-muted font-light tabular-nums">
-                    {grouped[cat].length} items
-                  </span>
-                </div>
-                <p className="text-center text-foreground-soft font-light text-xs max-w-md mx-auto mb-6 leading-relaxed">
-                  {CATEGORY_LABELS[cat].description}
-                </p>
-
-                {/* Grid layout: 2 cols mobile, 3 cols desktop */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-                  {grouped[cat].map((item, itemIndex) => (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 16 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.15 }}
-                      transition={{ duration: 0.45, delay: Math.min(itemIndex * 0.05, 0.3), ease: [0.22, 1, 0.36, 1] }}
+            {/* Row 2: Category Jump Bar */}
+            {availableCategories.length > 0 && (
+              <nav
+                aria-label="Jump to menu category"
+                className="flex items-center overflow-x-auto no-scrollbar gap-1 pt-2 border-t border-[color:var(--color-border)]"
+              >
+                {availableCategories.map((cat) => {
+                  const active = activeCategory === cat;
+                  const count = grouped[cat]?.length ?? 0;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => scrollToCategory(cat)}
+                      className={`inline-flex items-baseline gap-1.5 min-h-[38px] px-3 py-1.5 text-xs sm:text-sm rounded-xs whitespace-nowrap transition-colors ${
+                        active
+                          ? 'bg-surface-muted text-urushi font-semibold'
+                          : 'text-foreground-soft hover:text-urushi hover:bg-surface-muted/50'
+                      }`}
                     >
-                      <div className="group bg-background-soft/50 border border-kasshoku/8 rounded-md overflow-hidden shadow-[0_2px_16px_-6px_rgba(91,58,41,0.1)] hover:shadow-[0_8px_32px_-8px_rgba(91,58,41,0.2)] transition-all duration-300 hover:-translate-y-0.5 h-full flex flex-col">
-                        {/* Image — compact */}
-                        <div className="relative aspect-[4/3] overflow-hidden bg-background-soft flex-none">
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-muted text-[9px] tracking-widest uppercase font-light">No Image</span>
-                          </div>
-                          <Image
-                            src={item.imageUrl}
-                            alt={item.name}
-                            fill
-                            className="object-cover cursor-zoom-in group-hover:scale-105 transition-transform duration-700 ease-out"
-                            sizes="(max-width: 768px) 50vw, 280px"
-                            onClick={() => setSelectedImage(item.imageUrl)}
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                          {/* Price badge */}
-                          <div className="absolute bottom-0 right-0 m-2">
-                            {typeof item.priceYen === 'number' ? (
-                              <span className="bg-kasshoku-deep/80 backdrop-blur-sm text-kohaku-soft text-[10px] font-light px-2 py-0.5 rounded-sm tracking-wider">
-                                ¥{item.priceYen.toLocaleString()}
-                              </span>
-                            ) : (
-                              <span className="bg-kasshoku-deep/80 backdrop-blur-sm text-kohaku-soft text-[10px] font-light px-2 py-0.5 rounded-sm tracking-wider">
-                                ¥{Math.min(...Object.values(item.priceYen as Record<string, number>)).toLocaleString()}〜
-                              </span>
-                            )}
-                          </div>
+                      <span>{CATEGORY_LABELS[cat].en}</span>
+                      <span className="font-tabular text-[11px] text-muted">({count})</span>
+                    </button>
+                  );
+                })}
+              </nav>
+            )}
+          </div>
+        </section>
+
+        {/* Menu Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* Actionable Empty State when filter combination yields 0 items */}
+          {availableCategories.length === 0 ? (
+            <div className="ledger-frame p-8 sm:p-12 text-center max-w-xl mx-auto my-8 space-y-4">
+              <h2 className="font-serif text-2xl font-bold text-foreground">
+                No dishes match this combination in {activeTime}
+              </h2>
+              <p className="text-sm text-foreground-soft leading-relaxed">
+                Some specialty bowls (such as our 100% plant-based Vegan Tantanmen and Red Miso
+                Ramen) are prepared specifically for Dinner service (17:30–22:00).
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setDietaryFilter('all')}
+                  className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-urushi hover:bg-urushi-deep text-washi text-xs sm:text-sm font-medium rounded-xs transition-colors"
+                >
+                  <RotateCcw className="w-4 h-4" aria-hidden="true" />
+                  <span>Show All {activeTime} Dishes</span>
+                </button>
+                {activeTime !== 'Dinner' && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveTime('Dinner')}
+                    className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-surface-muted hover:bg-surface text-foreground border border-[color:var(--color-border-strong)] text-xs sm:text-sm font-medium rounded-xs transition-colors"
+                  >
+                    <span>Switch to Dinner Menu (17:30–22:00)</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-20">
+              {availableCategories.map((cat) => {
+                const items = grouped[cat];
+                const meta = CATEGORY_LABELS[cat];
+                return (
+                  <section
+                    key={cat}
+                    id={`category-${cat}`}
+                    aria-labelledby={`heading-${cat}`}
+                    className="scroll-mt-44"
+                  >
+                    {/* Category Header */}
+                    <div className="border-b-2 border-[color:var(--color-border-strong)] pb-4 mb-8 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                      <div>
+                        <div className="flex flex-wrap items-baseline gap-3">
+                          <h2
+                            id={`heading-${cat}`}
+                            className="font-serif text-2xl sm:text-3xl font-bold text-foreground"
+                          >
+                            {meta.en}
+                          </h2>
+                          <span className="font-serif text-sm text-urushi font-medium" translate="no">
+                            {meta.ja}
+                          </span>
                         </div>
+                        <p className="text-sm text-foreground-soft mt-1.5 measure-prose">
+                          {meta.description}
+                        </p>
+                      </div>
+                      <span className="font-tabular text-xs text-muted whitespace-nowrap">
+                        {items.length} {items.length === 1 ? 'item' : 'items'} in {activeTime}
+                      </span>
+                    </div>
 
-                        <div className="p-3 sm:p-4 flex flex-col flex-1">
-                          {/* Title */}
-                          <h3 className="font-serif text-sm sm:text-base font-light text-foreground tracking-wide mb-1 leading-snug line-clamp-2">
-                            {item.name}
-                          </h3>
+                    {/* Responsive Ledger Grid (replaces horizontal-only w-72 strip) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {items.map((item) => {
+                        const priceEntries = getPriceEntries(item.priceYen);
+                        const priceSummary = getPriceSummary(item.priceYen);
+                        const isExpanded = !!expandedDescriptions[item.id];
 
-                          {/* Multi-price table — collapsed on mobile */}
-                          {typeof item.priceYen === 'object' && (
-                            <div className="mb-2 border-t border-kasshoku/8 pt-1.5 mt-1 hidden sm:block">
-                              {Object.entries(item.priceYen as Record<string, number>).map(([size, price]) => (
-                                <div key={size} className="flex justify-between items-baseline py-px">
-                                  <span className="text-[10px] text-muted font-light truncate mr-1.5 max-w-[55%]">{size}</span>
-                                  <span className="text-[10px] text-foreground font-light tabular-nums whitespace-nowrap">¥{price.toLocaleString()}</span>
+                        return (
+                          <article
+                            key={item.id}
+                            className="ledger-frame overflow-hidden flex flex-col justify-between bg-surface-elevated"
+                          >
+                            <div>
+                              <DishMediaFrame
+                                src={item.imageUrl}
+                                alt={item.name}
+                                category={item.category}
+                                itemName={item.name}
+                                priceBadge={priceSummary}
+                                onSelectImage={(src, alt) => setEnlargedPhoto({ src, alt })}
+                              />
+
+                              <div className="p-5 space-y-3.5">
+                                <div className="flex items-baseline justify-between gap-3">
+                                  <h3 className="font-serif text-lg sm:text-xl font-bold text-foreground leading-snug">
+                                    {item.name}
+                                  </h3>
+                                  {priceEntries.length === 1 && (
+                                    <span className="font-tabular text-base font-semibold text-foreground whitespace-nowrap">
+                                      {priceEntries[0].formatted}
+                                    </span>
+                                  )}
                                 </div>
-                              ))}
-                            </div>
-                          )}
 
-                          {/* Description — 2 lines on mobile, 3 on desktop */}
-                          <div className="flex-1">
-                            <div className={`text-foreground-soft text-xs sm:text-sm font-light leading-relaxed ${
-                              expandedDescriptions[item.id] ? '' : 'line-clamp-2 sm:line-clamp-3'
-                            }`}>
-                              {item.description}
-                            </div>
-                            {item.description.length > 80 && (
-                              <button
-                                className="inline-flex items-center gap-0.5 text-shibu-aka text-[10px] sm:text-xs mt-1 hover:text-shibu-aka-deep transition-colors focus:outline-none"
-                                onClick={() => toggleDescription(item.id)}
-                              >
-                                {expandedDescriptions[item.id] ? (
-                                  <><span>Less</span><ChevronUp className="w-2.5 h-2.5" /></>
-                                ) : (
-                                  <><span>More</span><ChevronDown className="w-2.5 h-2.5" /></>
+                                {/* Multi-size price table */}
+                                {priceEntries.length > 1 && (
+                                  <dl className="bg-surface-muted/70 px-3.5 py-2.5 rounded-xs border border-[color:var(--color-border)] space-y-1 text-xs">
+                                    {priceEntries.map((entry) => (
+                                      <div
+                                        key={entry.label}
+                                        className="flex items-baseline justify-between gap-2 border-b last:border-b-0 border-dotted border-[color:var(--color-border)] pb-1 last:pb-0"
+                                      >
+                                        <dt className="text-foreground-soft capitalize">
+                                          {entry.label}
+                                        </dt>
+                                        <dd className="font-tabular font-semibold text-foreground">
+                                          {entry.formatted}
+                                        </dd>
+                                      </div>
+                                    ))}
+                                  </dl>
                                 )}
-                              </button>
-                            )}
-                          </div>
 
-                          {/* Tags — compact */}
-                          <div className="mt-2.5 pt-2 border-t border-kasshoku/8 space-y-1">
-                            {item.ingredients.length > 0 && (
-                              <div className="flex flex-wrap gap-0.5">
-                                {item.ingredients.slice(0, 3).map((ing: string, i: number) => (
-                                  <span key={i} className="px-1.5 py-px bg-background text-muted rounded-full text-[8px] sm:text-[9px] font-light border border-kasshoku/8">
-                                    {ing}
-                                  </span>
-                                ))}
-                                {item.ingredients.length > 3 && (
-                                  <span className="px-1 py-px text-muted text-[8px] font-light">+{item.ingredients.length - 3}</span>
+                                {/* Description */}
+                                {item.description && (
+                                  <div>
+                                    <p
+                                      className={`text-foreground-soft text-sm leading-relaxed ${
+                                        isExpanded ? '' : 'line-clamp-3'
+                                      }`}
+                                    >
+                                      {item.description}
+                                    </p>
+                                    {item.description.length > 135 && (
+                                      <button
+                                        type="button"
+                                        onClick={() => toggleDescription(item.id)}
+                                        className="inline-flex items-center gap-1 mt-1.5 py-1 text-xs font-medium text-urushi hover:text-urushi-deep transition-colors"
+                                      >
+                                        {isExpanded ? (
+                                          <>
+                                            <span>Show less</span>
+                                            <ChevronUp className="w-3.5 h-3.5" aria-hidden="true" />
+                                          </>
+                                        ) : (
+                                          <>
+                                            <span>Read full description</span>
+                                            <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+                                          </>
+                                        )}
+                                      </button>
+                                    )}
+                                  </div>
                                 )}
                               </div>
-                            )}
-                            <div className="flex flex-wrap gap-0.5">
-                              {item.dietary.map((opt: string, i: number) => (
-                                <TooltipRoot key={`${opt}-${i}`}>
-                                  <TooltipTrigger asChild>
-                                    <span className="px-1.5 py-px bg-matcha/10 text-matcha rounded-full text-[8px] sm:text-[9px] font-light flex items-center gap-px cursor-help">
-                                      {opt}<Info className="w-2 h-2" />
-                                    </span>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top" className="bg-kasshoku-deep text-washi text-xs px-3 py-2 rounded-sm shadow-xl">
-                                    {getDietaryDescription(opt)}
-                                  </TooltipContent>
-                                </TooltipRoot>
-                              ))}
-                              {item.allergies.map((alg: string, i: number) => (
-                                <span key={i} className="px-1.5 py-px bg-shibu-aka/10 text-shibu-aka rounded-full text-[8px] sm:text-[9px] font-light">
-                                  {alg}
-                                </span>
-                              ))}
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </section>
-            ) : null,
+
+                            {/* Footer metadata: Ingredients, Dietary & Allergens */}
+                            <div className="px-5 pb-5 pt-3 border-t border-[color:var(--color-border)] space-y-2.5 text-xs">
+                              {item.ingredients && item.ingredients.length > 0 && (
+                                <p className="text-muted leading-snug">
+                                  <strong className="font-medium text-foreground-soft">
+                                    Key ingredients:
+                                  </strong>{' '}
+                                  {item.ingredients.join(', ')}
+                                </p>
+                              )}
+
+                              <div className="flex flex-wrap gap-1.5">
+                                {item.dietary?.map((opt, i) => {
+                                  const lower = opt.toLowerCase();
+                                  const isPlant =
+                                    lower.includes('vegan') ||
+                                    lower.includes('vegetarian') ||
+                                    lower.includes('ビーガン') ||
+                                    lower.includes('ベジタリアン');
+                                  return (
+                                    <TooltipRoot key={`${opt}-${i}`}>
+                                      <TooltipTrigger asChild>
+                                        <span
+                                          tabIndex={0}
+                                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium cursor-help ${
+                                            isPlant
+                                              ? 'bg-koji/12 text-koji border border-koji/30'
+                                              : 'bg-surface-muted text-foreground-soft border border-[color:var(--color-border)]'
+                                          }`}
+                                        >
+                                          <span>{opt}</span>
+                                          <Info className="w-3 h-3" aria-hidden="true" />
+                                        </span>
+                                      </TooltipTrigger>
+                                      <TooltipContent
+                                        side="top"
+                                        className="z-50 bg-kasshoku-deep text-washi text-xs px-3 py-2 rounded-xs shadow-lg max-w-xs"
+                                      >
+                                        {getDietaryDescription(opt)}
+                                      </TooltipContent>
+                                    </TooltipRoot>
+                                  );
+                                })}
+
+                                {item.allergies && item.allergies.length > 0 && (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-urushi/10 text-urushi border border-urushi/25">
+                                    Allergens: {item.allergies.join(', ')}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
           )}
-        </main>
+        </div>
       </div>
     </TooltipProvider>
   );
@@ -442,12 +592,15 @@ export default function MenuClient() {
 
 function getDietaryDescription(option: string): string {
   const descriptions: Record<string, string> = {
-    Vegetarian: "Contains no meat, poultry, fish, or seafood, but may contain eggs or dairy",
-    Vegan: "Contains no animal products or by-products whatsoever",
-    "Gluten-Free": "Contains no wheat, barley, rye, or other gluten-containing ingredients",
-    ベジタリアン: "Contains no meat, poultry, fish, or seafood, but may contain eggs or dairy",
-    ビーガン: "Contains no animal products or by-products whatsoever",
+    Vegetarian: 'Contains no meat, poultry, fish, or seafood; may contain eggs or dairy.',
+    Vegan: '100% plant-based — contains no animal products, fish dashi, or dairy.',
+    'Gluten-Free': 'Brewed or prepared without wheat, barley, or rye.',
+    pork: 'Contains pork chashu or pork-based seasoning.',
+    spicy: 'Prepared with house chili oil or Korean-style spicy miso.',
+    seafood: 'Contains clams, shrimp, or seafood dashi.',
+    ベジタリアン: 'Contains no meat, poultry, fish, or seafood; may contain eggs or dairy.',
+    ビーガン: '100% plant-based — contains no animal products whatsoever.',
   };
 
   return descriptions[option] || option;
-} 
+}

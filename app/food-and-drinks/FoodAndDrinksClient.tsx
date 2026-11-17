@@ -1,31 +1,74 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import { getFoodDrinks } from '@/domain/services/dataService';
 import type { FoodDrinkItem } from '@/domain/types';
-import {
-  Beer,
-  JapaneseYenIcon as Sake,
-  UtensilsCrossed,
-  ChevronDown,
-  X,
-} from 'lucide-react';
-import Link from 'next/link';
-
-const fadeIn = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-};
+import { DishMediaFrame } from '@/components/ui/DishMediaFrame';
+import { X, MapPin } from 'lucide-react';
 
 type SectionKey = 'minoh' | 'orize' | 'sake' | 'food';
-type TabKey = SectionKey | 'all';
+
+const PRODUCER_PROFILES: Record<
+  SectionKey,
+  {
+    title: string;
+    ja: string;
+    origin: string;
+    founded: string;
+    heroImage: string;
+    heroAlt: string;
+    pairingNote: string;
+    intro: string;
+  }
+> = {
+  minoh: {
+    title: 'Minoh Beer',
+    ja: '箕面ビール',
+    origin: 'Minoh City, Northern Osaka (15 min from Hotarugaike)',
+    founded: 'Founded 1997',
+    heroImage: '/images/food-and-drinks/minoh.jpg',
+    heroAlt: 'Freshly poured pint of Minoh craft beer with bottles of Stout and W-IPA on a wooden table',
+    pairingNote: 'Best paired with: Red Miso Ramen, Spicy Miso Ramen & House Karaage',
+    intro:
+      'Established in 1997 at the foot of the cedar-covered Minoh mountains in northern Osaka, Minoh Beer is a family-run craft brewery led by the Ohshita sisters. Their unfiltered, live-yeast ales have won World Beer Awards for their balance of roasted malt depth and clean drinkability.',
+  },
+  orize: {
+    title: 'Orizé Brewing',
+    ja: 'オリゼーブルーイング',
+    origin: 'Wakayama, Kansai',
+    founded: 'Founded 2019',
+    heroImage: '/images/food-and-drinks/orize-brewing.png',
+    heroAlt: 'The storefront and fermentation tanks of Orizé Brewing',
+    pairingNote: 'Best paired with: TOYONO Ramen, Vegan Tantanmen & Fermented Vegetable Plates',
+    intro:
+      'Named after Aspergillus oryzae (the national koji mold of Japan), Orizé Brewing is the world’s first craft brewery to ferment beer using Japanese rice koji instead of barley malt. Naturally gluten-free, aromatic, and gentle on the palate.',
+  },
+  sake: {
+    title: 'Akishika Sake Brewery',
+    ja: '秋鹿酒造',
+    origin: 'Nose Town, Northern Osaka',
+    founded: 'Founded 1886',
+    heroImage: '/images/food-and-drinks/akishika-sake.jpg',
+    heroAlt: 'Bottles of Akishika sake from Nose Town served in a glass cup',
+    pairingNote: 'Best paired with: White Miso Ramen, Miso Oden & Sake Kasu Dishes',
+    intro:
+      'High in the mountain valleys of Nose Town at the northern tip of Osaka, Akishika Shuzō practices Ikkan-zukuri—growing its own pesticide-free Yamada Nishiki rice and brewing pure junmai sake in-house. Its vibrant lactic acidity and savory umami cut cleanly through rich miso broth.',
+  },
+  food: {
+    title: 'Mitsukabose Miso Ramen',
+    ja: 'みつか坊主の味噌ラーメン',
+    origin: 'Hotarugaike, Toyonaka, Osaka',
+    founded: 'Brewed daily in-house',
+    heroImage: '/images/food-and-drinks/mitsukabose-food.jpg',
+    heroAlt: 'The 2nd-floor dining hall at Mitsukabose in Hotarugaike',
+    pairingNote: 'Served across Lunch, Sunset, Dinner & Wed–Sat Midnight',
+    intro:
+      'Every bowl starts with regional Japanese misos—from sweet, silky Kyoto-style white miso and aged red miso blends to handcrafted Kaachan Miso from neighboring Toyono Town and Akishika sake lees.',
+  },
+};
 
 export default function FoodAndDrinksClient() {
   const items: FoodDrinkItem[] = getFoodDrinks();
@@ -38,32 +81,36 @@ export default function FoodAndDrinksClient() {
   ]);
   const isOrize = (item: FoodDrinkItem) => ORIZE_IDS.has(item.id);
 
-  const orizeBeers = items.filter((item) => item.category === 'beer' && isOrize(item));
   const minohBeers = items.filter((item) => item.category === 'beer' && !isOrize(item));
+  const orizeBeers = items.filter((item) => item.category === 'beer' && isOrize(item));
   const sakes = items.filter((item) => item.category === 'sake');
   const foods = items.filter((item) => item.category === 'ramen');
 
-  const [activeTab, setActiveTab] = useState<TabKey>('all');
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<SectionKey>('minoh');
+  const [enlargedPhoto, setEnlargedPhoto] = useState<{ src: string; alt: string } | null>(null);
 
-  const heroRef = useRef<HTMLDivElement>(null);
-  const orizeRef = useRef<HTMLDivElement>(null);
-  const minohRef = useRef<HTMLDivElement>(null);
-  const sakeRef = useRef<HTMLDivElement>(null);
-  const foodRef = useRef<HTMLDivElement>(null);
+  const minohRef = useRef<HTMLElement>(null);
+  const orizeRef = useRef<HTMLElement>(null);
+  const sakeRef = useRef<HTMLElement>(null);
+  const foodRef = useRef<HTMLElement>(null);
 
-  const isOrizeInView = useInView(orizeRef, { once: false, amount: 0.3 });
-  const isMinohInView = useInView(minohRef, { once: false, amount: 0.3 });
-  const isSakeInView = useInView(sakeRef, { once: false, amount: 0.3 });
+  useEffect(() => {
+    if (!enlargedPhoto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setEnlargedPhoto(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [enlargedPhoto]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
-      const sections = [
-        { ref: minohRef, tab: 'minoh' as const },
-        { ref: orizeRef, tab: 'orize' as const },
-        { ref: sakeRef, tab: 'sake' as const },
-        { ref: foodRef, tab: 'food' as const },
+      const scrollPosition = window.scrollY + 220;
+      const sections: { ref: React.RefObject<HTMLElement | null>; tab: SectionKey }[] = [
+        { ref: minohRef, tab: 'minoh' },
+        { ref: orizeRef, tab: 'orize' },
+        { ref: sakeRef, tab: 'sake' },
+        { ref: foodRef, tab: 'food' },
       ];
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -73,59 +120,62 @@ export default function FoodAndDrinksClient() {
           return;
         }
       }
-      if (scrollPosition < (orizeRef.current?.offsetTop || 0) - 100) {
-        setActiveTab('all');
-      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToSection = (section: SectionKey) => {
-    const refs = { minoh: minohRef, sake: sakeRef, food: foodRef, orize: orizeRef };
-    if (refs[section].current) {
-      const headerHeight = 132;
-      const element = refs[section].current;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    const refs = { minoh: minohRef, orize: orizeRef, sake: sakeRef, food: foodRef };
+    const element = refs[section].current;
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
       setActiveTab(section);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Image Modal */}
+    <div className="min-h-screen bg-surface">
+      {/* Accessible Image Modal */}
       <AnimatePresence>
-        {selectedImage && (
+        {enlargedPhoto && (
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Enlarged photo of ${enlargedPhoto.alt}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-kasshoku-deep/90 p-4 backdrop-blur-sm"
-            onClick={() => setSelectedImage(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-kasshoku-deep/90 p-4"
+            onClick={() => setEnlargedPhoto(null)}
           >
             <motion.div
-              initial={{ scale: 0.95 }}
+              initial={{ scale: 0.96 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="relative max-w-4xl w-full"
+              exit={{ scale: 0.96 }}
+              className="relative max-w-4xl w-full bg-surface-elevated p-2 rounded-xs border border-[color:var(--color-border-strong)]"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={() => setSelectedImage(null)}
-                className="absolute -top-12 right-0 text-washi hover:text-kohaku transition-colors"
-                aria-label="Close image"
-              >
-                <X size={32} />
-              </button>
-              <div className="relative aspect-[4/3] w-full">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-[color:var(--color-border)]">
+                <p className="font-serif text-sm font-medium text-foreground truncate pr-4">
+                  {enlargedPhoto.alt}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setEnlargedPhoto(null)}
+                  aria-label="Close enlarged photo"
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-xs text-foreground hover:text-urushi hover:bg-surface-muted transition-colors"
+                >
+                  <X className="w-5 h-5" aria-hidden="true" />
+                </button>
+              </div>
+              <div className="relative aspect-[4/3] w-full bg-kasshoku-deep">
                 <Image
-                  src={selectedImage || '/placeholder.svg'}
-                  alt="Enlarged view"
+                  src={enlargedPhoto.src}
+                  alt={enlargedPhoto.alt}
                   fill
-                  className="object-contain rounded-md"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
                 />
               </div>
             </motion.div>
@@ -133,381 +183,231 @@ export default function FoodAndDrinksClient() {
         )}
       </AnimatePresence>
 
-      {/* Hero Section */}
-      <section
-        ref={heroRef}
-        aria-label="Food & drinks hero"
-        className="relative isolate bg-[url('/images/food-and-drinks/japanese-pattern-dark.jpg')] bg-cover bg-center"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(31,26,20,0.85)] via-[rgba(31,26,20,0.6)] to-[rgba(31,26,20,0.85)]" />
-        <div className="relative z-10 min-h-[90vh] flex flex-col justify-center items-center px-4 py-24">
-          <motion.div
-            initial={{ opacity: 0, y: -24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
-          >
-            <div className="mb-6 inline-flex items-center">
-              <div className="h-px w-12 bg-kohaku-soft" />
-              <span className="mx-4 text-kohaku-soft font-light uppercase tracking-[0.4em] text-xs">
-                Authentic Experience
-              </span>
-              <div className="h-px w-12 bg-kohaku-soft" />
-            </div>
-
-            <h1 className="font-serif text-5xl md:text-7xl font-light mb-6 text-washi tracking-wide">
-              <span className="block">Taste of</span>
-              <span className="text-kohaku italic">Japan</span>
+      {/* Editorial Header */}
+      <header className="border-b border-[color:var(--color-border-strong)] bg-surface pt-10 pb-10 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+          <div className="lg:col-span-8 space-y-3">
+            <h1 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
+              Osaka Craft Beer, Nose Natural Sake &amp; Fermented Miso Bowls
             </h1>
-
-            <p className="text-lg text-washi/80 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
-              Discover our curated selection of Japanese craft beer, premium sake, and miso
-              ramen — born from the fermentation culture of Osaka.
+            <p className="text-base sm:text-lg text-foreground-soft measure-prose leading-relaxed">
+              We partner directly with three independent Kansai breweries—Minoh Beer, Orizé
+              Brewing, and Akishika Sake Brewery—so every glass poured at our table shares the
+              same fermentation roots as our miso broth.
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link
-                href="/menu"
-                className="px-8 py-4 bg-shibu-aka text-washi tracking-widest uppercase text-sm font-light hover:bg-shibu-aka-deep transition-all rounded-sm shadow-[0_10px_25px_-10px_rgba(178,58,43,0.6)] hover:-translate-y-0.5 inline-block"
-              >
-                View Full Menu
-              </Link>
-              <button
-                onClick={() => scrollToSection('minoh')}
-                className="px-8 py-4 bg-transparent border border-washi/60 text-washi tracking-widest uppercase text-sm font-light hover:bg-washi/10 transition-all rounded-sm hover:-translate-y-0.5"
-              >
-                Explore Selections
-              </button>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2"
-          >
-            <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-              <ChevronDown className="text-kohaku-soft" size={36} aria-hidden="true" />
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Navigation */}
-      <nav
-        aria-label="Section navigation"
-        className="sticky top-16 md:top-20 z-30 bg-kasshoku-deep/90 backdrop-blur-md shadow-md border-b border-washi/5"
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center px-4 py-3 gap-3 md:gap-0">
-            <div className="text-washi font-serif text-lg tracking-wider hidden md:block">
-              Our Selections
-            </div>
-            <div className="flex gap-1 overflow-x-auto no-scrollbar">
-              <NavBtn active={activeTab === 'all'} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                Overview
-              </NavBtn>
-              <NavBtn active={activeTab === 'minoh'} onClick={() => scrollToSection('minoh')} icon={<Beer size={16} />}>
-                Minoh
-              </NavBtn>
-              <NavBtn active={activeTab === 'orize'} onClick={() => scrollToSection('orize')} icon={<Beer size={16} />}>
-                Orizé
-              </NavBtn>
-              <NavBtn active={activeTab === 'sake'} onClick={() => scrollToSection('sake')} icon={<Sake size={16} />}>
-                Akishika
-              </NavBtn>
-              <NavBtn active={activeTab === 'food'} onClick={() => scrollToSection('food')} icon={<UtensilsCrossed size={16} />}>
-                Food
-              </NavBtn>
-            </div>
           </div>
+          <div className="lg:col-span-4 flex lg:justify-end">
+            <Link
+              href="/menu"
+              className="inline-flex items-center justify-center min-h-[46px] px-6 py-2.5 bg-urushi hover:bg-urushi-deep text-washi text-sm font-medium rounded-xs transition-colors"
+            >
+              See Prices &amp; Time Slots in Menu
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Sticky Producer Navigation */}
+      <nav
+        aria-label="Producer sections"
+        className="sticky top-16 z-30 bg-surface-elevated border-b border-[color:var(--color-border-strong)] shadow-[var(--shadow-ledger)]"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center overflow-x-auto no-scrollbar gap-2">
+          {(
+            [
+              { id: 'minoh', label: 'Minoh Beer', ja: '箕面ビール', count: minohBeers.length },
+              { id: 'orize', label: 'Orizé Rice-Koji Beer', ja: 'オリゼー', count: orizeBeers.length },
+              { id: 'sake', label: 'Akishika Sake', ja: '秋鹿酒造', count: sakes.length },
+              { id: 'food', label: 'Miso Ramen Lineup', ja: '味噌ラーメン', count: foods.length },
+            ] as const
+          ).map((tab) => {
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => scrollToSection(tab.id)}
+                className={`inline-flex items-baseline gap-2 min-h-[42px] px-4 py-2 rounded-xs text-xs sm:text-sm font-medium whitespace-nowrap border transition-colors ${
+                  active
+                    ? 'bg-kasshoku-deep text-washi border-kasshoku-deep'
+                    : 'bg-surface text-foreground-soft border-[color:var(--color-border-strong)] hover:text-foreground hover:bg-surface-muted'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[11px] ${active ? 'text-kohaku-soft' : 'text-muted'}`}
+                  translate="no"
+                >
+                  {tab.ja}
+                </span>
+                <span
+                  className={`font-tabular text-[11px] ${
+                    active ? 'text-washi/80' : 'text-muted'
+                  }`}
+                >
+                  ({tab.count})
+                </span>
+              </button>
+            );
+          })}
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-4 py-20">
-        {/* Introduction */}
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-          variants={staggerContainer}
-          className="mb-24 text-center"
-        >
-          <motion.div variants={fadeIn} className="mb-14">
-            <p className="text-xs tracking-[0.5em] text-kohaku uppercase mb-3">
-              Authentic Japan
-            </p>
-            <h2 className="font-serif text-4xl md:text-5xl font-light mb-6 text-foreground tracking-wide">
-              A Curated Experience
-            </h2>
-            <p className="text-lg text-foreground-soft max-w-3xl mx-auto leading-relaxed font-light">
-              Each item in our collection represents the pinnacle of Japanese craftsmanship
-              and tradition — slow brews, lively fermentation, and dishes that honor the
-              terroir of Osaka.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          >
-            <CategoryCard icon={<Beer size={28} className="text-washi" />} title="Craft Beer">
-              Award-winning brews from Minoh and koji-fermented beers from Orizé.
-            </CategoryCard>
-            <CategoryCard icon={<Sake size={28} className="text-washi" />} title="Premium Sake">
-              Akishika&apos;s organic sake, brewed in Nose Town from naturally grown rice.
-            </CategoryCard>
-            <CategoryCard
-              icon={<UtensilsCrossed size={28} className="text-washi" />}
-              title="Miso Ramen"
-            >
-              Slow-brewed white-miso ramen and seasonal fermented small plates.
-            </CategoryCard>
-          </motion.div>
-        </motion.section>
-
-        {/* Sections */}
-        <FeatureSection
+      {/* Producer Sections */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-24">
+        <ProducerSection
           sectionRef={minohRef}
           id="minoh"
-          inView={isMinohInView}
-          icon={<Beer size={22} className="text-shibu-aka" />}
-          title="Minoh Beer"
-          intro="Established in 1997 in Osaka Prefecture, Minoh Beer is a family-owned craft brewery internationally recognized for its quality. Led by the Ohshita sisters, every bottle balances character and depth."
+          profile={PRODUCER_PROFILES.minoh}
           items={minohBeers}
-          onImageClick={setSelectedImage}
+          onSelectImage={(src, alt) => setEnlargedPhoto({ src, alt })}
         />
 
-        <FeatureSection
+        <ProducerSection
           sectionRef={orizeRef}
           id="orize"
-          inView={isOrizeInView}
-          icon={<Beer size={22} className="text-shibu-aka" />}
-          title="Orizé Brewing"
-          intro="Founded in 2019 in Wakayama, Orizé is a pioneering nano-brewery — the world's first to brew beer with rice koji. Gluten-free, fermentation-driven, and rooted in domestic ingredients."
+          profile={PRODUCER_PROFILES.orize}
           items={orizeBeers}
-          onImageClick={setSelectedImage}
+          onSelectImage={(src, alt) => setEnlargedPhoto({ src, alt })}
         />
 
-        <FeatureSection
+        <ProducerSection
           sectionRef={sakeRef}
           id="sake"
-          inView={isSakeInView}
-          icon={<Sake size={22} className="text-shibu-aka" />}
-          title="Akishika Sake"
-          intro="In the mountains of Nose Town, Akishika has crafted sake since 1886. Master brewer Hiroaki Oku grows his own rice using natural farming — pure expressions of terroir, bottle by bottle."
+          profile={PRODUCER_PROFILES.sake}
           items={sakes}
-          onImageClick={setSelectedImage}
+          onSelectImage={(src, alt) => setEnlargedPhoto({ src, alt })}
         />
 
-        <section ref={foodRef} id="food" className="scroll-mt-40 mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8 }}
-            className="mb-12"
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <UtensilsCrossed size={22} className="text-shibu-aka" />
-              <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground">
-                Mitsukabose Food
-              </h2>
-              <div className="h-px flex-grow bg-kasshoku/20" />
-            </div>
-            <p className="text-foreground-soft max-w-3xl leading-relaxed font-light">
-              Authentic Japanese cuisine focused on miso ramen and seasonal small plates,
-              prepared with locally sourced ingredients and time-honored techniques.
-            </p>
-          </motion.div>
+        <ProducerSection
+          sectionRef={foodRef}
+          id="food"
+          profile={PRODUCER_PROFILES.food}
+          items={foods}
+          onSelectImage={(src, alt) => setEnlargedPhoto({ src, alt })}
+        />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {foods.map((food, index) => (
-              <motion.article
-                key={`${food.name}-${index}`}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.6, delay: (index % 6) * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                className="group"
-              >
-                <div className="bg-background-soft/60 rounded-md overflow-hidden h-full flex flex-col border border-kasshoku/10 shadow-cinematic transition-transform duration-500 group-hover:-translate-y-1">
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={food.imageUrl || '/placeholder.svg'}
-                      alt={food.name}
-                      fill
-                      className="object-cover cursor-pointer group-hover:scale-105 transition-transform duration-700"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      onClick={() => setSelectedImage(food.imageUrl)}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-kasshoku-deep/80 via-kasshoku-deep/20 to-transparent flex items-end">
-                      <div className="p-6">
-                        <span className="inline-block px-3 py-1 bg-shibu-aka text-washi rounded-sm text-[10px] tracking-[0.3em] uppercase mb-2">
-                          Ramen
-                        </span>
-                        <h3 className="font-serif text-2xl font-light text-washi">
-                          {food.name}
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6 flex-grow">
-                    <p className="text-foreground-soft leading-relaxed text-sm">
-                      {food.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </section>
-
-        {/* CTA */}
-        <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true, amount: 0.3 }}
-          className="mt-24 text-center"
-        >
-          <div className="bg-kasshoku-deep text-washi rounded-md p-12 md:p-16 shadow-cinematic">
-            <p className="text-xs tracking-[0.5em] text-kohaku uppercase mb-3">Come taste</p>
-            <h2 className="font-serif text-3xl md:text-4xl font-light mb-6 tracking-wide">
-              Ready to Experience Japan?
+        {/* Bottom CTA */}
+        <section className="ledger-frame bg-kasshoku-deep text-washi p-8 sm:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-washi">
+              Check What Is Pouring &amp; Simmering Today
             </h2>
-            <p className="text-lg text-washi/80 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
-              Visit us in Hotarugaike for a carefully curated selection of craft beer,
-              premium sake, and miso ramen.
+            <p className="text-sm sm:text-base text-washi/80 leading-relaxed">
+              See full prices, serving sizes (glass, pint, carafe, or 180ml sake pour), and
+              dietary notes on our Menu Ledger.
             </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/menu"
-              className="px-8 py-4 bg-shibu-aka text-washi tracking-widest uppercase text-sm font-light hover:bg-shibu-aka-deep transition-colors rounded-sm shadow-[0_10px_25px_-10px_rgba(178,58,43,0.6)] hover:-translate-y-0.5 inline-block"
+              className="inline-flex items-center justify-center min-h-[46px] px-6 py-3 bg-urushi hover:bg-urushi-deep text-washi text-sm font-medium rounded-xs transition-colors"
             >
-              View Full Menu
+              Open Full Menu Ledger
+            </Link>
+            <Link
+              href="/access"
+              className="inline-flex items-center justify-center min-h-[46px] px-6 py-3 bg-transparent hover:bg-washi/10 text-washi border border-washi/30 text-sm font-medium rounded-xs transition-colors"
+            >
+              1-Min Walk from Hotarugaike Stn
             </Link>
           </div>
-        </motion.section>
-      </main>
+        </section>
+      </div>
     </div>
   );
 }
 
-function NavBtn({
-  active,
-  onClick,
-  icon,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  icon?: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-2 rounded-sm transition-colors flex items-center gap-2 whitespace-nowrap text-sm tracking-wider ${
-        active
-          ? 'bg-shibu-aka text-washi'
-          : 'text-washi/80 hover:bg-washi/5 hover:text-washi'
-      }`}
-    >
-      {icon}
-      {children}
-    </button>
-  );
-}
-
-function CategoryCard({
-  icon,
-  title,
-  children,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <motion.article
-      variants={fadeIn}
-      className="bg-background-soft/60 backdrop-blur-sm p-8 rounded-md border border-kasshoku/10 shadow-cinematic"
-    >
-      <div className="w-14 h-14 bg-shibu-aka rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_8px_20px_-8px_rgba(178,58,43,0.6)]">
-        {icon}
-      </div>
-      <h3 className="font-serif text-xl font-light text-foreground mb-3">{title}</h3>
-      <p className="text-foreground-soft text-sm leading-relaxed">{children}</p>
-    </motion.article>
-  );
-}
-
-function FeatureSection({
+function ProducerSection({
   sectionRef,
   id,
-  inView,
-  icon,
-  title,
-  intro,
+  profile,
   items,
-  onImageClick,
+  onSelectImage,
 }: {
-  sectionRef: React.RefObject<HTMLDivElement | null>;
-  id: string;
-  inView: boolean;
-  icon: React.ReactNode;
-  title: string;
-  intro: string;
+  sectionRef: React.RefObject<HTMLElement | null>;
+  id: SectionKey;
+  profile: (typeof PRODUCER_PROFILES)[SectionKey];
   items: FoodDrinkItem[];
-  onImageClick: (url: string) => void;
+  onSelectImage: (src: string, alt: string) => void;
 }) {
   return (
-    <section ref={sectionRef} id={id} className="mb-24 scroll-mt-40">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-        transition={{ duration: 0.8 }}
-        className="mb-12"
-      >
-        <div className="flex items-center gap-4 mb-4">
-          {icon}
-          <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground">
-            {title}
-          </h2>
-          <div className="h-px flex-grow bg-kasshoku/20" />
+    <section
+      ref={sectionRef}
+      id={id}
+      aria-labelledby={`producer-${id}`}
+      className="scroll-mt-36 space-y-10"
+    >
+      {/* Producer Overview Card */}
+      <div className="ledger-frame overflow-hidden bg-surface-elevated grid grid-cols-1 lg:grid-cols-12">
+        <div className="lg:col-span-5 relative aspect-[4/3] lg:aspect-auto min-h-[260px] bg-surface-muted border-b lg:border-b-0 lg:border-r border-[color:var(--color-border)]">
+          <Image
+            src={profile.heroImage}
+            alt={profile.heroAlt}
+            fill
+            sizes="(max-width: 1024px) 100vw, 42vw"
+            className="object-cover"
+          />
         </div>
-        <p className="text-foreground-soft max-w-3xl leading-relaxed font-light">{intro}</p>
-      </motion.div>
+        <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-4">
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-foreground-soft">
+              <span className="inline-flex items-center gap-1 font-medium text-urushi">
+                <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
+                {profile.origin}
+              </span>
+              <span aria-hidden="true">·</span>
+              <span className="font-tabular text-muted">{profile.founded}</span>
+            </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-wrap items-baseline gap-3">
+              <h2
+                id={`producer-${id}`}
+                className="font-serif text-2xl sm:text-3xl font-bold text-foreground"
+              >
+                {profile.title}
+              </h2>
+              <span className="font-serif text-base text-foreground-soft" translate="no">
+                {profile.ja}
+              </span>
+            </div>
+
+            <p className="text-sm sm:text-base text-foreground-soft leading-relaxed measure-prose">
+              {profile.intro}
+            </p>
+          </div>
+
+          <div className="pt-3 border-t border-[color:var(--color-border)] text-xs font-medium text-foreground">
+            {profile.pairingNote}
+          </div>
+        </div>
+      </div>
+
+      {/* Lineup Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item) => (
-          <motion.article key={item.id} variants={fadeIn} className="group">
-            <div className="bg-background-soft/60 rounded-md overflow-hidden h-full flex flex-col border border-kasshoku/10 shadow-cinematic transition-transform duration-500 group-hover:-translate-y-1">
-              <div className="relative h-56 overflow-hidden bg-background-soft">
-                <Image
-                  src={item.imageUrl}
-                  alt={item.name}
-                  fill
-                  className="object-cover cursor-pointer group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  onClick={() => onImageClick(item.imageUrl)}
-                />
-              </div>
-              <div className="p-6 flex flex-col gap-3">
-                <span className="inline-block self-start px-2.5 py-1 bg-background text-shibu-aka rounded-sm text-[10px] tracking-[0.3em] uppercase border border-shibu-aka/30">
-                  {item.category === 'sake' ? 'Sake' : item.category === 'beer' ? 'Beer' : 'Ramen'}
-                </span>
-                <h3 className="font-serif text-xl font-light text-foreground">{item.name}</h3>
-                <p className="text-foreground-soft text-sm leading-relaxed line-clamp-4">
+          <article
+            key={item.id}
+            className="ledger-frame overflow-hidden flex flex-col bg-surface-elevated"
+          >
+            <DishMediaFrame
+              src={item.imageUrl}
+              alt={item.name}
+              category={item.category}
+              itemName={item.name}
+              onSelectImage={onSelectImage}
+            />
+            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-foreground leading-snug">
+                  {item.name}
+                </h3>
+                <p className="text-sm text-foreground-soft mt-2 leading-relaxed">
                   {item.description}
                 </p>
               </div>
             </div>
-          </motion.article>
+          </article>
         ))}
       </div>
     </section>
