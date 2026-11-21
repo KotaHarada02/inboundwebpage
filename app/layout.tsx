@@ -2,10 +2,10 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Noto_Serif_JP } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
-import { Analytics } from '@vercel/analytics/next';
 import Header from '@/components/Header';
 import { Footer } from '@/components/ui/Footer';
 import { RestaurantJsonLd } from '@/components/seo/RestaurantJsonLd';
+import { siteConfig } from '@/lib/siteConfig';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -85,10 +85,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: '/images/hero/hero-1.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'A bowl of Mitsukabose white-miso ramen with handmade noodles and chashu',
+        url: siteConfig.ogImage,
+        width: 1920,
+        height: 1280,
+        alt: 'The Mitsukabose chef presenting a bowl of miso ramen at the open kitchen counter',
       },
     ],
   },
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ['/images/hero/hero-1.jpg'],
+    images: [siteConfig.ogImage],
     creator: '@mitsukabose',
     site: '@mitsukabose',
   },
@@ -144,7 +144,6 @@ export default function RootLayout({
           <main id="main-content">{children}</main>
           <Footer />
         </Providers>
-        <Analytics />
       </body>
     </html>
   );

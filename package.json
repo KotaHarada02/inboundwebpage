@@ -12,7 +12,6 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.2.6",
-    "@vercel/analytics": "^1.5.0",
     "framer-motion": "^12.11.1",
     "jose": "^6.1.2",
     "lucide-react": "^0.510.0",
@@ -32,6 +31,7 @@
     "eslint": "9.27.0",
     "eslint-config-next": "15.3.2",
     "postcss": "^8.5.3",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.1.6",
     "typescript": "^5"
   }
