@@ -5,8 +5,10 @@ import { signToken } from '@/lib/auth';
 export async function POST(request: Request) {
   try {
     const { password } = await request.json();
+    const expected = process.env.ADMIN_PASSWORD;
 
-    if (password !== process.env.ADMIN_PASSWORD) {
+    // ADMIN_PASSWORD 未設定時に undefined === undefined でログインできてしまうのを防ぐ
+    if (!expected || typeof password !== 'string' || password !== expected) {
       return NextResponse.json(
         { error: 'Invalid password' },
         { status: 401, headers: NO_STORE_HEADERS }
