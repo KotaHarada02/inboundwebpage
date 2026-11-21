@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import MenuClient from './MenuClient';
 import { getMenuItems } from '@/domain/services/dataService';
-import { MenuJsonLd } from '@/components/seo/MenuJsonLd';
 import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
 
 export const metadata: Metadata = {
@@ -28,7 +27,6 @@ export default function MenuPage() {
 
   return (
     <>
-      <MenuJsonLd items={items} />
       <BreadcrumbJsonLd
         items={[
           { name: 'Home', path: '/' },

@@ -237,6 +237,46 @@ DB への書き込み（編集・並び替え）はローカルでは試して�
 1. **公開ページを事前描画（prerender）して Static Assets から配信する**（ADR-4 の方針どおり）。`/`、`/food-and-drinks`、`/access`、`/events` は静的にできる。`/menu` は DB に依存するので、ビルド時に描画するか、ISR 相当にするか、クライアントで `/api/menu` を取得する形にするかを決める必要がある。
 2. Workers Paid（月 5 ドル、CPU 上限 30 秒）に切り替える。
 
+## CPU 対策と D1 移行（2026-11-21、Phase 4 の続き・Phase 7 前倒し）
+
+方針: Workers Paid には切り替えない（課金しない）。DB は D1 に移す（承認済み）。
+
+### 事前描画と HTML の縮小（`84109a3` ほか）
+
+| 対策 | 効果 |
+| :--- | :--- |
+| `vite.config.ts` で `prerender: { routes: "*" }` と `cache: { cdn: staticAssetsAdapter() }`。公開ページをビルド時に描画し、Static Assets から返す | SSR が不要になる |
+| `next/font` をやめ、Google Fonts を外部スタイルシートで読み込む。vinext は `@font-face` 505 個（448 KB）を全ページの HTML にインライン展開していた | `/` 528 KB → 80 KB |
+| メニューのカード・バッジで繰り返されるユーティリティ列を `globals.css` のコンポーネントクラスにまとめた（中身は同じ `@apply` なので、見た目は変わらない） | `/menu` −90 KB |
+| Menu JSON-LD から offer ごとの `seller` / `availability` と、項目の `description` を削除。JSON-LD はクライアントコンポーネント（`MenuClient`）で描画し、RSC ペイロードへの複製をなくした | `/menu` −160 KB |
+
+vinext は事前描画した HTML を Worker 内で `text()` として読み込んでから返すため、CPU 時間は HTML の大きさにほぼ比例する（およそ 4 ms ＋ 20 µs/KB）。公開ページの HTML を Worker を通さず返す案は、RSC を「同じ URL に `RSC: 1` ヘッダーを付けて取得」する方式なので、クライアント側の画面遷移が壊れる。そのため採用していない。
+
+### D1 移行
+
+- D1 `inbound-menu-db`（`f390df9a-bb42-48a0-8ac2-572175518d38`、APAC）を作成した。スキーマは `migrations/d1/0001_create_menu.sql`（`id TEXT PK, payload TEXT(JSON), sort_order INTEGER`）。
+- `npm run d1:export-from-neon` で Neon の全行を `.cloudflare/d1-menu-import.json`（git 管理外）に書き出し、`cf d1 query <id> --batch @…` で投入した。73 件の id・payload・sort_order が Neon と完全に一致することを確認済み。バッチは `DELETE FROM menu` から始まるので、何度実行しても同じ結果になる。
+- `domain/services/dbService.ts` を `import { env } from "cloudflare:workers"` の `env.DB` に書き換えた（関数名と引数は同じ）。並び替えは `env.DB.batch()` で 1 トランザクションにした。
+- `cloudflare.config.ts` に `DB: bindings.d1(...)` を追加し、`DATABASE_URL` の宣言を削除した。Worker のシークレット `DATABASE_URL` も削除済みで、残っているのは `ADMIN_PASSWORD` と `AUTH_SECRET` のみ。
+- ローカル D1（`.cloudflare/state`）は `cf d1 query --local` に対応していないため、`dev:vinext` 起動中に Local Explorer API（`POST /cdn-cgi/local/explorer/api/d1/database/<id>/raw`）で同じバッチを投入した。
+- ローカルで、作成 → 更新 → 並び替え（PUT）→ 削除 → 元に戻す、まで確認した。最終状態は初期データと一致。本番 D1 への書き込みテストはまだ。
+- workers.dev で `/api/menu`（`x-data-source: db`、73 件、Neon 時代のレスポンスと完全一致）、ログイン、`/api/admin/menu` が 200 になることを確認済み。
+
+**注意（切り替え時の再同期）**: Vercel の本番は Neon を使い続けている。DNS を切り替えるまでの間に Vercel 側の管理画面でメニューを編集すると、その変更は D1 に入らない。NS を切り替える直前に、もう一度 `npm run d1:export-from-neon` を実行し、リモート D1 にバッチを投入すること。
+
+**注意（Next.js ビルド）**: `dbService.ts` が `cloudflare:workers` を import するため、このブランチは `next build`（Vercel）ではビルドできない。ビルドとデプロイは `build:vinext` / `deploy:vinext` で行う。
+
+### CPU 計測（workers.dev、デプロイ直後を含む）
+
+| ルート | HTML | 中央値 |
+| :--- | ---: | ---: |
+| `/` | 80 KB | 5.7〜7.9 ms |
+| `/menu` | 241 KB | 9.4 ms |
+| `/food-and-drinks`, `/access`, `/events` | 51〜99 KB | 4〜8 ms |
+| `/api/menu` | 40 KB | Neon 14.5 ms → D1 7.0 ms |
+
+10 ms を超えるのは主に、新しいインスタンスの初回リクエスト（20〜50 ms）。これまでの計測では、200 ms を超えたものも含めて全リクエストが `success` で、Error 1102 は出ていない。Free プランの 10 ms 上限は、1 件ごとに厳密には打ち切られていないとみられる。ただし Cloudflare は保証していないので、Phase 6 の監視で 1102 と 5xx を必ず確認する。
+
 ## P0-3: 現行 DNS レコードの控え（2026-11-21）
 
 Vercel ダッシュボードのスクリーンショットと、公開 DNS への `dig` の結果を突き合わせた。

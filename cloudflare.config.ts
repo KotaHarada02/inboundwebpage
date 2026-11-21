@@ -25,8 +25,9 @@ export default defineConfig({
     },
     env: {
       ASSETS: bindings.assets(),
+      // メニューの保存先（migrations/d1/ 参照）。ローカルでは .cloudflare/state の D1 シミュレーションを使う
+      DB: bindings.d1({ name: "inbound-menu-db", id: "f390df9a-bb42-48a0-8ac2-572175518d38" }),
       // 値はローカルでは .dev.vars、本番では Worker のシークレットから注入される
-      DATABASE_URL: bindings.secret(),
       ADMIN_PASSWORD: bindings.secret(),
       AUTH_SECRET: bindings.secret(),
     },

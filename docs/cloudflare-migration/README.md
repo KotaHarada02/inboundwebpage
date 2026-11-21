@@ -118,7 +118,7 @@ flowchart LR
 - [ ] `P5-3`: SSL Strict・WAF・Bot Fight Mode・Web Analytics 有効化完了
 - [ ] `P6-1`: 本番監視（1〜2週間）問題なし
 - [ ] `P6-2`: Vercel 停止・クリーンアップ完了
-- [ ] `P7-1`: 【任意】Neon Postgres → Cloudflare D1 完全移行完了
+- [ ] `P7-1`: 【任意】Neon Postgres → Cloudflare D1 完全移行完了（※D1 作成・データ投入・コード切り替え済み。DNS 切り替え直前の再同期が残り）
 
 ---
 
