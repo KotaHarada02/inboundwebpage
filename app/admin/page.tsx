@@ -4,6 +4,28 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { MenuItem, TimeSlot } from '@/domain/types';
 
+// アップロード前にブラウザ側で縮小する（Worker では画像を加工しない）
+const UPLOAD_MAX_EDGE = 1200;
+const UPLOAD_JPEG_QUALITY = 0.82;
+
+async function resizeImageForUpload(file: File): Promise<Blob> {
+  // EXIF の向きを反映してからデコードする
+  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  const scale = Math.min(1, UPLOAD_MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  return new Promise((resolve, reject) =>
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error('画像の変換に失敗しました'))),
+      'image/jpeg',
+      UPLOAD_JPEG_QUALITY
+    )
+  );
+}
+
 export default function AdminDashboard() {
   const [items, setItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +41,7 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/menu');
       if (res.ok) {
-        const data = await res.json();
+        const data: MenuItem[] = await res.json();
         setItems(data);
       } else if (res.status === 401) {
         router.push('/admin/login');
@@ -505,6 +527,35 @@ function MenuItemForm({
     typeof formData.priceYen === 'object' ? (formData.priceYen as Record<string, number>) : {}
   );
 
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    if (!formData.id) {
+      setUploadError('先に ID を入力してください');
+      return;
+    }
+
+    setUploading(true);
+    setUploadError('');
+    try {
+      const body = new FormData();
+      body.append('itemId', formData.id);
+      body.append('file', new File([await resizeImageForUpload(file)], `${formData.id}.jpg`, { type: 'image/jpeg' }));
+      const res = await fetch('/api/admin/menu/image', { method: 'POST', body });
+      const data: { imageUrl?: string; error?: string } = await res.json();
+      if (!res.ok || !data.imageUrl) throw new Error(data.error || 'アップロードに失敗しました');
+      setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'アップロードに失敗しました');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => {
@@ -632,7 +683,25 @@ function MenuItemForm({
             placeholder="/images/menu/..."
             readOnly
           />
+          <label
+            className={`shrink-0 inline-flex items-center px-3 py-2 rounded-md text-sm text-white ${
+              uploading ? 'bg-gray-400 cursor-wait' : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+            }`}
+          >
+            {uploading ? 'アップロード中…' : '画像を選択'}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="sr-only"
+              disabled={uploading}
+              onChange={handleImageUpload}
+            />
+          </label>
         </div>
+        <p className="mt-1 text-xs text-gray-500">
+          選んだ写真は長辺 1200px の JPEG に縮小してアップロードされます。保存ボタンを押すとメニューに反映されます。
+        </p>
+        {uploadError && <p className="mt-1 text-sm text-red-600">{uploadError}</p>}
         {formData.imageUrl && (
           <div className="mt-2 relative h-40 w-40 bg-gray-100 rounded-md overflow-hidden border border-gray-200">
             {/* eslint-disable-next-line @next/next/no-img-element */}

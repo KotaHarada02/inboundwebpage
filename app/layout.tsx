@@ -1,27 +1,19 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Noto_Serif_JP } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
-import { Analytics } from '@vercel/analytics/next';
 import Header from '@/components/Header';
 import { Footer } from '@/components/ui/Footer';
 import { RestaurantJsonLd } from '@/components/seo/RestaurantJsonLd';
+import { siteConfig } from '@/lib/siteConfig';
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
+// next/font は vinext だと 500 個近い @font-face を全ページの HTML にインライン展開し
+// （約 450 KB）、Worker の CPU 時間を押し上げる。外部スタイルシートとして読み込む。
+const CF_WEB_ANALYTICS_TOKEN = 'bc72d5c1e7f3488cb23573562512e51b';
 
-const notoSerifJp = Noto_Serif_JP({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
-  display: 'swap',
-  variable: '--font-noto-serif-jp',
-  preload: false,
-});
+const GOOGLE_FONTS_URL =
+  'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Serif+JP:wght@300;400;500;700&display=swap';
 
-const SITE_URL = 'https://mitsukabose.com';
+const SITE_URL = siteConfig.url;
 const SITE_NAME = 'Mitsukabose — Fermented Miso Ramen & Craft Beer';
 const SITE_DESCRIPTION =
   'Mitsukabose (みつか坊主) is a fermentation-driven miso ramen and craft beer destination in Hotarugaike, Toyonaka, Osaka. Discover slow-brewed white-miso ramen, Akishika sake, and seasonal small plates 1 minute from Hotarugaike Station.';
@@ -85,10 +77,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: '/images/hero/hero-1.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'A bowl of Mitsukabose white-miso ramen with handmade noodles and chashu',
+        url: siteConfig.ogImage,
+        width: 1920,
+        height: 1280,
+        alt: 'The Mitsukabose chef presenting a bowl of miso ramen at the open kitchen counter',
       },
     ],
   },
@@ -96,7 +88,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ['/images/hero/hero-1.jpg'],
+    images: [siteConfig.ogImage],
     creator: '@mitsukabose',
     site: '@mitsukabose',
   },
@@ -130,7 +122,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${notoSerifJp.variable}`}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={GOOGLE_FONTS_URL} />
+        {/* Cloudflare Web Analytics。Worker が返す HTML には自動挿入されないため直接書く（トークンは公開値） */}
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: CF_WEB_ANALYTICS_TOKEN })}
+        />
+      </head>
       <body className="bg-background text-foreground antialiased overflow-x-hidden">
         <RestaurantJsonLd />
         <Providers>
@@ -144,7 +147,6 @@ export default function RootLayout({
           <main id="main-content">{children}</main>
           <Footer />
         </Providers>
-        <Analytics />
       </body>
     </html>
   );

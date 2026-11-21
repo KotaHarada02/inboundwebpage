@@ -7,8 +7,7 @@ export type CardVariant = 'elevated' | 'soft' | 'dark';
 const CARD_VARIANTS: Record<CardVariant, string> = {
   elevated:
     'bg-background border border-kasshoku/10 rounded-md overflow-hidden relative',
-  soft:
-    'bg-background-soft/60 backdrop-blur-sm border border-kasshoku/10 rounded-md overflow-hidden relative',
+  soft: 'card-soft',
   dark:
     'bg-kasshoku-deep text-washi rounded-md overflow-hidden relative',
 };
@@ -30,7 +29,7 @@ function CardRoot({
     <div
       className={`${CARD_VARIANTS[variant]} ${
         hoverLift
-          ? 'transition-all duration-400 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(91,58,41,0.12)] hover:shadow-[0_12px_40px_-12px_rgba(91,58,41,0.22)]'
+          ? 'card-hover-lift'
           : 'shadow-[0_30px_60px_-20px_rgba(31,26,20,0.35)]'
       } ${className}`}
       style={style}
@@ -92,7 +91,7 @@ function CardTitle({
 }) {
   return (
     <Tag
-      className={`font-serif text-lg sm:text-xl font-light text-foreground tracking-wide leading-snug ${className}`}
+      className={`card-title ${className}`}
       {...props}
     >
       {children}

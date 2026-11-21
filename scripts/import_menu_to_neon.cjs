@@ -5,7 +5,7 @@
   whose id is not present in the JSON files (removes discontinued items).
 
   Usage:
-    node scripts/import_menu_to_neon.js
+    node scripts/import_menu_to_neon.cjs
   Requires DATABASE_URL (or NEON_DATABASE_URL) in environment, e.g. from .env.local
 */
 const fs = require('fs');

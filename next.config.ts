@@ -13,6 +13,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // 画像は scripts/compress-images.mjs で事前圧縮済み。Cloudflare では Image Optimization を使わない。
+  images: { unoptimized: true },
   async headers() {
     return [
       {

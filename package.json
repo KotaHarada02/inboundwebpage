@@ -7,32 +7,46 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sync-menu-db": "node scripts/import_menu_to_neon.js"
+    "sync-menu-db": "node scripts/import_menu_to_neon.cjs",
+    "dev:vinext": "vite dev --port 3001",
+    "build:vinext": "vite build",
+    "start:vinext": "vite preview",
+    "deploy:vinext": "vinext-cloudflare deploy",
+    "d1:export-from-neon": "node scripts/export_neon_to_d1.cjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.2.6",
-    "@vercel/analytics": "^1.5.0",
+    "@vinext/cloudflare": "^1.4.0",
     "framer-motion": "^12.11.1",
     "jose": "^6.1.2",
     "lucide-react": "^0.510.0",
     "next": "15.3.8",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.16.0",
-    "react-scroll-parallax": "^3.4.5"
+    "react-scroll-parallax": "^3.4.5",
+    "react-server-dom-webpack": "^19.3.1",
+    "vinext": "^1.4.6"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^2.0.0-rc.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.3.0",
+    "@vitejs/plugin-rsc": "^0.5.39",
     "autoprefixer": "^10.4.21",
+    "cf": "^1.0.0-rc.2",
     "eslint": "9.27.0",
     "eslint-config-next": "15.3.2",
     "postcss": "^8.5.3",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.1.6",
-    "typescript": "^5"
-  }
+    "typescript": "^5",
+    "vite": "^8.3.0"
+  },
+  "type": "module"
 }

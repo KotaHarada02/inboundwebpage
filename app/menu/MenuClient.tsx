@@ -8,6 +8,7 @@ import { DecorativeBackground } from '@/components/ui/DecorativeBackground';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { MenuItemCard } from '@/components/menu/MenuItemCard';
 import { MenuFilterBar } from '@/components/menu/MenuFilterBar';
+import { MenuJsonLd } from '@/components/seo/MenuJsonLd';
 
 export const CATEGORY_LABELS: Record<
   MenuCategory,
@@ -148,6 +149,10 @@ export default function MenuClient({
 
   return (
     <TooltipProvider delayDuration={200} skipDelayDuration={100}>
+      {/* JSON-LD はクライアント側で initialItems から描画する。サーバーコンポーネントで出すと
+          RSC ペイロードにも同じ JSON が複製され、/menu の HTML が膨らむ（Worker の CPU 時間対策）。
+          ハイドレーションの不一致を避けるため、取得後の menuItems ではなく initialItems を使う。 */}
+      <MenuJsonLd items={initialItems} />
       <div className="min-h-screen bg-background">
         <DecorativeBackground />
 

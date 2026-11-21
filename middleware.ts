@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyToken } from './lib/auth';
+import { NO_STORE_HEADERS } from './lib/cacheHeaders';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -29,7 +30,7 @@ export async function middleware(request: NextRequest) {
     if (!verifiedToken) {
       // APIリクエストの場合は401を返す
       if (isApiAdminPath) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_STORE_HEADERS });
       }
       // ページアクセスの場合はログインページへリダイレクト
       const loginUrl = new URL('/admin/login', request.url);

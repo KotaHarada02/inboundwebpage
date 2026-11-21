@@ -38,11 +38,11 @@ export function PriceBreakdownTable({
   return (
     <div className="mb-3 border-t border-kasshoku/10 pt-2 mt-1">
       {entries.map(([size, price]) => (
-        <div key={size} className="flex justify-between items-baseline py-0.5">
-          <span className="text-xs text-muted font-light truncate mr-2 max-w-[60%]">
+        <div key={size} className="price-row">
+          <span className="price-row-label">
             {size}
           </span>
-          <span className="text-xs text-foreground font-light tabular-nums whitespace-nowrap">
+          <span className="price-row-value">
             {formatYenAmount(price)}
           </span>
         </div>
