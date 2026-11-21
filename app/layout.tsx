@@ -8,6 +8,8 @@ import { siteConfig } from '@/lib/siteConfig';
 
 // next/font は vinext だと 500 個近い @font-face を全ページの HTML にインライン展開し
 // （約 450 KB）、Worker の CPU 時間を押し上げる。外部スタイルシートとして読み込む。
+const CF_WEB_ANALYTICS_TOKEN = 'bc72d5c1e7f3488cb23573562512e51b';
+
 const GOOGLE_FONTS_URL =
   'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Serif+JP:wght@300;400;500;700&display=swap';
 
@@ -125,6 +127,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href={GOOGLE_FONTS_URL} />
+        {/* Cloudflare Web Analytics。Worker が返す HTML には自動挿入されないため直接書く（トークンは公開値） */}
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: CF_WEB_ANALYTICS_TOKEN })}
+        />
       </head>
       <body className="bg-background text-foreground antialiased overflow-x-hidden">
         <RestaurantJsonLd />

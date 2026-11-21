@@ -304,7 +304,8 @@ vinext は事前描画した HTML を Worker 内で `text()` として読み込�
 
 - ルートを設定したため、workers.dev は既定で無効になった（`*.workers.dev` には今後デプロイされない）。
 - **ロールバック手順**: `cloudflare.config.ts` から `triggers` を外してデプロイし、www CNAME（`cname.vercel-dns.com`）をプロキシなしに戻す。apex の A を `76.76.21.21`（プロキシなし）に戻し、リダイレクトルールを外す。Vercel のプロジェクトとドメイン設定は残してあるので、これで Vercel の配信に戻る。
-- 未実施: Bot Fight Mode、Cloudflare Web Analytics（P5-3 の残り）。
+- Cloudflare Web Analytics: サイト（site tag `7f21f22de6ba41ed8a24d7bf7711cd83`）を登録した。`auto_install` を有効にしても、Worker が返す HTML にはビーコンが挿入されなかった。そのため `auto_install` は無効にして、`app/layout.tsx` にビーコン（公開トークン）を直接書いた。
+- Bot Fight Mode は見送り（AI 検索系のクローラーも弾くおそれがあるため）。
 
 ## P0-3: 現行 DNS レコードの控え（2026-11-21）
 

@@ -115,7 +115,7 @@ flowchart LR
 - [ ] `P4-3`: `*.workers.dev` E2E・管理画面・CPU 10ms 確認完了（※E2E は合格。**CPU は平均 39 ms で不合格**、書き込みテストは未実施）
 - [x] `P5-1`: Cloudflare ゾーン登録＆既存 DNS レコード再現完了
 - [x] `P5-2`: カスタムドメイン接続＆レジストラ NS 切替完了（2026-11-21 14:15 頃、Worker ルート方式）
-- [ ] `P5-3`: SSL Strict・WAF・Bot Fight Mode・Web Analytics 有効化完了（※SSL Full (strict)・Always Use HTTPS は完了。Bot Fight Mode・Web Analytics は未実施）
+- [ ] `P5-3`: SSL Strict・WAF・Bot Fight Mode・Web Analytics 有効化完了（※SSL Full (strict)・Always Use HTTPS・Web Analytics は完了。Bot Fight Mode は見送り）
 - [ ] `P6-1`: 本番監視（1〜2週間）問題なし
 - [ ] `P6-2`: Vercel 停止・クリーンアップ完了
 - [x] `P7-1`: 【任意】Neon Postgres → Cloudflare D1 完全移行完了（切り替え直前に再同期済み）
