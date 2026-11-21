@@ -110,9 +110,9 @@ flowchart LR
 - [x] `P3-1`: `npx vinext check` 実施＆ルート決定（`vinext` / OpenNext）
 - [x] `P3-2`: Cloudflare 用設定（`cloudflare.config.ts` 等）・Lint/TS/Gitignore 更新完了
 - [x] `P3-3`: `build:vinext` 成功＆ローカル全ルートスモークテスト合格（Node 24.22.3。[PHASE0-3_REPORT.md](./PHASE0-3_REPORT.md) 参照）
-- [ ] `P4-1`: `--dry-run` バンドルサイズ < 64 MiB 確認完了（※サイズ確認済み: 2.13 MiB / gzip 0.63 MiB。`cf auth login` は未実施）
-- [ ] `P4-2`: `*.workers.dev` デプロイ＆シークレット設定完了
-- [ ] `P4-3`: `*.workers.dev` E2E・管理画面・CPU 10ms 確認完了
+- [x] `P4-1`: `--dry-run` バンドルサイズ < 64 MiB 確認完了（2.13 MiB / gzip 0.63 MiB）
+- [x] `P4-2`: `*.workers.dev` デプロイ＆シークレット設定完了（https://mitsukabose-inbound.mitsukabose-system.workers.dev）
+- [ ] `P4-3`: `*.workers.dev` E2E・管理画面・CPU 10ms 確認完了（※E2E は合格。**CPU は平均 39 ms で不合格**、書き込みテストは未実施）
 - [ ] `P5-1`: Cloudflare ゾーン登録＆既存 DNS レコード再現完了
 - [ ] `P5-2`: カスタムドメイン接続＆レジストラ NS 切替完了
 - [ ] `P5-3`: SSL Strict・WAF・Bot Fight Mode・Web Analytics 有効化完了

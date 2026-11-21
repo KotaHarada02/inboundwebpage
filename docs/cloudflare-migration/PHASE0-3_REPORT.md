@@ -203,6 +203,40 @@ DB への書き込み（編集・並び替え）はローカルでは試して�
 
 `npx cf auth whoami` は `Not logged in`。Phase 4 の前に、人間が `npx cf auth login` でアカウント `96dc0d345a3061736d1f32cd12135662` にログインする必要がある（CLI が提案する `--temporary-account` デプロイは使わない）。
 
+## Phase 4: workers.dev へのプレビューデプロイ（2026-11-21）
+
+人間の承認を得て実施した。DNS と Vercel には触れていない。本番 DB への書き込みテストは実施していない。
+
+- URL: https://mitsukabose-inbound.mitsukabose-system.workers.dev（Version `d6adb57f`）
+- `npx vinext-cloudflare deploy` は、静的ファイルのアップロード後に「required secrets have not been set」で失敗した。`bindings.secret()` で宣言したシークレットは、新しい Worker には先に登録できないため。`npx cf deploy --secrets-file .dev.vars` でデプロイとシークレット登録を同時に行い、成功した。`cf workers secrets list` で 3 つとも `secret_text` になっていることを確認済み。
+- 次回以降の更新は `npm run deploy:vinext`（シークレットは登録済みなので不要）。
+- `workersDev` と `previewUrls` は未指定のため既定で有効になっている。本番切り替え後に `false` にするか検討する。
+
+### E2E 結果（読み取りと認証）
+
+| 確認内容 | 結果 |
+| :--- | :--- |
+| 公開 7 ルート、`/admin/login` | すべて 200（0.08〜0.54 秒） |
+| `/ramen` | 308 → `/menu` |
+| `/api/menu` | 200、73 件、`x-data-source: db`、`server: cloudflare` |
+| 未認証の `/api/admin/menu` / `/admin` | 401 / 307 → `/admin/login` |
+| ログイン（`{}` / 正しいパスワード）→ 管理 API → `/admin` → ログアウト | 401 / 200 → 200 → 200 → 200 |
+| 画像（hero、access）、`/favicon.ico` | 200、Static Assets から配信 |
+| canonical / og:url / og:image | `https://www.mitsukabose.jp` |
+
+### ⚠️ CPU 時間が Free プランの 10 ms を超えている（P4-3 の合格基準を満たしていない）
+
+`cf sql query`（`events.workersInvocations`）で計測した 39 件の結果は次のとおり（集計時点では `scriptName` が `__unknown__` と記録されていたが、時刻が E2E と一致する）。
+
+- 平均 39 ms、最大 203 ms。10 ms を超えたのは 39 件中 26 件。
+- 起動直後（cold start）の 3 件は 120〜200 ms（うち startup CPU が 56〜92 ms）。
+- 温まった状態でも、SSR のページは 20〜120 ms。10 ms 未満に収まるのは 401/307 の応答、robots.txt、一部の API 程度。
+- 現時点ではすべて `success` で、エラーは出ていない。ただし Free プランの上限は 1 リクエストあたり CPU 10 ms なので、超過が常態化すると Error 1102 で落ちるおそれがある。
+
+公開ページを毎回 Worker で SSR していることが原因。対策の候補:
+1. **公開ページを事前描画（prerender）して Static Assets から配信する**（ADR-4 の方針どおり）。`/`、`/food-and-drinks`、`/access`、`/events` は静的にできる。`/menu` は DB に依存するので、ビルド時に描画するか、ISR 相当にするか、クライアントで `/api/menu` を取得する形にするかを決める必要がある。
+2. Workers Paid（月 5 ドル、CPU 上限 30 秒）に切り替える。
+
 ## P0-3: 現行 DNS レコードの控え（2026-11-21）
 
 Vercel ダッシュボードのスクリーンショットと、公開 DNS への `dig` の結果を突き合わせた。
