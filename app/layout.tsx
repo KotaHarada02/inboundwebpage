@@ -21,7 +21,7 @@ const notoSerifJp = Noto_Serif_JP({
   preload: false,
 });
 
-const SITE_URL = 'https://mitsukabose.com';
+const SITE_URL = siteConfig.url;
 const SITE_NAME = 'Mitsukabose — Fermented Miso Ramen & Craft Beer';
 const SITE_DESCRIPTION =
   'Mitsukabose (みつか坊主) is a fermentation-driven miso ramen and craft beer destination in Hotarugaike, Toyonaka, Osaka. Discover slow-brewed white-miso ramen, Akishika sake, and seasonal small plates 1 minute from Hotarugaike Station.';

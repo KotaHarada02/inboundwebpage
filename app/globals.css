@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source not "../docs";
 
 /* ============================================================
  * Mitsukabose Design System — Japanese Modern Craft

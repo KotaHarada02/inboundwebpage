@@ -82,7 +82,9 @@ Phase 3 のブロック原因は vinext とアプリの非互換ではなく、�
 - `.eslintrc.json` に `"root": true` を追加した（worktree が親リポジトリの ESLint 設定を読み込んで競合したため。通常のチェックアウトでも影響はない）。
 - 検証: `app/ components/ lib/ domain/` に `@vercel` と `fs` への依存は 0 件。`npm run lint` ✔、`npx tsc --noEmit` 0、`npm run build` 0。
 
-**要確認（変更していない）**: `lib/siteConfig.ts` と `app/layout.tsx` の `SITE_URL` は `https://mitsukabose.com` のまま。本番ドメインの `https://www.mitsukabose.jp` に統一するかは人間の判断が必要（runbook Phase 2-5）。
+**ドメイン（確認済み）**: `www.mitsukabose.jp` が本サイト（英語・インバウンド向け）、`mitsukabose.com` は日本語の公式 HP（別サイト）。`siteConfig.url` を `https://www.mitsukabose.jp` に変更し、`app/layout.tsx` の `SITE_URL` は `siteConfig.url` を参照する形にした（canonical・OGP・sitemap・robots・JSON-LD がすべて `.jp` になる）。`siteConfig.links.official`（フッターのリンク）は `https://mitsukabose.com` のまま残し、Restaurant JSON-LD の `sameAs` にも追加した。
+
+**Tailwind のスキャン対象から `docs/` を除外**: Tailwind v4 はリポジトリ内のファイルを自動でスキャンするため、本レポート中の `bg-[url(...)]` という文字列からクラスが生成され、`npm run build` が `Can't resolve './...'` で失敗していた。`app/globals.css` に `@source not "../docs";` を追加した。
 
 ### 追加のセキュリティ修正（`577dad4`）
 
@@ -169,7 +171,7 @@ Phase 1〜2 の変更を確認するため、同じ項目を Next.js 本体で�
    npm run dev:vinext   # port 3001。runbook Phase 3-4 のスモークテストを 3001 に向けて実行
    ```
    vinext 固有の不具合がこの時点で 2 回続いた場合に限り、OpenNext フォールバックを検討する。
-2. **【人間】`SITE_URL` のドメイン確認**（`mitsukabose.com` か `www.mitsukabose.jp` か）。
+2. ~~`SITE_URL` のドメイン確認~~ → `https://www.mitsukabose.jp` に変更済み。
 3. **【人間】JSON-LD の `logo`**: 正式ロゴ画像を配置して `RestaurantJsonLd.tsx` に追加する（候補は `public/images/hero.png`）。
 4. **【人間】未撮影メニュー画像（DB 上 31 種類）**: 写真を追加するか、DB の `imageUrl` を整理する（DB の更新は Human Gate）。
 5. **【人間】P0-3 の残り**: Vercel DNS の全レコード（MX/TXT 等）を控える（Phase 5 の前提）。

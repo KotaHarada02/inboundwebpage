@@ -55,6 +55,7 @@ export function RestaurantJsonLd() {
       },
     ],
     sameAs: [
+      siteConfig.links.official,
       'https://www.instagram.com/mitsukabose.official/',
       'https://x.com/mitsukabose',
       'https://maps.app.goo.gl/HWZm8vedVNUbZzjt5',
