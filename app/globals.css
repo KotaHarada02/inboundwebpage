@@ -41,7 +41,9 @@
   --shadow-cinematic: 0 30px 60px -20px rgba(31, 26, 20, 0.35);
   --shadow-elevated: 0 20px 50px -15px rgba(31, 26, 20, 0.25), 0 8px 16px -8px rgba(91, 58, 41, 0.12);
 
-  /* Typography */
+  /* Typography（フォント本体は app/layout.tsx の Google Fonts スタイルシートで読み込む） */
+  --font-inter: "Inter";
+  --font-noto-serif-jp: "Noto Serif JP";
   --font-display: var(--font-noto-serif-jp), "Noto Serif JP", "Hiragino Mincho ProN", serif;
   --font-body: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
 }
@@ -239,4 +241,52 @@ body {
   outline: 2px solid var(--kohaku);
   outline-offset: 2px;
   border-radius: 2px;
+}
+
+/* ============================================================
+ * Menu components
+ * /menu ではカードやバッジが数十〜百回以上繰り返されるため、長いユーティリティ列を
+ * 名前付きクラスにまとめて事前描画 HTML を小さくする（Workers Free の CPU 10 ms 対策）。
+ * 中身は元のユーティリティと同じなので、見た目は変わらない。
+ * ============================================================ */
+@layer components {
+  .badge-ingredient {
+    @apply inline-flex items-center px-2 py-0.5 bg-background text-muted rounded-full text-[10px] font-light border border-kasshoku/10;
+  }
+  .badge-dietary {
+    @apply inline-flex items-center gap-0.5 px-2 py-0.5 bg-matcha/10 text-matcha rounded-full text-[10px] font-light;
+  }
+  .badge-dietary-trigger {
+    @apply inline-flex items-center gap-0.5 px-2 py-0.5 bg-matcha/10 text-matcha rounded-full text-[10px] font-light cursor-help focus:outline-none focus-visible:ring-1 focus-visible:ring-matcha;
+  }
+  .badge-allergen {
+    @apply inline-flex items-center px-2 py-0.5 bg-shibu-aka/10 text-shibu-aka rounded-full text-[10px] font-light;
+  }
+  .badge-price {
+    @apply inline-block bg-kasshoku-deep/85 backdrop-blur-sm text-kohaku-soft text-xs font-light px-3 py-1 rounded-sm tracking-wider tabular-nums;
+  }
+  .card-soft {
+    @apply bg-background-soft/60 backdrop-blur-sm border border-kasshoku/10 rounded-md overflow-hidden relative;
+  }
+  .card-hover-lift {
+    @apply transition-all duration-400 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(91,58,41,0.12)] hover:shadow-[0_12px_40px_-12px_rgba(91,58,41,0.22)];
+  }
+  .card-title {
+    @apply font-serif text-lg sm:text-xl font-light text-foreground tracking-wide leading-snug;
+  }
+  .price-row {
+    @apply flex justify-between items-baseline py-0.5;
+  }
+  .price-row-label {
+    @apply text-xs text-muted font-light truncate mr-2 max-w-[60%];
+  }
+  .price-row-value {
+    @apply text-xs text-foreground font-light tabular-nums whitespace-nowrap;
+  }
+  .menu-card-image {
+    @apply object-cover cursor-zoom-in group-hover:scale-105 transition-transform duration-700 ease-out;
+  }
+  .menu-card-more {
+    @apply inline-flex items-center gap-1 text-shibu-aka text-xs mt-1.5 hover:text-shibu-aka-deep transition-colors;
+  }
 }

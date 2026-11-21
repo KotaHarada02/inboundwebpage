@@ -20,18 +20,16 @@ export type BadgeVariant =
 const BADGE_VARIANTS: Record<BadgeVariant, string> = {
   location:
     'inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-washi/20 bg-washi/[0.06] backdrop-blur-sm text-[10px] md:text-xs tracking-[0.4em] text-kohaku-soft uppercase font-light',
-  ingredient:
-    'inline-flex items-center px-2 py-0.5 bg-background text-muted rounded-full text-[10px] font-light border border-kasshoku/10',
-  dietary:
-    'inline-flex items-center gap-0.5 px-2 py-0.5 bg-matcha/10 text-matcha rounded-full text-[10px] font-light',
-  allergen:
-    'inline-flex items-center px-2 py-0.5 bg-shibu-aka/10 text-shibu-aka rounded-full text-[10px] font-light',
+  // メニューカードで何十回も繰り返されるバリアントは globals.css のコンポーネントクラスにまとめ、
+  // 事前描画した /menu の HTML を小さくしている（Worker の CPU 時間対策）
+  ingredient: 'badge-ingredient',
+  dietary: 'badge-dietary',
+  allergen: 'badge-allergen',
   category:
     'inline-block px-2.5 py-1 bg-background text-shibu-aka rounded-sm text-[10px] tracking-[0.3em] uppercase border border-shibu-aka/30',
   'category-solid':
     'inline-block px-3 py-1 bg-shibu-aka text-washi rounded-sm text-[10px] tracking-[0.3em] uppercase',
-  price:
-    'inline-block bg-kasshoku-deep/85 backdrop-blur-sm text-kohaku-soft text-xs font-light px-3 py-1 rounded-sm tracking-wider tabular-nums',
+  price: 'badge-price',
 };
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -80,7 +78,7 @@ export function DietaryBadge({ option }: { option: string }) {
       <TooltipTrigger asChild>
         <button
           type="button"
-          className={`${BADGE_VARIANTS.dietary} cursor-help focus:outline-none focus-visible:ring-1 focus-visible:ring-matcha`}
+          className="badge-dietary-trigger"
           aria-label={`Dietary info: ${option}`}
         >
           <span>{option}</span>

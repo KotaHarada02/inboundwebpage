@@ -22,11 +22,11 @@ function flattenPrice(price: MenuItem['priceYen']): { value: number; key?: strin
 
 function toMenuItemNode(item: MenuItem) {
   const prices = flattenPrice(item.priceYen);
+  // seller / availability は全オファーで同じ値の繰り返しになり /menu の HTML を膨らませるため省く
+  // （提供元はページ全体の Restaurant JSON-LD で示している）
   const baseOffer = {
     '@type': 'Offer',
     priceCurrency: 'JPY',
-    availability: 'https://schema.org/InStock',
-    seller: { '@type': 'Restaurant', name: siteConfig.shortName },
   };
 
   const offers =
@@ -42,8 +42,9 @@ function toMenuItemNode(item: MenuItem) {
     '@type': 'MenuItem',
     '@id': `${siteConfig.url}/menu#${item.id}`,
     name: item.name,
-    description: item.description,
-    image: `${siteConfig.url}${item.imageUrl}`,
+    // description は画面に表示済みで、JSON-LD に入れると RSC ペイロードにも複製されて
+    // /menu の HTML が大きくなる（Worker の CPU 時間対策）ため省く
+    image: item.imageUrl ? `${siteConfig.url}${item.imageUrl}` : undefined,
     suitableForDiet: item.dietary?.length
       ? item.dietary
           .map((d) => {

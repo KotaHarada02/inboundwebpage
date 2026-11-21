@@ -48,7 +48,7 @@ export function MenuItemCard({
               src={item.imageUrl}
               alt={item.name}
               fill
-              className="object-cover cursor-zoom-in group-hover:scale-105 transition-transform duration-700 ease-out"
+              className="menu-card-image"
               sizes="(max-width: 768px) 80vw, 320px"
               onClick={() => onSelectImage?.(item.imageUrl, item.name)}
               onError={() => setImageBroken(true)}
@@ -78,7 +78,7 @@ export function MenuItemCard({
             {item.description.length > 120 && (
               <button
                 type="button"
-                className="inline-flex items-center gap-1 text-shibu-aka text-xs mt-1.5 hover:text-shibu-aka-deep transition-colors"
+                className="menu-card-more"
                 onClick={() => setExpanded((prev) => !prev)}
               >
                 {expanded ? (

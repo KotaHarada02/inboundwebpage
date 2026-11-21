@@ -14,6 +14,7 @@ export default defineConfig({
       // 事前圧縮済みの public/ 画像・アイコンは Worker を通さず Static Assets から直接配信し、
       // Workers の CPU 時間とリクエスト枠を消費させない。
       runWorkerFirst: [
+        // "/*" は事前描画キャッシュ（/_vinext/static-cache/*）も含むので、直接アクセスはされない
         "/*",
         "!/_next/static/*",
         "!/*/_next/static/*",

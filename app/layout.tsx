@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Noto_Serif_JP } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
 import Header from '@/components/Header';
@@ -7,19 +6,10 @@ import { Footer } from '@/components/ui/Footer';
 import { RestaurantJsonLd } from '@/components/seo/RestaurantJsonLd';
 import { siteConfig } from '@/lib/siteConfig';
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
-
-const notoSerifJp = Noto_Serif_JP({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
-  display: 'swap',
-  variable: '--font-noto-serif-jp',
-  preload: false,
-});
+// next/font は vinext だと 500 個近い @font-face を全ページの HTML にインライン展開し
+// （約 450 KB）、Worker の CPU 時間を押し上げる。外部スタイルシートとして読み込む。
+const GOOGLE_FONTS_URL =
+  'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Serif+JP:wght@300;400;500;700&display=swap';
 
 const SITE_URL = siteConfig.url;
 const SITE_NAME = 'Mitsukabose — Fermented Miso Ramen & Craft Beer';
@@ -130,7 +120,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${notoSerifJp.variable}`}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={GOOGLE_FONTS_URL} />
+      </head>
       <body className="bg-background text-foreground antialiased overflow-x-hidden">
         <RestaurantJsonLd />
         <Providers>
