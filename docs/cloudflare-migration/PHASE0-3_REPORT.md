@@ -288,6 +288,24 @@ vinext は事前描画した HTML を Worker 内で `text()` として読み込�
 - 制限: 写真を差し替えても、古いオブジェクトは R2 に残る（容量はごくわずかなので、今は自動削除していない）。
 - DNS を切り替えたあとは、R2 にカスタムドメイン（例: `img.mitsukabose.jp`）を付ければ、Worker を通さず配信できる。その場合は既存の `imageUrl` の書き換えが必要。
 
+## Phase 5: 本番ドメインの切り替え（2026-11-21 14:15 頃 JST）
+
+| 時刻（JST） | 作業 |
+| :--- | :--- |
+| 13:4x | Cloudflare にゾーン `mitsukabose.jp`（Free、zone id `4ac4baa8d38d773dc556babeef732368`）を作成。切り替え中もサイトが表示されるよう、Vercel を向いたプロキシなしのレコード（apex A `76.76.21.21`、www CNAME `cname.vercel-dns.com`）を先に入れた |
+| 13:58 | ムームードメインで NS を `ivy.ns.cloudflare.com` / `terry.ns.cloudflare.com` に変更（人間が作業）。JPRS に反映され、ゾーンが active になった |
+| 14:15 | Universal SSL の証明書が発行された（人間の作業は不要） |
+| 14:1x | D1 を Neon から再同期（73 件、完全一致を確認） |
+| 14:1x | SSL/TLS を Full (strict)、Always Use HTTPS をオン |
+| 14:1x | Worker にルート `www.mitsukabose.jp/*` を追加してデプロイ → www CNAME をプロキシ経由にし、**Worker からの配信に切り替えた** |
+| 14:2x | リダイレクトルール（`http_request_dynamic_redirect`）で `mitsukabose.jp` → `https://www.mitsukabose.jp<path>?<query>` に 301。apex の A は `192.0.2.1`（プロキシ経由のダミー）に変更 |
+
+確認（`https://www.mitsukabose.jp`）: 公開 7 ルートと `/admin/login` が 200、`/ramen` が 308、`/api/menu` が 200（D1、73 件）、未認証の管理画面は 401 / 307、ログイン → 管理 API → ログアウトが 200、画像と favicon が 200、canonical は `.jp`、`server: cloudflare`、HSTS あり。apex と http はいずれも `https://www` へ 301。
+
+- ルートを設定したため、workers.dev は既定で無効になった（`*.workers.dev` には今後デプロイされない）。
+- **ロールバック手順**: `cloudflare.config.ts` から `triggers` を外してデプロイし、www CNAME（`cname.vercel-dns.com`）をプロキシなしに戻す。apex の A を `76.76.21.21`（プロキシなし）に戻し、リダイレクトルールを外す。Vercel のプロジェクトとドメイン設定は残してあるので、これで Vercel の配信に戻る。
+- 未実施: Bot Fight Mode、Cloudflare Web Analytics（P5-3 の残り）。
+
 ## P0-3: 現行 DNS レコードの控え（2026-11-21）
 
 Vercel ダッシュボードのスクリーンショットと、公開 DNS への `dig` の結果を突き合わせた。

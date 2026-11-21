@@ -1,4 +1,4 @@
-import { bindings, defineConfig, defineWorker } from "cf/config";
+import { bindings, defineConfig, defineWorker, triggers } from "cf/config";
 
 export default defineConfig({
   // akishika_app と同じ Cloudflare アカウント。CLOUDFLARE_ACCOUNT_ID で上書き可能。
@@ -8,6 +8,9 @@ export default defineConfig({
     entrypoint: "vinext/server/fetch-handler",
     // 2026-08-04 以降の compatibilityDate では nodejs_compat が既定で有効
     compatibilityDate: "2026-11-21",
+    // 本番ドメイン。DNS の www CNAME をプロキシ経由（オレンジ雲）にしたうえでルートで受ける。
+    // mitsukabose.jp（apex）は Cloudflare のリダイレクトルールで www へ 301 するので Worker には来ない。
+    triggers: [triggers.fetch({ pattern: "www.mitsukabose.jp/*", zone: "mitsukabose.jp" })],
     assets: {
       htmlHandling: "none",
       notFoundHandling: "none",
