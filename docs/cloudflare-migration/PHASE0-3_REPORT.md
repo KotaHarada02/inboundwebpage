@@ -162,6 +162,27 @@ Phase 1〜2 の変更を確認するため、同じ項目を Next.js 本体で�
 
 最終状態での `npm run lint` ✔、`npx tsc --noEmit` 0、`npm run build`（Next）0。
 
+## P0-3: 現行 DNS レコードの控え（2026-11-21）
+
+Vercel ダッシュボードのスクリーンショットと、公開 DNS への `dig` の結果を突き合わせた。
+
+| 名前 | 種類 | 値 | 備考 |
+| :--- | :--- | :--- | :--- |
+| `mitsukabose.jp` | NS | `ns1.vercel-dns.com` / `ns2.vercel-dns.com` | レジストラ側で Cloudflare の NS に切り替える対象 |
+| `mitsukabose.jp` | CAA | `0 issue "pki.goog"` | Vercel が自動管理 |
+| `mitsukabose.jp` | CAA | `0 issue "sectigo.com"` | Vercel が自動管理 |
+| `mitsukabose.jp` | CAA | `0 issue "letsencrypt.org"` | `dig` で確認（ダッシュボードでは「Load More」の先） |
+| `*` | ALIAS | `cname.vercel-dns-017.com.` | Vercel が自動管理。apex と www を含む全サブドメインが Vercel に解決される（A: `216.198.79.65` / `64.29.17.x`） |
+
+- **MX・TXT はなし**（apex、`_dmarc`、`*._domainkey` とも空）。このドメインではメールを使っていないので、NS を切り替えてもメールには影響しない。
+- Vercel のドメイン設定: `mitsukabose.jp` → `www.mitsukabose.jp` へリダイレクト、`www.mitsukabose.jp` が本番（プロジェクト `inboundwebpage`）。
+- 日本語 HP の `mitsukabose.com` は別ドメインなので、今回の NS 切り替えの対象外。
+
+**Cloudflare に移すときの扱い**: 上のレコードはすべて Vercel への配信用なので、Cloudflare には**コピーしない**。
+- ALIAS `*` は、Workers のカスタムドメイン（`www.mitsukabose.jp`、`mitsukabose.jp`）とリダイレクトルールで置き換える。
+- Vercel 用の CAA（特に `sectigo.com`）は持ち込まない。Cloudflare の Universal SSL が使う認証局（Let's Encrypt、Google Trust Services、SSL.com など）を CAA で制限すると証明書を発行できなくなるおそれがあるため、CAA は設定しないでおくのが安全。
+- ロールバック時は、レジストラの NS を `ns1/ns2.vercel-dns.com` に戻せば、上の状態がそのまま復元される（Vercel 側のドメイン設定を残しておくことが前提）。
+
 ## 残課題と次のアクション
 
 1. **【人間】Node をサポート対象の版にする**（例: `brew install node@24` または nvm/fnm/volta で 24.22 以上、もしくは 22.23 以上）。その後、worktree で次を実行して Phase 3 の P3-3 を完了させる。
@@ -174,7 +195,7 @@ Phase 1〜2 の変更を確認するため、同じ項目を Next.js 本体で�
 2. ~~`SITE_URL` のドメイン確認~~ → `https://www.mitsukabose.jp` に変更済み。
 3. **【人間】JSON-LD の `logo`**: 正式ロゴ画像を配置して `RestaurantJsonLd.tsx` に追加する（候補は `public/images/hero.png`）。
 4. **【人間】未撮影メニュー画像（DB 上 31 種類）**: 写真を追加するか、DB の `imageUrl` を整理する（DB の更新は Human Gate）。
-5. **【人間】P0-3 の残り**: Vercel DNS の全レコード（MX/TXT 等）を控える（Phase 5 の前提）。
+5. ~~P0-3 の残り~~ → 完了。上の「P0-3: 現行 DNS レコードの控え」を参照。
 6. **`--prerender` の検討**: 現在の init は prerender なしのため、公開ページも Worker の SSR を経由する。ADR-4（静的配信優先・CPU 10ms 対策）に沿って、Phase 4 の dry-run 前に `vinext init --prerender` 相当の設定と Static Assets での配信を検討する。
 7. **`/api/menu` のキャッシュ**: 管理画面で更新しても、最大 5 分（stale 込みで最大 15 分）反映が遅れる。DB 障害時の JSON フォールバックも同じ時間キャッシュされる。必要なら `s-maxage` を短くする。
 8. `npm audit` で 17 件の脆弱性が出ている（init 前から存在するものを含む）。今回は対応していない。

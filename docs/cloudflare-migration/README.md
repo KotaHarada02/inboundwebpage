@@ -101,7 +101,7 @@ flowchart LR
 
 - [x] `P0-1`: 本番最新コミット（`KotaHarada02/inboundwebpage`）同期＆作業ブランチ `feat/cloudflare-migration` 作成
 - [x] `P0-2`: `public/images/` の外部バックアップ取得完了
-- [ ] `P0-3`: 現行環境変数キー一覧＆Vercel DNS 全レコード控え完了（※キー一覧は確認済み。Vercel DNS レコード控えは未実施＝人間作業）
+- [x] `P0-3`: 現行環境変数キー一覧＆Vercel DNS 全レコード控え完了（MX/TXT なし。[PHASE0-3_REPORT.md](./PHASE0-3_REPORT.md) 参照）
 - [x] `P1-1`: 画像一括圧縮完了（58.85 MB → ≤ 10 MB、最大ファイル ≤ 500 KB）（実績: 7.34 MB / 最大 333 KB）
 - [x] `P1-2`: 欠損参照（`hero-1.jpg` 等 4 件）・重複ファイル整理完了（※DB 上の未撮影メニュー画像 31 種類は残課題）
 - [x] `P2-1`: `next.config.ts` 一本化・`images: { unoptimized: true }` 設定完了
