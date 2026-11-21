@@ -1,4 +1,4 @@
-// Run: node scripts/run_migration.js [path/to/migration.sql]
+// Run: node scripts/run_migration.cjs [path/to/migration.sql]
 const fs = require('fs');
 const path = require('path');
 const { Client } = require('@neondatabase/serverless');

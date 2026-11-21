@@ -1,5 +1,5 @@
 // 全メニューJSONファイルからpriceYenオブジェクト内のundefined値を持つプロパティを削除するスクリプト
-// infrastructure/data/cleanMenuJson.js
+// infrastructure/data/cleanMenuJson.cjs
 
 const fs = require('fs');
 const path = require('path');
