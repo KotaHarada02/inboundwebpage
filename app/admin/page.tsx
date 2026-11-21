@@ -19,7 +19,7 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/menu');
       if (res.ok) {
-        const data = await res.json();
+        const data: MenuItem[] = await res.json();
         setItems(data);
       } else if (res.status === 401) {
         router.push('/admin/login');

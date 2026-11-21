@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
         router.push('/admin');
         router.refresh();
       } else {
-        const data = await res.json();
+        const data: { error?: string } = await res.json();
         setError(data.error || 'ログインに失敗しました');
       }
     } catch {

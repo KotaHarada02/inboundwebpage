@@ -4,7 +4,7 @@ import { signToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
-    const { password } = await request.json();
+    const { password }: { password?: unknown } = await request.json();
     const expected = process.env.ADMIN_PASSWORD;
 
     // ADMIN_PASSWORD 未設定時に undefined === undefined でログインできてしまうのを防ぐ

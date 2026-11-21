@@ -24,6 +24,10 @@ export default defineConfig({
     },
     env: {
       ASSETS: bindings.assets(),
+      // 値はローカルでは .dev.vars、本番では Worker のシークレットから注入される
+      DATABASE_URL: bindings.secret(),
+      ADMIN_PASSWORD: bindings.secret(),
+      AUTH_SECRET: bindings.secret(),
     },
   }),
 });

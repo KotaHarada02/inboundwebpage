@@ -12,9 +12,9 @@
 | 0（事前完了分＋`npm ci`） | ✅ 合格。`npm ci` で next 15.3.8 に同期 |
 | 1 画像圧縮・参照修正 | ✅ 合格。58.85 MB → **7.34 MB**、最大 **333 KB**、500 KB 超 0 件 |
 | 2 Cloudflare 互換改修 | ✅ 合格。`npm run lint` / `npx tsc --noEmit` / `npm run build` すべて終了コード 0 |
-| 3 vinext 導入 | ⚠️ **一部ブロック**。`vinext check`・`vinext init`・設定整備・lint・tsc は合格。`build:vinext` と `dev:vinext` は**ローカルの Node 23.7.0 が `cf` CLI の対応範囲外**のため起動できない |
+| 3 vinext 導入 | ✅ 合格（Node 24.22.3 に更新後）。`build:vinext` / `tsc` / `lint` / `next build` すべて 0、`dev:vinext` で全ルートのスモークテスト合格。詳細は「P3-3: Node 24 での vinext ビルドとスモークテスト」 |
 
-Phase 3 のブロック原因は vinext とアプリの非互換ではなく、ローカル Node のバージョンにある。そのため OpenNext フォールバックには切り替えていない（runbook の切替条件「vinext の致命的非互換」に当たらない）。同じエラーが 2 回出た時点で、runbook のルールに従い作業を止めた。
+Phase 3 は当初ローカル Node 23.7.0 が原因でブロックしていたが、vinext とアプリの非互換ではなかったため OpenNext には切り替えていない。Node 24.22.3 に更新したあと P3-3 を完了した。
 
 ## コミット
 
@@ -162,6 +162,47 @@ Phase 1〜2 の変更を確認するため、同じ項目を Next.js 本体で�
 
 最終状態での `npm run lint` ✔、`npx tsc --noEmit` 0、`npm run build`（Next）0。
 
+## P3-3: Node 24 での vinext ビルドとスモークテスト（2026-11-21）
+
+環境: Node 24.22.3（`brew install node@24 && brew link --overwrite node@24`）、npm 11.19.1。`npm ci` は成功した。npm 11 はインストールスクリプトを既定でブロックする（`workerd`、`sharp`、`unrs-resolver`、`fsevents`）が、ビルドと dev には影響しなかった。
+
+### 追加で直したもの
+
+| 問題 | 原因 | 対応 |
+| :--- | :--- | :--- |
+| `npx tsc --noEmit` で 3 件の型エラー | `build:vinext` が生成する `.cloudflare/types`（Workers の型）では `Response.json()` / `Request.json()` の戻り値が `unknown` になる | `app/admin/login/page.tsx`、`app/admin/page.tsx`、`app/api/admin/login/route.ts` の `json()` の受け側に型注釈を付けた |
+| `dev:vinext` で `/api/menu` が JSON フォールバック、管理ログインが常に 401 | `cf/config` では、Worker に渡すシークレットを `env` に宣言しないと `.dev.vars` の値が `process.env` に入らない | `cloudflare.config.ts` の `env` に `DATABASE_URL` / `ADMIN_PASSWORD` / `AUTH_SECRET` を `bindings.secret()` として宣言した。本番では `wrangler secret put` などで登録した値がここに入る |
+| `/favicon.ico` が 404 | `app/favicon.ico`（Next の規約ファイル）を vinext が配信しない。さらに `runWorkerFirst` で `/favicon.ico` を Static Assets 直配信にしているため、`public/` にないと本番でも 404 になる | `app/favicon.ico` を `public/favicon.ico` に移動した。`layout.tsx` の `icons` メタデータが `/favicon.ico` を指しているので、`<link rel="icon">` は維持される |
+
+### スモークテスト結果（`dev:vinext`、port 3001）
+
+| 確認内容 | 結果 |
+| :--- | :--- |
+| `/`, `/menu`, `/food-and-drinks`, `/access`, `/events`, `/sitemap.xml`, `/robots.txt`, `/admin/login` | すべて 200 |
+| `/ramen` | 308 → `/menu` |
+| `/api/menu` | 200、73 件、`x-data-source: db`、`public, s-maxage=300, stale-while-revalidate=600` |
+| `/api/admin/menu`（未認証） | 401、`private, no-store` |
+| `/admin`（未認証） | 307 → `/admin/login` |
+| `POST /api/admin/login` に `{}` / 誤ったパスワード | どちらも 401 |
+| `POST /api/admin/login` に正しいパスワード | 200、`admin_token` Cookie（HttpOnly, SameSite=Strict, 2 時間）、`private, no-store` |
+| `/api/admin/menu`（Cookie あり） | 200、73 件 |
+| `/admin`（Cookie あり） | 200 |
+| `POST /api/admin/logout` | 200 |
+| `/images/hero/*.jpg`、`/favicon.ico` | 200 |
+
+DB への書き込み（編集・並び替え）はローカルでは試していない（本番 Neon DB を共有しているため）。Phase 4 の E2E で、ダミー編集→元に戻す手順で確認する。
+
+### ビルド出力（`.cloudflare/output/v1/workers/default`）
+
+| 項目 | 値 | 上限 |
+| :--- | ---: | :--- |
+| Worker バンドル（ソースマップ除く） | 2.13 MiB（gzip 0.63 MiB） | Free プランは**圧縮後 3 MiB**、非圧縮 64 MiB |
+| Static Assets | 247 ファイル / 16 MB、最大 334 KB | 20,000 ファイル、1 ファイル 25 MiB |
+
+`npx vinext-cloudflare deploy --dry-run` はセットアップの検証のみで、成功した（ビルドもデプロイもしない）。生成された `worker.config.json` の Worker 名は `mitsukabose-inbound`、`runWorkerFirst` の除外（`/images/*`、`/favicon.ico`、`/*.svg`）も反映されている。
+
+`npx cf auth whoami` は `Not logged in`。Phase 4 の前に、人間が `npx cf auth login` でアカウント `96dc0d345a3061736d1f32cd12135662` にログインする必要がある（CLI が提案する `--temporary-account` デプロイは使わない）。
+
 ## P0-3: 現行 DNS レコードの控え（2026-11-21）
 
 Vercel ダッシュボードのスクリーンショットと、公開 DNS への `dig` の結果を突き合わせた。
@@ -185,13 +226,7 @@ Vercel ダッシュボードのスクリーンショットと、公開 DNS へ�
 
 ## 残課題と次のアクション
 
-1. **【人間】Node をサポート対象の版にする**（例: `brew install node@24` または nvm/fnm/volta で 24.22 以上、もしくは 22.23 以上）。その後、worktree で次を実行して Phase 3 の P3-3 を完了させる。
-   ```bash
-   npm ci
-   npm run build:vinext && npx tsc --noEmit && npm run lint
-   npm run dev:vinext   # port 3001。runbook Phase 3-4 のスモークテストを 3001 に向けて実行
-   ```
-   vinext 固有の不具合がこの時点で 2 回続いた場合に限り、OpenNext フォールバックを検討する。
+1. ~~Node をサポート対象の版にする~~ → Node 24.22.3 で P3-3 完了。次は **【人間】`npx cf auth login`** のあと Phase 4（runbook パターン B）。
 2. ~~`SITE_URL` のドメイン確認~~ → `https://www.mitsukabose.jp` に変更済み。
 3. **【人間】JSON-LD の `logo`**: 正式ロゴ画像を配置して `RestaurantJsonLd.tsx` に追加する（候補は `public/images/hero.png`）。
 4. **【人間】未撮影メニュー画像（DB 上 31 種類）**: 写真を追加するか、DB の `imageUrl` を整理する（DB の更新は Human Gate）。
