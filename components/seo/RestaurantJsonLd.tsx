@@ -10,15 +10,9 @@ export function RestaurantJsonLd() {
     url: siteConfig.url,
     description: siteConfig.description,
     image: [
-      `${siteConfig.url}/images/hero/hero-1.jpg`,
-      `${siteConfig.url}/images/hero/hero-2.jpg`,
+      `${siteConfig.url}${siteConfig.ogImage}`,
+      `${siteConfig.url}/images/hero/0303_1N0A1489.jpg`,
     ],
-    logo: {
-      '@type': 'ImageObject',
-      url: `${siteConfig.url}/images/logo.png`,
-      width: 200,
-      height: 200,
-    },
     telephone: siteConfig.telephone,
     priceRange: '¥¥',
     servesCuisine: ['Ramen', 'Miso Ramen', 'Japanese', 'Fermentation Cuisine'],

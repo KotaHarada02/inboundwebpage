@@ -24,7 +24,7 @@ export default function EventsClient() {
       {/* Hero Section */}
       <section
         aria-label="Events hero"
-        className="relative isolate bg-[url('/images/food-and-drinks/japanese-pattern-dark.jpg')] bg-cover bg-center"
+        className="relative isolate"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(31,26,20,0.85)] via-[rgba(31,26,20,0.65)] to-[rgba(31,26,20,0.85)]" />
         <div className="relative z-10 min-h-[60vh] flex flex-col justify-center items-center px-4 py-24">

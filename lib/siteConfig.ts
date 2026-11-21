@@ -6,7 +6,7 @@ export const siteConfig = {
     'Mitsukabose (みつか坊主) is a fermentation-driven miso ramen and craft beer destination in Hotarugaike, Toyonaka, Osaka. Slow-brewed white-miso ramen, Akishika sake, and seasonal small plates 1 minute from Hotarugaike Station.',
   locale: 'en_US',
   telephone: '+81-6-6850-3532',
-  ogImage: '/images/hero/hero-1.jpg',
+  ogImage: '/images/hero/0054_1N0A0937.jpg',
   links: {
     instagram: 'https://www.instagram.com/mitsukabose.official/',
     twitter: 'https://x.com/mitsukabose',
