@@ -307,6 +307,16 @@ vinext は事前描画した HTML を Worker 内で `text()` として読み込�
 - Cloudflare Web Analytics: サイト（site tag `7f21f22de6ba41ed8a24d7bf7711cd83`）を登録した。`auto_install` を有効にしても、Worker が返す HTML にはビーコンが挿入されなかった。そのため `auto_install` は無効にして、`app/layout.tsx` にビーコン（公開トークン）を直接書いた。
 - Bot Fight Mode は見送り（AI 検索系のクローラーも弾くおそれがあるため）。
 
+## CI/CD（GitHub Actions、2026-11-21）
+
+- リポジトリ: `KotaHarada02/inboundwebpage`（Vercel 本番の配信元と同じ）。
+- `.github/workflows/ci.yml`
+  - PR: `npm ci` → `npm run lint` → `npm run build:vinext`（事前描画を含む）→ `npx tsc --noEmit`
+  - main への push: 上記の後、`deploy` ジョブ（GitHub Environment `production`）で `npx vinext-cloudflare deploy`
+- 必要な GitHub Secret: `CLOUDFLARE_API_TOKEN`。ダッシュボードで「Edit Cloudflare Workers」テンプレートから作成し、Account リソースはこのアカウント、Zone リソースは `mitsukabose.jp` に限定する。D1 の Edit 権限も追加する。
+- Worker のシークレット（`ADMIN_PASSWORD`、`AUTH_SECRET`）は Worker 側に登録済みなので、CI では扱わない。
+- 注意: Vercel の GitHub 連携が残っていると、PR や main への push のたびに Vercel もビルドを試み、`cloudflare:workers` が解決できずに失敗する。本番は Cloudflare に移っているので影響はないが、通知がうるさい。Phase 6 で Vercel を停止するときに、Git 連携も外す。
+
 ## P0-3: 現行 DNS レコードの控え（2026-11-21）
 
 Vercel ダッシュボードのスクリーンショットと、公開 DNS への `dig` の結果を突き合わせた。
